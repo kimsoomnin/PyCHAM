@@ -529,7 +529,7 @@ class PyCHAM(QWidget):
 							return False
 					# test internet connection
 					if connect():
-						print('Internet connection confirmed and user has requested cloning of UManSysProp via the model variables input file') 
+						print('Internet connection confirmed and either user has requested cloning of UManSysProp via the model variables input file or no existing UManSysProp module was found') 
 					else:
 						print('Error: user has requested cloning of UManSysProp via the model variables input file but connection to the page failed, possibly due to no internet connection (UManSysProp repository site: https://github.com/loftytopping/UManSysProp_public.git)')
 						sys.exit()
