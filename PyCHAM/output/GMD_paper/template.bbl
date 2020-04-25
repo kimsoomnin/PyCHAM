@@ -1,0 +1,401 @@
+\begin{thebibliography}{61}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{{\tt #1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{https://doi.org/\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{https://doi.org/\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+
+\bibitem[{Andersson et~al.(2015)Andersson, F{\"{u}}hrer, and
+  {\AA}kesson}]{Andersson2015}
+Andersson, C., F{\"{u}}hrer, C., and {\AA}kesson, J.: Assimulo: A unified
+  framework for \{ODE\} solvers, Mathematics and Computers in Simulation, 116,
+  26 -- 43, \doi{http://dx.doi.org/10.1016/j.matcom.2015.04.007}, 2015.
+
+\bibitem[{Barley et~al.(2013)Barley, Topping, and McFiggans}]{Barley2013}
+Barley, M., Topping, D., and McFiggans, G.: Critical Assessment of Liquid
+  Density Estimation Methods for Multifunctional Organic Compounds and Their
+  Use in Atmospheric Science, J. Phys. Chem. A, 117, 3428--3441,
+  \doi{10.1021/jp304547r}, 2013.
+
+\bibitem[{Carslaw and Shaw({2019})}]{Carslaw2019}
+Carslaw, N. and Shaw, D.: {Secondary product creation potential (SPCP): a
+  metric for assessing the potential impact of indoor air pollution on human
+  health}, {ENVIRONMENTAL SCIENCE-PROCESSES \& IMPACTS}, {21}, {1313--1322},
+  \doi{{10.1039/c9em00140a}}, {2019}.
+
+\bibitem[{Charan et~al.(2019)Charan, Huang, and Seinfeld}]{Charan2019}
+Charan, S.~M., Huang, Y., and Seinfeld, J.~H.: Computational Simulation of
+  Secondary Organic Aerosol Formation in Laboratory Chambers, Chemical
+  reviews., 119, 11\,912,11\,944, \doi{10.1021/acs.chemrev.9b00358}, 2019.
+
+\bibitem[{Chen et~al.(1992)Chen, Yeh, and Cheng}]{Chen1992}
+Chen, B.~T., Yeh, H.~C., and Cheng, Y.~S.: Evaluation of an Environmental
+  Reaction Chamber, Aerosol Sci. Tech., 17, 9--24,
+  \doi{10.1080/02786829208959556}, 1992.
+
+\bibitem[{Crump and Seinfeld(1981)}]{Crump1981}
+Crump, J.~G. and Seinfeld, J.~H.: Turbulent deposition and gravitational
+  sedimentation of an aerosol in a vessel of arbitrary shape, J. Aerosol Sci.,
+  12, 405--415, \doi{10.1016/0021-8502(81)90036-7}, 1981.
+
+\bibitem[{Day et~al.(2017)Day, Ziemann, Jimenez, Krechmer, Day, Ziemann, and
+  Jimenez}]{Day2017}
+Day, D.~A., Ziemann, P.~J., Jimenez, J.~L., Krechmer, J.~E., Day, D.~A.,
+  Ziemann, P.~J., and Jimenez, J.~L.: Direct Measurements of Gas/Particle
+  Partitioning and Mass Accommodation Coefficients in Environmental Chambers,
+  Environ. Sci. Techol., 51, 11\,867,11\,875, 2017.
+
+\bibitem[{Ehn et~al.(2014)Ehn, Thornton, Kleist, Sipil{\"a}, Junninen,
+  Pullinen, Springer, Rubach, Tillmann, Lee, Lopez-Hilfiker, Andres, Acir,
+  Rissanen, Jokinen, Schobesberger, Kangasluoma, Kontkanen, Nieminen,
+  Kurt{\'e}n, Nielsen, J{\o}rgensen, Kjaergaard, Canagaratna, Maso, Berndt,
+  Pet{\"a}j{\"a}, Wahner, Kerminen, Kulmala, Worsnop, Wildt, and
+  Mentel}]{Ehn2014}
+Ehn, M., Thornton, J., Kleist, E., Sipil{\"a}, M., Junninen, H., Pullinen, I.,
+  Springer, M., Rubach, F., Tillmann, R., Lee, B., Lopez-Hilfiker, F., Andres,
+  S., Acir, I., Rissanen, M., Jokinen, T., Schobesberger, S., Kangasluoma, J.,
+  Kontkanen, J., Nieminen, T., Kurt{\'e}n, T., Nielsen, L.~B., J{\o}rgensen,
+  S., Kjaergaard, H., Canagaratna, M., Maso, M., Berndt, T., Pet{\"a}j{\"a},
+  T., Wahner, A., Kerminen, V., Kulmala, M., Worsnop, D., Wildt, J., and
+  Mentel, T.: A large source of low-volatility secondary organic aerosol,
+  Nature, 506, 476--479, \doi{10.1038/nature13032}, 2014.
+
+\bibitem[{{European Commission Environment}(2020)}]{EUAQ2020}
+{European Commission Environment}: European Commission Directives on Air
+  Quality,
+  \urlprefix\url{https://ec.europa.eu/environment/air/quality/existing_leg.htm},
+  2020.
+
+\bibitem[{Fry et~al.(2011)Fry, Kiendler-Scharr, Rollins, Brauers, Brown, Dorn,
+  Dub\'{e}, Fuchs, Mensah, Rohrer, Tillmann, Wahner, Wooldridge, and
+  Cohen}]{Fry2011}
+Fry, J.~L., Kiendler-Scharr, A., Rollins, A.~W., Brauers, T., Brown, S.~S.,
+  Dorn, H.-P., Dub\'{e}, W.~P., Fuchs, H., Mensah, A., Rohrer, F., Tillmann,
+  R., Wahner, A., Wooldridge, P.~J., and Cohen, R.~C.: SOA from limonene: role
+  of NO3 in its generation and degradation, Atmos. Chem. Phys., 11, 3879--3894,
+  \doi{10.5194/acp-11-3879-2011}, 2011.
+
+\bibitem[{Fuchs and Sutugin(1971)}]{Fuchs1971}
+Fuchs, N. and Sutugin, A.: Highly dispersed aerosols, Butterworth Heinemann,
+  Woburn, Mass, 1971.
+
+\bibitem[{Girolami(1994)}]{Girolami1994}
+Girolami, G.~S.: A Simple "Back of the Envelope" Method for Estimating the
+  Densities and Molecular Volumes of Liquids and Solids, Journal of chemical
+  education., 71, 962--964, \doi{10.1021/ed071p962}, 1994.
+
+\bibitem[{gov.uk(2020)}]{UKEnvironmentBill2020}
+gov.uk: Environment Bill 2020,
+  \urlprefix\url{https://www.gov.uk/government/publications/environment-bill-2020},
+  2020.
+
+\bibitem[{Griffin et~al.(1956)Griffin, Kantzes, Ludford, and
+  Pelczar}]{Griffin1956}
+Griffin, C.~W., Kantzes, H.~L., Ludford, P.~M., and Pelczar, M.~J.: Studies of
+  Aerosols with a Simple Cloud-Chamber Technic, Applied and Environmental
+  Microbiology, 4, 17--20, \doi{10.1128/AEM.4.1.17-20.1956},
+  \urlprefix\url{https://aem.asm.org/content/4/1/17}, 1956.
+
+\bibitem[{Hayman(1997)}]{Hayman1997}
+Hayman, G.: Effects of pollution control on UV Exposure, AEA Technology Final
+  Report (Reference AEA/RCEC/22522001/R/002 ISSUE1) prepared for the Department
+  of Health on Contract 121/6377, AEA Technology, Oxfordshire, UK, 1997.
+
+\bibitem[{Heal et~al.(2012)Heal, Kumar, and Harrison}]{Heal2012}
+Heal, M., Kumar, P., and Harrison, R.: Particles, air quality, policy and
+  health, Chem. Soc. Rev., 41, 6606--6630, \doi{10.1039/c2cs35076a}, 2012.
+
+\bibitem[{Hidy(2019)}]{Hidy2019}
+Hidy, G.: Atmospheric Chemistry in a Box or a Bag, Atmosphere-Basel, 10(7),
+  \doi{10.3390/atmos10070401}, 2019.
+
+\bibitem[{Hindmarsh et~al.(2005)Hindmarsh, Brown, Grant, Lee, Serban, Shumaker,
+  and Woodward}]{hindmarsh2005sundials}
+Hindmarsh, A.~C., Brown, P.~N., Grant, K.~E., Lee, S.~L., Serban, R., Shumaker,
+  D.~E., and Woodward, C.~S.: {SUNDIALS}: Suite of nonlinear and
+  differential/algebraic equation solvers, ACM Transactions on Mathematical
+  Software (TOMS), 31, 363--396, 2005.
+
+\bibitem[{Jacobson(2005)}]{Jacobson2005}
+Jacobson, M.: Fundamentals of Atmospheric Modeling, Cambridge University Press,
+  Cambridge, U.K., 2 edn., 2005.
+
+\bibitem[{Jaoui et~al.(2014)Jaoui, Lewandowski, Docherty, Offenberg, and
+  Kleindienst}]{Jaoui2014}
+Jaoui, M., Lewandowski, M., Docherty, K., Offenberg, J.~H., and Kleindienst,
+  T.~E.: Atmospheric oxidation of 1,3-butadiene: characterization of gas and
+  aerosol reaction products and implications for PM 2.5, Atmos. Chem. Phys.,
+  14, 13\,681--13\,704, \doi{10.5194/acp-14-13681-2014}, 2014.
+
+\bibitem[{Jenkin et~al.(1997)Jenkin, Saunders, and Pilling}]{Jenkin1997}
+Jenkin, M., Saunders, S., and Pilling, M.: The tropospheric degradation of
+  volatile organic compounds: A protocol for mechanism development, Atmos.
+  Env., 31, 81--104, \doi{10.1016/S1352-2310(96)00105-7}, 1997.
+
+\bibitem[{Johnson et~al.(2018)Johnson, Regayre, Yoshioka, Pringle, Lee, Sexton,
+  Rostron, Booth, and Carslaw}]{Johnson2018}
+Johnson, J., Regayre, L., Yoshioka, M., Pringle, K., Lee, L., Sexton, D.,
+  Rostron, J., Booth, B., and Carslaw, K.: The importance of comprehensive
+  parameter sampling and multiple observations for robust constraint of aerosol
+  radiative forcing, Atmos. Chem. Phys., 18, 13\,031--13\,053,
+  \doi{10.5194/acp-18-13031-2018}, 2018.
+
+\bibitem[{Kim et~al.(2001)Kim, Han, Kwon, and Lee}]{Kim2001}
+Kim, H.~O., Han, Y.~T., Kwon, S.~B., and Lee, K.~W.: Wall Loss Rate of
+  Polydispersed Aerosols, Aerosol Sci. Tech., 35, 710--717,
+  \doi{10.1080/02786820152546752}, 2001.
+
+\bibitem[{Kurten et~al.(2018)Kurten, Li, Bianchi, Curtius, Dias, Donahue,
+  Duplissy, Flagan, Hakala, Jokinen, Kirkby, Kulmala, Laaksonen, Lehtipalo,
+  Makhmutov, Onnela, Rissanen, Simon, Sipila, Stozhkov, Trostl, Ye, and
+  McMurry}]{Kurten2018}
+Kurten, A., Li, C., Bianchi, F., Curtius, J., Dias, A., Donahue, N., Duplissy,
+  J., Flagan, R., Hakala, J., Jokinen, T., Kirkby, J., Kulmala, M., Laaksonen,
+  A., Lehtipalo, K., Makhmutov, V., Onnela, A., Rissanen, M., Simon, M.,
+  Sipila, M., Stozhkov, Y., Trostl, J., Ye, P., and McMurry, P.: New particle
+  formation in the sulfuric acid-dimethylamine-water system: reevaluation of
+  CLOUD chamber measurements and comparison to an aerosol nucleation and growth
+  model, Atmos. Chem. Phys., 18(2), 845--863, \doi{10.5194/acp-18-845-2018},
+  2018.
+
+\bibitem[{Li et~al.(2020)Li, Chen, Liu, , and Wang}]{Li2020}
+Li, D., Chen, D., Liu, F., , and Wang, W.: Role of glycine on sulfuric
+  acid-ammonia clusters formation: Transporter or participator, J. Environ.
+  Sci., 89, 125--135, \doi{10.1016/j.jes.2019.10.009}, 2020.
+
+\bibitem[{Matsunaga and Ziemann(2010)}]{Matsunaga2010}
+Matsunaga, A. and Ziemann, P.: Gas-Wall Partitioning of Organic Compounds in a
+  Teflon Film Chamber and Potential Effects on Reaction Product and Aerosol
+  Yield Measurements, Aerosol Sci. Tech., \doi{10.1080/02786826.2010.501044},
+  2010.
+
+\bibitem[{McMurry and Rader(1985)}]{McMurry1985}
+McMurry, P. and Rader, D.: Aerosol Wall Losses in Electrically Charged
+  Chambers, Aerosol Sci. Tech., 4, 249 -- 268, \doi{10.1080/02786828508959054},
+  1985.
+
+\bibitem[{Meng et~al.(1997)Meng, Dabdub, and Seinfeld}]{Meng1997}
+Meng, Z., Dabdub, D., and Seinfeld, J.~H.: Chemical Coupling Between
+  Atmospheric Ozone and Particulate Matter, Science., 277, 116,119,
+  \doi{10.1126/science.277.5322.116}, 1997.
+
+\bibitem[{{MIT Science and Policy of Global Change}(2020)}]{MIT2020}
+{MIT Science and Policy of Global Change}: MIT Joint Program on the Science and
+  Policy of Global Change,
+  \urlprefix\url{https://globalchange.mit.edu/publications}, 2020.
+
+\bibitem[{Nah et~al.(2017)Nah, McVay, Pierce, Seinfeld, and Ng}]{Nah2017}
+Nah, T., McVay, R.~C., Pierce, J.~R., Seinfeld, J.~H., and Ng, N.~L.:
+  Constraining uncertainties in particle-wall deposition correction during SOA
+  formation in chamber experiments, Atmos. Chem. Phys., 17, 2297--2310,
+  \doi{10.5194/acp-17-2297-2017}, 2017.
+
+\bibitem[{Nannoolal et~al.(2008)Nannoolal, Rarey, and
+  Ramjugernath}]{Nannoolal2008}
+Nannoolal, Y., Rarey, J., and Ramjugernath, D.: Estimation of pure component
+  properties Part 3. Estimation of the vapour pressure of non-electrolyte
+  organic compounds via group contributions and group interactions, Fluid Phase
+  Equilibr., 269, 117--133, \doi{10.1016/j.fluid.2008.04.020}, 2008.
+
+\bibitem[{Naumann(2003)}]{Naumann2003}
+Naumann, K.-H.: COSIMA - a computer program simulating the dynamics of fractal
+  aerosols, J. Aerosol. Sci., 34, 1371--1397,
+  \doi{10.1016/S0021-8502(03)00367-7}, 2003.
+
+\bibitem[{O'Boyle et~al.(2011)O'Boyle, Banck, James, Morley, Vandermeersch, and
+  Hutchinson}]{OBoyle2011}
+O'Boyle, N., Banck, M., James, C., Morley, C., Vandermeersch, T., and
+  Hutchinson, G.: Open Babel: An open chemical toolbox, J Cheminformatics, 3,
+  \doi{10.1186/1758-2946-3-33}, 2011.
+
+\bibitem[{Odum et~al.(1996)Odum, Hoffmann, Bowman, Collins, Flagan, and
+  Seinfeld}]{Odum1996}
+Odum, J., Hoffmann, T., Bowman, F., Collins, D., Flagan, R., and Seinfeld, J.:
+  Gas-particle partitioning and secondary organic aerosol yields, Environ. Sci.
+  Technol., 30, 2580--2585, \doi{10.1021/es950943+}, 1996.
+
+\bibitem[{Oliveri(2018)}]{EUROCHAMP2020}
+Oliveri, M.: EUROCHAMP 2020,
+  \urlprefix\url{https://www.eurochamp.org/Eurochamp2020.aspx}, 2018.
+
+\bibitem[{O'Meara et~al.(2014)O'Meara, Booth, Barley, Topping, and
+  McFiggans}]{OMeara2014}
+O'Meara, S., Booth, A., Barley, M., Topping, D., and McFiggans, G.: An
+  assessment of vapour pressure estimation methods, Phys. Chem. Chem. Phys.,
+  16, 19\,453--19\,469, \doi{10.1039/c4cp00857j}, 2014.
+
+\bibitem[{O'Meara et~al.(2020)O'Meara, Xu, Topping, Capes, Lowe, Alfarra, and
+  McFiggans}]{OMeara2020}
+O'Meara, S., Xu, S., Topping, D., Capes, G., Lowe, D., Alfarra, M., and
+  McFiggans, G.: PyCHAM: CHemistry with Aerosol Microphysics in Python, Journal
+  of Open Source Software, 5, 1918, \doi{10.21105/joss.01918}, 2020.
+
+\bibitem[{Pierce et~al.(2008)Pierce, Englehart, Hildebrandt, Weitkamp, Parthak,
+  and Donahue}]{Pierce2008}
+Pierce, J., Englehart, G., Hildebrandt, L., Weitkamp, E., Parthak, E., and
+  Donahue, N.: Constraining Particle Evolution from Wall Losses, Coagulation
+  and Condensation-Evaporation in Smog Chamber Experiments: Optimal Based Size
+  Distribution Measurements, Aerosol Sci. Tech., 42,
+  \doi{10.1080/02786820802389251}, 2008.
+
+\bibitem[{Rickard and Young(2020)}]{MCM2020}
+Rickard, A. and Young, J.: The Master Chemical Mechanism,
+  \urlprefix\url{http://mcm.leeds.ac.uk/MCM/}, 2020.
+
+\bibitem[{Riva et~al.(2020)Riva, Heikkinen, Quelever, Roldin, Per{\"a}kyl{\"a},
+  Qu{\'e}l{\'e}ver, and Ehn}]{Riva2020}
+Riva, M., Heikkinen, L., Quelever, L., Roldin, P., Per{\"a}kyl{\"a}, O.,
+  Qu{\'e}l{\'e}ver, L., and Ehn, M.: Experimental investigation into the
+  volatilities of highly oxygenated organic molecules (HOMs), Atmospheric
+  chemistry and physics : ACP., 20, 649,669, \doi{10.5194/acp-20-649-2020},
+  2020.
+
+\bibitem[{Roldin et~al.(2014)Roldin, Ericsson, Nordin, Hermansson, Mogensen,
+  Rusanen, Boy, Swietlicki, Svenningsson, Zelenyuk, and Pagels}]{Roldin2014}
+Roldin, P., Ericsson, A., Nordin, E., Hermansson, E., Mogensen, D., Rusanen,
+  A., Boy, M., Swietlicki, E., Svenningsson, B., Zelenyuk, A., and Pagels, J.:
+  Modelling non-equilibrium secondary organic aerosol formation and evaporation
+  with the aerosol dynamics, gas- and particle-phase chemistry kinetic
+  multilayer model ADCHAM, Atmos. Chem. Phys., 14,
+  \doi{10.5194/acp-14-7953-2014}, 2014.
+
+\bibitem[{Roldin et~al.(2019)Roldin, Ehn, Kurt{\'e}n, Olenius, Rissanen,
+  Sarnela, Elm, Rantala, Hao, Hyttinen, , Heikkinen, Worsnop, Pichelstorfer,
+  Xavier, Clusius, {\"O}str{\"o}m, Pet{\"a}j{\"a}, Kulmala, Vehkam{\"a}ki,
+  Virtanen, Riipinen, and Boy}]{Roldin2019}
+Roldin, P., Ehn, M., Kurt{\'e}n, T., Olenius, T., Rissanen, M., Sarnela, N.,
+  Elm, J., Rantala, P., Hao, L., Hyttinen, N., , Heikkinen, L., Worsnop, D.,
+  Pichelstorfer, L., Xavier, C., Clusius, P., {\"O}str{\"o}m, E.,
+  Pet{\"a}j{\"a}, T., Kulmala, M., Vehkam{\"a}ki, H., Virtanen, A., Riipinen,
+  I., and Boy, M.: The role of highly oxygenated organic molecules in the
+  Boreal aerosol-cloud-climate system, Nat. Commun., 10,
+  \doi{10.1038/s41467-019-12338-8}, 2019.
+
+\bibitem[{Saunders et~al.(2003)Saunders, Jenkin, Derwent, and
+  Pilling}]{Saunders2003}
+Saunders, S.~M., Jenkin, M.~E., Derwent, R., and Pilling, M.~J.: Protocol for
+  the development of the Master Chemical Mechanism, \uppercase{MCM} v3 (Part
+  A): tropospheric degradation of non-aromatic volatile organic compounds,
+  Atmos. Chem. Phys., 3, 161--180, \doi{10.5194/acp-3-161-2003}, 2003.
+
+\bibitem[{Schwantes et~al.(2017)Schwantes, McVay, Zhang, Coggon, Lignell,
+  Flagan, Wennberg, and Seinfeld}]{Schwantes2017}
+Schwantes, R., McVay, R., Zhang, X., Coggon, M., Lignell, H., Flagan, R.,
+  Wennberg, P., and Seinfeld, J.: Advances in Atmospheric Chemistry, Chapter 1:
+  Science of the Environmental Chamber, World Scientific, \doi{10.1142/10216},
+  2017.
+
+\bibitem[{Seinfeld and Pandis(2006)}]{Seinfeld2006}
+Seinfeld, J. and Pandis, S.: Atmospheric chemistry and physics: from air
+  pollution to climate change, Wiley, Hoboken, N.J., 2 edn., 2006.
+
+\bibitem[{Semeniuk and Dastoor(2018)}]{Semeniuk2018}
+Semeniuk, K. and Dastoor, A.: Current state of aerosol nucleation
+  parameterizations for air-quality and climate modeling, Atmos. Environ., 179,
+  77--106, \doi{10.1016/j.atmosenv.2018.01.039}, 2018.
+
+\bibitem[{Sommariva et~al.(2018)Sommariva, Cox, Martin, Boronska, Young,
+  Jimack, Pilling, Bloss, Monks, and Rickard}]{sommariva_acm2018}
+Sommariva, R., Cox, S., Martin, C., Boronska, K., Young, J., Jimack, P.,
+  Pilling, M.~J., Bloss, W.~J., Monks, P.~S., and Rickard, A.~R.: {AtChem}, an
+  open source box-model for the {Master Chemical Mechanism}, in: Atmospheric
+  Chemical Mechanisms Conference, 2018.
+
+\bibitem[{Stefenelli et~al.(2018)Stefenelli, Pieber, Bruns, Temime-Roussel,
+  Bertrand, Pieber, Bruns, Slowik, Wortham, Pr\'{e}v\^{o}t, El~Haddad, and
+  Marchand}]{Stefenelli2018}
+Stefenelli, G., Pieber, S.~M., Bruns, E.~A., Temime-Roussel, B., Bertrand, A.,
+  Pieber, S.~M., Bruns, E.~A., Slowik, J.~G., Wortham, H., Pr\'{e}v\^{o}t, A.
+  S.~H., El~Haddad, I., and Marchand, N.: Influence of the vapor wall loss on
+  the degradation rate constants in chamber experiments of levoglucosan and
+  other biomass burning markers, Atmos. Chem. Phys., 18, 10\,915,10\,930, 2018.
+
+\bibitem[{Sunol et~al.(2018)Sunol, Charan, and Seinfeld}]{Sunol2018}
+Sunol, A., Charan, S., and Seinfeld, J.: Computational simulation of the
+  dynamics of secondary organic aerosol formation in an environmental chamber,
+  Aerosol Sci. Tech., 52, 470 -- 482, \doi{10.1080/02786826.2018.1427209},
+  2018.
+
+\bibitem[{Surratt et~al.(2006)Surratt, Murphy, Kroll, Ng, Hildebrandt,
+  Sorooshian, Szmigielski, Vermeylen, Maenhaut, Claeys, Flagan, and
+  Seinfeld}]{Surratt2006}
+Surratt, J.~D., Murphy, S.~M., Kroll, J.~H., Ng, N.~L., Hildebrandt, L.,
+  Sorooshian, A., Szmigielski, R., Vermeylen, R., Maenhaut, W., Claeys, M.,
+  Flagan, R.~C., and Seinfeld, J.~H.: Chemical Composition of Secondary Organic
+  Aerosol Formed from the Photooxidation of Isoprene, J. Phys. Chem-US, 110,
+  \doi{10.1021/jp061734m}, 2006.
+
+\bibitem[{Tong et~al.(2019)Tong, Geng, Jiang, Cheng, Zheng, Hong, Yan, Zhang,
+  Chen, Bo, Lei, Zhang, and He}]{Tong2019}
+Tong, D., Geng, G., Jiang, K., Cheng, J., Zheng, Y., Hong, C., Yan, L., Zhang,
+  Y., Chen, X., Bo, Y., Lei, Y., Zhang, Q., and He, K.: Energy and emission
+  pathways towards PM$_{2.5}$ air quality attainment in the
+  Beijing-Tianjin-Hebei region by 2030, Sci. Total Environ., 692, 361--370,
+  \doi{10.1016/j.scitotenv.2019.07.218}, 2019.
+
+\bibitem[{Topping et~al.(2016)Topping, Barley, Bane, Higham, Aumont, Dingle,
+  and McFiggans}]{Topping2016}
+Topping, D., Barley, M., Bane, M.~K., Higham, N., Aumont, B., Dingle, N., and
+  McFiggans, G.: UManSysProp v1.0: an online and open-source facility for
+  molecular property prediction and atmospheric aerosol calculations,
+  Geoscientific Model Development, 9, 899--914, \doi{10.5194/gmd-9-899-2016},
+  \urlprefix\url{https://www.geosci-model-dev.net/9/899/2016/}, 2016.
+
+\bibitem[{UNFCCC(2018)}]{UNFCCC2018}
+UNFCCC: Paris Agreement,
+  \urlprefix\url{https://unfccc.int/sites/default/files/english_paris_agreement.pdf},
+  2018.
+
+\bibitem[{Wang et~al.(2018)Wang, Jorga, Pierce, Donahue, and Pandis}]{Wang2018}
+Wang, N., Jorga, S., Pierce, J., Donahue, N., and Pandis, S.: Particle
+  wall-loss correction methods in smog chamber experiments, Atmos. Meas. Tech.,
+  11, 6577 -- 6588, \doi{10.5194/amt-11-6577-2018}, 2018.
+
+\bibitem[{Waring and Wells({2015})}]{Waring2015}
+Waring, M.~S. and Wells, J.~R.: {Volatile organic compound conversion by ozone,
+  hydroxyl radicals, and nitrate radicals in residential indoor air: Magnitudes
+  and impacts of oxidant sources}, {ATMOSPHERIC ENVIRONMENT}, {106},
+  {382--391}, \doi{{10.1016/j.atmosenv.2014.06.062}}, {2015}.
+
+\bibitem[{Weininger(1988)}]{Weininger1988}
+Weininger, D.: Smiles, a chemical language and information system. 1.
+  Introduction to methodology and encoding rules, J. Chem. Inf. Comp. Sci., 28,
+  31--36, \doi{10.1021/ci00057a005}, 1988.
+
+\bibitem[{Ying and Li(2011)}]{Ying2011}
+Ying, Q. and Li, J.: Implementation and initial application of the
+  near-explicit Master Chemical Mechanism in the 3D Community Multiscale Air
+  Quality (CMAQ) model, Atmospheric Environment, 45, 3244 -- 3256,
+  \doi{https://doi.org/10.1016/j.atmosenv.2011.03.043},
+  \urlprefix\url{http://www.sciencedirect.com/science/article/pii/S1352231011003037},
+  2011.
+
+\bibitem[{Zaveri et~al.(2008)Zaveri, Easter, Fast, and Peters}]{Zaveri2008}
+Zaveri, R., Easter, R., Fast, J., and Peters, L.: Model for
+  \uppercase{S}imulating \uppercase{A}erosol \uppercase{I}nteractions and
+  \uppercase{C}hemistry \uppercase{(MOSAIC)}, J. Geophys. Res., 113, D13\,204,
+  \doi{10.1029/2007JD008782}, 2008.
+
+\bibitem[{Zhang et~al.(2015)Zhang, Schwantes, McVay, Lignell, Coggon, Flagan,
+  and Seinfeld}]{Zhang2015b}
+Zhang, X., Schwantes, R., McVay, R., Lignell, H., Coggon, M., Flagan, R., and
+  Seinfeld, J.: Vapor wall deposition in Teflon chambers, Atmos. Chem. Phys.,
+  15, 4197--4214, \doi{10.5194/acp-15-4197-2015}, 2015.
+
+\bibitem[{Zhang et~al.(1999)Zhang, Seigneur, Seinfeld, Jacobson, and
+  Binkowski}]{Zhang1999}
+Zhang, Y., Seigneur, C., Seinfeld, J.~H., Jacobson, M.~Z., and Binkowski,
+  F.~S.: Simulation of Aerosol Dynamics: A Comparative Review of Algorithms
+  Used in Air Quality Models, Aerosol science and technology., 31, 487--514,
+  \doi{10.1080/027868299304039}, 1999.
+
+\bibitem[{Zhao et~al.(2018)Zhao, Charan, Kenseth, Zhang, Huang, Charan,
+  Kenseth, and Seinfeld}]{Zhao2018}
+Zhao, R., Charan, S.~M., Kenseth, C.~M., Zhang, X., Huang, Y., Charan, S.~M.,
+  Kenseth, C.~M., and Seinfeld, J.~H.: Unified Theory of Vapor–Wall Mass
+  Transport in Teflon-Walled Environmental Chambers, Environ. Sci. Techol., 52,
+  2134,2142, 2018.
+
+\end{thebibliography}
