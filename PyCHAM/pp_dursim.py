@@ -36,7 +36,7 @@ def pp_dursim(y, N_perbin, mean_rad, pconc, corei, lowersize, uppersize, num_spe
 	
 	R_gas = si.R # ideal gas constant (kg.m2.s-2.K-1.mol-1)
 	NA = si.Avogadro # Avogadro's number (molecules/mol)
-	print(mean_rad, rad0)
+	
 	if num_sb == 2:
 		N_perbin += np.array((pconc)) # (# particles/cc (air))
 	if num_sb > 2 and len(pconc)==num_sb-1:
@@ -65,9 +65,9 @@ def pp_dursim(y, N_perbin, mean_rad, pconc, corei, lowersize, uppersize, num_spe
 	
 	# molecular concentration of seed required to comprise these additional seed particle
 	# (molecules/cc (air))
-	print(pconc)
-	print(pconc_new)
-	print((pdf_out/sum(pdf_out)))
+# 	print(pconc)
+# 	print(pconc_new)
+# 	print((pdf_out/sum(pdf_out)))
 	
 	# volume concentration of seed particles (cm3/cc (air)), note mean_rad scaled up to 
 	# cm from um
