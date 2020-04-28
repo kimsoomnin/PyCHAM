@@ -62,7 +62,7 @@ class PyCHAM(QWidget):
 	def on_click1(self):
 		
 		dirpath = os.getcwd() # get current path
-		fname = dirpath+'/PyCHAM/inputs/limonene_MCM_PRAM.txt' # hard-code chemical scheme input
+		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/AtChem2_apinene_scheme.txt' # hard-code chemical scheme input
 # 		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
 		with open(dirpath+'/fname.txt','w') as f:
 			f.write(fname)
@@ -81,7 +81,7 @@ class PyCHAM(QWidget):
 	@pyqtSlot()
 	def on_click3(self):
 		dirpath = os.getcwd() # get current path
-		inname = dirpath+'/PyCHAM/inputs/limonene_inputs.txt' # hard-code model variables input
+		inname = dirpath+'/PyCHAM//output/GMD_paper/Results/Photo_chem_inputs_loNOx.txt' # hard-code model variables input
 # 		inname = self.openFileNameDialog() # name of model variables inputs file
 		
 		# open the file
@@ -94,7 +94,7 @@ class PyCHAM(QWidget):
 		# check on whether correct number of inputs supplied
 		input_len = 60
 		if len(in_list) != input_len:
-			print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list))))
+			print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list)) + ', please see the README file for guidance'))
 			sys.exit()
 			
 		for i in range(len(in_list)):
@@ -401,8 +401,8 @@ class PyCHAM(QWidget):
 					act_w = [float(i) for i in (value.split(','))]
 					
 			if key == 'pconct': # seed particles input times (s)
-				if (value.strip()) == ['']:
-					pconct = []
+				if (value.strip()).split(';') == ['']:
+					pconct = np.zeros((1,1))
 				else:
 					# keep track of number of times given
 					time_count = 1
@@ -415,7 +415,7 @@ class PyCHAM(QWidget):
 					
 			if key == 'pconc': # seed particle number concentrations (#/cc)
 				if (value.strip()).split(',')==['']:
-					pconc = []
+					pconc = np.zeros((1,1))
 				else:
 					# keep track of number of times given
 					time_count = 1
@@ -451,7 +451,7 @@ class PyCHAM(QWidget):
 					
 			if key == 'mean_rad': # seed particle mean radius (um)
 				if (value.strip()).split(',')==['']:
-					mean_rad = np.zeros((1,1))
+					mean_rad = np.zeros((1, 1))
 					mean_rad[0, 0] = -1.0e6
 				else:
 					# keep track of number of times given
@@ -465,7 +465,8 @@ class PyCHAM(QWidget):
 			
 			if key == 'std':
 				if value.split(',')==['\n']:
-					std = float(1.1)
+					std = np.zeros((1, 1))
+					std[0, 0] = 1.1
 				else:
 					# keep track of number of times given
 					time_count = 1
@@ -570,9 +571,10 @@ class PyCHAM(QWidget):
 			print('Notice, since no size bins detected in Model Variables .txt file, pconc variable will be set to empty (even if values supplied)')
 			pconc = []
 		
-		if max(pconct.shape) != pconc.shape[1]: # pconct should have dimensions 1, number of times pconc given for
-			print('Error: number of times given for pconct input variable in model variables input file does not match number of times particle number concentration given for in the pconc input variable in the same file.  Please see README for guidance.')
-			sys.exit()
+		if (pconct.shape[0]!=0): # if input given pconct will not be empty
+			if max(pconct.shape) != pconc.shape[1]: # pconct should have dimensions 1, number of times pconc given for
+				print('Error: number of times given for pconct input variable in model variables input file does not match number of times particle number concentration given for in the pconc input variable in the same file.  Please see README for guidance.')
+				sys.exit()
 		# components with constant influx for set periods of time
 		if len(Cinfl)>0:
 			if len(const_infl)!=(Cinfl.shape[0]):

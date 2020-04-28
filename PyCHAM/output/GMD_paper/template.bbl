@@ -1,4 +1,4 @@
-\begin{thebibliography}{61}
+\begin{thebibliography}{63}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{{\tt #1}}
 \providecommand{\urlprefix}{URL }
@@ -164,6 +164,13 @@ Kurten, A., Li, C., Bianchi, F., Curtius, J., Dias, A., Donahue, N., Duplissy,
 Li, D., Chen, D., Liu, F., , and Wang, W.: Role of glycine on sulfuric
   acid-ammonia clusters formation: Transporter or participator, J. Environ.
   Sci., 89, 125--135, \doi{10.1016/j.jes.2019.10.009}, 2020.
+
+\bibitem[{Lowe et~al.({2009})Lowe, Topping, and McFiggans}]{Lowe2009}
+Lowe, D., Topping, D., and McFiggans, G.: {Modelling multi-phase halogen
+  chemistry in the remote marine boundary layer: investigation of the influence
+  of aerosol size resolution on predicted gas- and condensed-phase chemistry},
+  {ATMOSPHERIC CHEMISTRY AND PHYSICS}, {9}, {4559--4573},
+  \doi{{10.5194/acp-9-4559-2009}}, {2009}.
 
 \bibitem[{Matsunaga and Ziemann(2010)}]{Matsunaga2010}
 Matsunaga, A. and Ziemann, P.: Gas-Wall Partitioning of Organic Compounds in a
@@ -342,6 +349,11 @@ Topping, D., Barley, M., Bane, M.~K., Higham, N., Aumont, B., Dingle, N., and
   molecular property prediction and atmospheric aerosol calculations,
   Geoscientific Model Development, 9, 899--914, \doi{10.5194/gmd-9-899-2016},
   \urlprefix\url{https://www.geosci-model-dev.net/9/899/2016/}, 2016.
+
+\bibitem[{Topping et~al.(2018)Topping, Connolly, and Reid}]{Topping2018}
+Topping, D., Connolly, P., and Reid, J.: PyBOX: An automated box-model
+  generator for atmospheric chemistry and aerosol simulations, The Journal of
+  Open Source Software, 3(28), \doi{10.21105/joss.00755}, 2018.
 
 \bibitem[{UNFCCC(2018)}]{UNFCCC2018}
 UNFCCC: Paris Agreement,

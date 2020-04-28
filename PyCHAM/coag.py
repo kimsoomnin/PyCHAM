@@ -522,6 +522,8 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 		# through coagulation, Eq. 15.8 with production term removed
 		num_lost =  num_partj[0, sbi] - num_partj[0, sbi]/(1.0+tint*((Beta[sbi, :]*volind*num_partj[0, :]).sum()))
 		# molecular concentration represented by this loss
+		# note that Eq. 11 in GMD paper is equal to the num_lost equation above and this
+		# equation combined
 		molec_loss = molec_j[:, sbi]*(num_lost/num_partj[0, sbi])
 		# new molecular concentration in sbi
 		molec_k[:, sbi] = molec_k[:, sbi]+(molec_contr-molec_loss)

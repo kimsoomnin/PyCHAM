@@ -316,7 +316,12 @@ def run(testf):
 	# -----------------------------------------------------------------------------------
 	# gas-phase concentrations
 	
+	if num_sb == 1: # no particle size bins, just wall
+			fig, (ax1) = plt.subplots(1, 1, figsize=(14, 7))
+			
 	for i in range(len(y_indx_plot)):
+	
+	
 		ax1.semilogy(t_array/3600, y[:, y_indx_plot[i]], '+',linewidth=4.0, 
 					label=str(str(Comp0[i])+' (sim)'))
 		

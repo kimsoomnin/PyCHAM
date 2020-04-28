@@ -16,7 +16,7 @@ import ipdb
 # import results files, all used the limonene MCM PRAM sheme (limonene_MCM_PRAM.txt) 
 
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/limonene_output'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/limonene_output'
 
 # name of file where experiment constants saved
 fname = str(output_by_sim+'/model_and_component_constants')

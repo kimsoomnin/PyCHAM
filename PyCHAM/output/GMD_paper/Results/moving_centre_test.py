@@ -160,7 +160,7 @@ Jacob_x = np.array((0.1, 0.11, 0.2, 0.28, 0.4, 0.41, 16.0, 16.1, 20.0, 21.0, 22.
 Jacob_y = np.array((0.4, 0.4, 1.25, 110.0, 300.0, 1.0e-10, 1.0e-10, 3.0e7, 2.0e6, 3.0e5, 4.0e5, 1.1e4, 1.1e3, 2.0, 0.3))
 
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_Gitw/PyCHAM/output/empty_chem/test_31815_coag_100diss_100dens_200p00g'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/mov_cen_output/empty_chem/test_31815_coag_100diss_100dens_200p00g'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -199,26 +199,26 @@ dv0 = dV2p[0,:]/dDp2p # initial time with two-point moving average
 dv2p = dV2p[-1,:]/dDp2p # final time step
 
 # create figure to plot results
-fig, (ax0, ax1) = plt.subplots(2, 1, figsize=(12,6))
+fig, (ax0, ax1) = plt.subplots(2, 1, figsize=(10, 6.5))
 ax1.loglog((sbb*2.0)[1:-1], dv0, '-', label='Initial')
 ax1.loglog(Jacob_x, Jacob_y, '--', label='Jacobson (2005) Fig. 13.4')
 ax1.loglog((sbb*2.0)[1:-1], dv2p, '-.', label='Moving-centre, two-point moving average')
 
 # ax0.loglog((sbb*2.0)[1:-1], dv1, '+', label='Moving-centre, no averaging')
-ax1.set_xlabel(r'Particle diameter $\rm{(}\mathit{D}\rm{_p, \, \mu m})$', fontsize=12)
-ax1.set_ylabel(r'd$\nu$ ($\rm{\mu m^{3}\, cm^{-3}})/dlog_{10}{\mathit{D}\rm_{p}}$', fontsize=12)
+ax1.set_xlabel(r'Particle diameter $\rm{(}\mathit{D}\rm{_p, \, \mu m})$', fontsize=14)
+ax1.set_ylabel(r'd$\nu$ ($\rm{\mu m^{3}\, cm^{-3}})/dlog_{10}{\mathit{D}\rm_{p}}$', fontsize=14)
 ax1.set_ylim([0.1, 30000000.0])
 ax1.set_xlim([0.1, 100.0])
-ax1.text(x=0.068, y=2.0e7, s='b)', size=12)
-ax1.yaxis.set_tick_params(size=12)
-ax1.xaxis.set_tick_params(size=12)
-ax1.legend()
+ax1.text(x=0.068, y=2.5e7, s='b)', size=14)
+ax1.yaxis.set_tick_params(size=14)
+ax1.xaxis.set_tick_params(size=14)
+ax1.legend(fontsize=12)
 
 # ----------------------------------------------------------------------------------------
 # Zhang et al. (1999) plot
 
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_Gitw/PyCHAM/output/empty_chem/test_Zhang_60sb_273.15K'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/mov_cen_output/empty_chem/test_Zhang_60sb_273.15K'
 
 
 # withdraw times (s)
@@ -263,7 +263,7 @@ dDp3p = (dDp[0:-2]+dDp[1:-1]+dDp[2::])
 dV3p = dV[:,0:-2]+dV[:,1:-1]+dV[:,2::]
 dv3p = dV3p[-1,:]/dDp3p # final time step
 
-ax0.semilogx((sbb*2.0)[1:-1], dv0, '-', label='Initial')
+ax0.semilogx((sbb*2.0)[1:-1], dv0, '-', label = 'Initial')
 # plt.semilogx((x*2.0)[-1, :], dv1, '-o', label='Moving-centre, one-point moving average')
 # plt.semilogx((x*2.0)[-1, 1:-1], dv3p, '-.', label='Moving-centre, three-point moving average')
 
@@ -335,12 +335,12 @@ ax0.semilogx(x_output*2.0, Vperbin/(np.log10(rad_bounds[1::]*2.0)-np.log10(rad_b
 # ----------------------------------------------------------------------------------------
 
 ax0.semilogx((sbb*2.0)[1:-1], dv2p, '-.', label='Moving-centre, two-point moving average')
-ax0.set_ylabel(r'd$\nu$ ($\rm{\mu m^{3}\, cm^{-3}})/dlog_{10}{\mathit{D}\rm_{p}}$', fontsize=12)
+ax0.set_ylabel(r'd$\nu$ ($\rm{\mu m^{3}\, cm^{-3}})/dlog_{10}{\mathit{D}\rm_{p}}$', fontsize=14)
 ax0.set_xlim([1.0e-3, 1.0e1])
-ax0.text(x=6.0e-4, y=31, s='a)', size=12)
-ax0.yaxis.set_tick_params(size=12)
-ax0.xaxis.set_tick_params(size=12)
-ax0.legend()
+ax0.text(x=6.0e-4, y=32, s='a)', size=14)
+ax0.yaxis.set_tick_params(size=14)
+ax0.xaxis.set_tick_params(size=14)
+ax0.legend(fontsize=12)
 
 fig.savefig('mov_cen_test.png')
 

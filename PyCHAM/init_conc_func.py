@@ -153,8 +153,9 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH, M, N2,
 	
 	# if seed particles present and made of a 'core' material
 	if sum(sum(pconc))>0.0 and seed_name=='core':
-		# append core gas-phase concentration (molecules/cc (air)) and molecular weight 
-		# (g/mol) (needs to have a 1 length in second dimension for the kimt calculations)
+		# append core gas-phase concentration (molecules/cc (air)) and molecular 
+		# weight (g/mol) (needs to have a 1 length in second dimension for the kimt 
+		# calculations)
 		y = np.append(y, 1.0e-40) 
 		y_mw = (np.append(y_mw, seed_mw)).reshape(-1, 1)
 		corei = num_speci # index of core component

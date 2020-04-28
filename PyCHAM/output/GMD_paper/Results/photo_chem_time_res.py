@@ -162,12 +162,12 @@ compnum = 0 # count on components
 fig, (ax0) = plt.subplots(1, 1, figsize=(8,6))
 
 
-ax0.plot(t_array600/3600.0, (y600[:,312]-y60[0::10,312])/np.max(np.abs(y60[0::10,312])), label=r'$\mathrm{\alpha}$-pinene $\mathrm{6x10^{2}\, s}$')
-ax0.plot(t_array6000[0:-1]/3600.0, (y6000[0:-1,312]-y60[0::100,312])/np.max(np.abs(y60[0::100,312])), label=r'$\mathrm{\alpha}$-pinene $\mathrm{6x10^{3}\, s}$')
-ax0.plot(t_array600/3600.0, (y600[:,1]-y60[0::10,1])/np.max(np.abs(y60[0::10,1])), label=r'$\mathrm{O_3}\, \mathrm{6x10^{2}\, s}$')
-ax0.plot(t_array6000[0:-1]/3600.0, (y6000[0:-1,1]-y60[0::100,1])/np.max(np.abs(y60[0::100,1])), label=r'$\mathrm{O_3}\, \mathrm{6x10^{3}\, s}$')
-ax0.plot(t_array600/3600.0, (y600[:,7]-y60[0::10,7])/np.max(np.abs(y60[0::10,7])), label=r'$\mathrm{OH}\, \mathrm{6x10^{2}\, s}$')
-ax0.plot(t_array6000[0:-1]/3600.0, (y6000[0:-1,7]-y60[0::100,7])/np.max(np.abs(y60[0::100,7])), label=r'$\mathrm{OH}\, \mathrm{6x10^{2}\, s}$')
+ax0.plot(t_array600/3600.0, (y600[:,312]-y60[0::10,312])/np.max(np.abs(y60[0::10,312])), '-k', label=r'$\mathrm{\alpha}$-pinene - $\mathrm{6x10^{2}\, s}$')
+ax0.plot(t_array6000[0:-1]/3600.0, (y6000[0:-1,312]-y60[0::100,312])/np.max(np.abs(y60[0::100,312])), '--k' , label=r'$\mathrm{\alpha}$-pinene - $\mathrm{6x10^{3}\, s}$')
+ax0.plot(t_array600/3600.0, (y600[:,1]-y60[0::10,1])/np.max(np.abs(y60[0::10,1])), '-r', label=r'$\mathrm{O_3}$ - $\mathrm{6x10^{2}\, s}$')
+ax0.plot(t_array6000[0:-1]/3600.0, (y6000[0:-1,1]-y60[0::100,1])/np.max(np.abs(y60[0::100,1])), '--r', label=r'$\mathrm{O_3}$ - $\mathrm{6x10^{3}\, s}$')
+ax0.plot(t_array600/3600.0, (y600[:,7]-y60[0::10,7])/np.max(np.abs(y60[0::10,7])), '-b', label=r'$\mathrm{OH}$ - $\mathrm{6x10^{2}\, s}$')
+ax0.plot(t_array6000[0:-1]/3600.0, (y6000[0:-1,7]-y60[0::100,7])/np.max(np.abs(y60[0::100,7])), '--b', label=r'$\mathrm{OH}$ - $\mathrm{6x10^{3}\, s}$')
 
 ax0.set_ylabel(r'Deviation (%)', fontsize=14)
 ax0.set_xlabel(r'Time of day (hours)', fontsize=14)

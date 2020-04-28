@@ -293,7 +293,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		# size bins don't change by more than one size bin (given by moving centre)
 		# note, need to have rstoi and pstoi multiplication in the gas-phase reaction part
 		while redt == 1:
-			print('cumulative time (s)', sumt, lightm)
+			print('cumulative time through simulation (s)', sumt)
 
 			# numba compiler to convert to machine code
 			@jit(f8[:](f8, f8[:]), nopython=True)
