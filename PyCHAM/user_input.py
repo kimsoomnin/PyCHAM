@@ -1,4 +1,6 @@
 '''module collects and passes user input information to front.py'''
+# this module opens the pickle file of model variables stored by the PyCHAM module
+# and is called by the front module to pass them
 
 import importlib
 import numpy as np
@@ -38,7 +40,7 @@ def run(source, testf):
 			const_comp, const_infl, Cinfl, act_wi, act_w, seed_mw, 
 			umansysprop_update, core_dens, p_char, e_field, 
 			const_infl_t, chem_scheme_markers, int_tol, photo_par_file, 
-			dil_fac, pconct] = pickle.load(pk)	
+			dil_fac, pconct, accom_coeff_ind, accom_coeff_user] = pickle.load(pk)	
 
 			
 			# convert chamber surface area (m2) to spherical equivalent radius (m)
@@ -72,7 +74,8 @@ def run(source, testf):
 		std, mean_rad, core_diss, light_stat, light_time, kgwt, 0, dydt_trak, DayOfYear, 
 		space_mode, Ct, Compt, injectt, seed_name, const_comp, const_infl, Cinfl, act_wi, 
 		act_w, seed_mw, umansysprop_update, core_dens, p_char, e_field, const_infl_t, 
-		chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct)
+		chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, accom_coeff_ind, 
+		accom_coeff_user)
 		
 	if source == 1:
 		return(fname, resfname, y_indx_plot, Comp0)

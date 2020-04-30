@@ -434,6 +434,27 @@ act_wi = index of components with activity coefficients for the wall stated in a
 act_w = activity coefficients for the wall (dimensionless) of components with indices 
 		given in act_wi variable above
 
+accom_coeff_comp = names of components (corresponding to names in chemical scheme file) 
+					with accommodation coefficients set by the user in the 
+					accom_coeff_user variable below, therefore length must equal that 
+					of accom_coeff_user.  Multiple names must be separated by a comma.
+					For any components not mentioned in accom_coeff_comp, accommodation 
+					coefficient defaults to 1.0
+
+accom_coeff_user = accommodation coefficients (dimensionless) of the components with names
+					given in the variable accom_coeff_comp variable, therefore number
+					of accommodation coefficients must equal number of names, with 
+					multiple coefficients separated by a comma.  Can be a function of
+					radius (m), in which case use the variable name radius, e.g:
+					for NO2 and N2O5 with accommodation coefficients set to 1.0 and 
+					6.09e-08/Rp, respectively, where Rp is radius of particle at a given 
+					time (m), the inputs are:
+					accom_coeff_comp = NO2, N2O5
+					accom_coeff_user = 1.0, 6.09e-08/radius
+					
+					For any components not mentioned in accom_coeff_comp, accommodation 
+					coefficient defaults to 1.0
+
 pconct = Times (seconds) at which seed particles of number concentration given in pconc 
 		are introduced to the chamber.  If introduced at multiple times, separate times by
 		a semicolon.

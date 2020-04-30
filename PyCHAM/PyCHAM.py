@@ -62,7 +62,7 @@ class PyCHAM(QWidget):
 	def on_click1(self):
 		
 		dirpath = os.getcwd() # get current path
-		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/AtChem2_apinene_scheme.txt' # hard-code chemical scheme input
+		fname = dirpath+'/PyCHAM/inputs/limonene_MCM_PRAM.txt' # hard-code chemical scheme input
 # 		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
 		with open(dirpath+'/fname.txt','w') as f:
 			f.write(fname)
@@ -81,7 +81,7 @@ class PyCHAM(QWidget):
 	@pyqtSlot()
 	def on_click3(self):
 		dirpath = os.getcwd() # get current path
-		inname = dirpath+'/PyCHAM//output/GMD_paper/Results/Photo_chem_inputs_loNOx.txt' # hard-code model variables input
+		inname = dirpath+'/PyCHAM/inputs/limonene_inputs_test.txt' # hard-code model variables input
 # 		inname = self.openFileNameDialog() # name of model variables inputs file
 		
 		# open the file
@@ -92,7 +92,7 @@ class PyCHAM(QWidget):
 		inputs.close()
 		
 		# check on whether correct number of inputs supplied
-		input_len = 60
+		input_len = 62
 		if len(in_list) != input_len:
 			print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list)) + ', please see the README file for guidance'))
 			sys.exit()
@@ -551,6 +551,20 @@ class PyCHAM(QWidget):
 					dil_fac = float(0.0)
 				else:
 					dil_fac = float(value)
+			# chemical scheme names of components with accommodation coefficient set by 
+			# user
+			if key == 'accom_coeff_comp':
+				if (value.strip()).split(',')==['']:
+					accom_coeff_ind = [] # empty list, must be list for kimt_prep
+				else: # fill list (must be list for kimt_prep)
+					accom_coeff_ind = [i for i in (((value.strip()).split(',')))]
+			# accommodation coefficient values or functions set by user
+			if key == 'accom_coeff_user':
+				if (value.strip()).split(',')==['']:
+					accom_coeff_user = [] # empty list, must be list for kimt_prep
+				else: # fill list (must be list for kimt_prep)
+					accom_coeff_user = [i for i in (((value.strip()).split(',')))] 		
+			
 		# --------------------------------------------------------------------------------
 		# checks on inputs
 		
@@ -612,6 +626,9 @@ class PyCHAM(QWidget):
 			else:
 				print('Error: path name given for the act_flux_path input in the model variables input file has not been found, please check README for guidance')
 				sys.exit()
+		if len(accom_coeff_ind)!=len(accom_coeff_user):
+			print('Error: the variables accom_coeff_ind and accom_coeff_user, both set in the model variables input file, have different lengths, but they must be the same length, please check README for guidance')
+			sys.exit()		
 		
 		# --------------------------------------------------------------------------------
 		# get names of chemical scheme and xml files
@@ -641,7 +658,7 @@ class PyCHAM(QWidget):
 		kgwt, dydt_trak, space_mode, Ct, Compt, injectt, seed_name, const_comp,
 		const_infl, Cinfl, act_wi, act_w, seed_mw, umansysprop_update, seed_dens, p_char, 
 		e_field, const_infl_t, chem_scheme_markers, int_tol, photo_par_file, dil_fac, 
-		pconct]
+		pconct, accom_coeff_ind, accom_coeff_user]
 		
 		if os.path.isfile(dirpath+'/testf.txt'):
 			print('Model input buttons work successfully')

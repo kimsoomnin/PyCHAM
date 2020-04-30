@@ -1,4 +1,4 @@
-'''Code to plot results for limonene oxidation example'''
+'''Code to plot results for limonene oxidation example, terminal needs to be in the Results folder of GMD_paper to work'''
 # aim is to exemplify the coupled integration of gas-phase chemistry and partitioning to
 # particles and wall
 
@@ -10,13 +10,14 @@ from matplotlib.colors import LinearSegmentedColormap # for customised colormap
 from matplotlib.ticker import MaxNLocator
 from matplotlib.colors import BoundaryNorm
 import matplotlib.ticker as ticker # set colormap tick labels to standard notation
-import ipdb
+import os
 
 # ----------------------------------------------------------------------------------------
 # import results files, all used the limonene MCM PRAM sheme (limonene_MCM_PRAM.txt) 
 
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/limonene_output'
+cwd = cwd = os.getcwd() # address of current working directory
+output_by_sim = str(cwd+'/limonene_output')
 
 # name of file where experiment constants saved
 fname = str(output_by_sim+'/model_and_component_constants')
@@ -175,6 +176,9 @@ dlog10D = np.repeat(dlog10D, N.shape[0], axis=0)
 dNdlog10D = np.zeros((N.shape[0], N.shape[1]))
 dNdlog10D = N/dlog10D
 
+# two-size bin moving average
+dNdlog10D[:, 1::] = (dNdlog10D[:, 0:-1]+dNdlog10D[:, 1::])/2.0
+
 # transpose number concentration results, so time on x axis and diameter on y
 dNdlog10D = dNdlog10D.transpose()
 
@@ -217,6 +221,11 @@ cb.ax.tick_params(labelsize=14)
 cb.set_label('dN/dlog10(D) $\mathrm{(cm^{-3})}$', size=12, rotation=270, labelpad=20)
 
 ax1.text(x=(t_array[0]/3600.0), y=(sbb[-1]*2*1e3)*1.05, s='b)', size=12)
+# set line and label denoting input of components
+ax1.plot([1.5, 1.5], [0.0, 500.0], color='white', linewidth=1, linestyle='dashed')
+ax1.text(x=1.2, y=40, s='injection 1', size=12, rotation=90, color='white')
+ax1.plot([4.0, 4.0], [0.0, 500.0], color='white', linewidth=1, linestyle='dashed')
+ax1.text(x=3.7, y=200, s='injection 2', size=12, rotation=90, color='white')
 
 # ----------------------------------------------------------------------------------------
 # organic aerosol mass concentration in particles (ug/m3)

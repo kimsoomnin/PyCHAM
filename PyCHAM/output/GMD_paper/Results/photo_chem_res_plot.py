@@ -1,18 +1,20 @@
 '''code to plot results from AtChem2 and compare against PyCHAM results'''
-import numpy as np
-import sys
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
 
 # introduction
 # aim is to calculate deviation of PyCHAM photochemistry output from AtChem2
 # use the AtChem2_apinene_scheme.txt in the Results folder of the GMD_paper for input
 # use the xml file from the PyCHAM inputs folder
-# use the Photo_chem_inputs.txt of the GMD_paper/Results folder, where for the low NOx
-# case, initial concentration of NO2 is set to 0 ppb whilst for the high NOx case it's set
-# to 9.8 ppb
+# use the Photo_chem_inputs_hiNOx.txt and Photo_chem_inputs_loNOx.txt of the 
+# GMD_paper/Results folder, for the high and low NOx simulations, respectively, where for 
+# the low NOx case, initial concentration of NO2 is set to 0 ppb whilst for the high NOx 
+# case it's set to 9.8 ppb
 # important that exactly the same chemical scheme as used in the AtChem2 simulation is
 # used, this saved as AtChem2_apinene_scheme.txt in the same folder as this file
+
+import numpy as np
+import sys
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 
 # ----------------------------------------------------------------------------------------
 # AtChem2 part

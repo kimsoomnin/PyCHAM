@@ -1,4 +1,6 @@
 '''module to estimate the particle and wall partitioning coefficient'''
+# the kimt_calc module is called at the start of the model loop time interval to update
+# the mass transfer coefficient of gases to particles
 
 import numpy as np
 from part_prop import part_prop
@@ -16,11 +18,10 @@ def kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw, surfT, R_gas, TEMP, 
 	# mfp - mean free path of gas molecules (m) (num_speci, 1)
 	# DStar_org - gas molecule diffusion coefficient (m2/s) (num_speci, 1)
 	# radius - particle radius (m)
-	# Psat - vapour pressures (molecules/cc (air))
+	# Psat - liquid-phase saturation vapour pressures of components (molecules/cc (air))
 	# surfT - surface tension (g/s2==mN/m==dyn/cm)
 	# y_dens - density of components (kg/m3)
 	# therm_sp - thermal speed of components (m/s) (num_speci, 1)
-	# nuccor - Fuchs-Sutugin correction for newly nucleating particles
 	# H2Oi - water index (integer)
 	# ------------------------------------------------------------------------------------
 	
@@ -30,6 +31,12 @@ def kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw, surfT, R_gas, TEMP, 
 	
 	# Knudsen number (dimensionless)
 	Kn = np.repeat(mfp, num_sb-1, 1)/np.repeat(radius, num_speci, 0)
+
+	# update accommodation coefficients if necessary
+	# note, using __import__ rather than import allows opening in run time, thereby using
+	# updated module
+	accom_coeff_calc = __import__('accom_coeff_calc')
+	accom_coeff = accom_coeff_calc.accom_coeff_func(accom_coeff, radius)
 
 	# Non-continuum regime correction 
     # calculate a correction factor according to the continuum versus non-continuum 
@@ -42,8 +49,6 @@ def kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw, surfT, R_gas, TEMP, 
 	Inverse_Kn = np.power(Kn, -1.0E0)
 	correct_1 = (1.33E0+0.71*Inverse_Kn)/(1.0+Inverse_Kn)
 	correct_2 = (4.0E0*(1.0E0-accom_coeff))/(3.0E0*accom_coeff)
-	# repeat over particle bins
-	correct_2 = np.repeat(correct_2.reshape(num_speci, 1), num_sb-1, 1)
 	correct_3 = 1.0E0+(correct_1+correct_2)*Kn
 	correction = np.power(correct_3, -1.0E0)
 
