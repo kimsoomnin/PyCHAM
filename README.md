@@ -138,7 +138,7 @@ Unit tests for PyCHAM modules can be found in the PyCHAM/Unit_Testing folder in 
 
 Integration testing can be completed using the '.travis.yml' and 'PyCHAM_CI_test.py' files at the [Travis CI website](https://travis-ci.org).
 
-The example run output is saved in output/Example_Run/Example_output in the Github repository.  To reproduce this, use the inputs/Example_Run.txt for the chemical scheme, inputs/Example_Run_xml.xml for the xml file and inputs/Example_Run_inputs.txt for the model inputs.  Note that the example output may vary between releases so check correspondence.
+Example run output is saved in the GMD_paper/Results folder.  To reproduce this see the notes in the plotting scripts of the GMD_paper/Results folder.  Note that the example output may vary between releases so check correspondence.
 
 ## Inputs
 
