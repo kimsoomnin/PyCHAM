@@ -328,12 +328,9 @@ def run(testf):
 		ish = y[:, y_indx_plot[i]]>0.0 # prevent log10 of zero
 		
 		if i == 0:
-			miny = min(np.log10(y[ish, y_indx_plot[i]]))
-			maxy = max(np.log10(y[ish, y_indx_plot[i]]))
-		if min(np.log10(y[ish, y_indx_plot[i]]))<miny:
-			miny = min(np.log10(y[ish, y_indx_plot[i]]))
+			maxy = max((y[ish, y_indx_plot[i]]))
 		if max(np.log10(y[ish, y_indx_plot[i]]))>maxy:
-			maxy = max(np.log10(y[ish, y_indx_plot[i]]))
+			maxy = max((y[ish, y_indx_plot[i]]))
 			
 	ax1.set_ylabel(r'Gas-phase concentration (ppb)', fontsize=14)
 	ax1.set_xlabel(r'Time through simulation (hours)', fontsize=14)
