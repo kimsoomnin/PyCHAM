@@ -399,7 +399,20 @@ class PyCHAM(QWidget):
 					act_w = np.empty(0)
 				else:
 					act_w = [float(i) for i in (value.split(','))]
-					
+			# chemical scheme names of components with accommodation coefficient set by 
+			# user
+			if key == 'accom_coeff_comp':
+				if (value.strip()).split(',')==['']:
+					accom_coeff_ind = [] # empty list, must be list for kimt_prep
+				else: # fill list (must be list for kimt_prep)
+					accom_coeff_ind = [i for i in (((value.strip()).split(',')))]
+			# accommodation coefficient values or functions set by user
+			if key == 'accom_coeff_user':
+				if (value.strip()).split(',')==['']:
+					accom_coeff_user = [] # empty list, must be list for kimt_prep
+				else: # fill list (must be list for kimt_prep)
+					accom_coeff_user = [i for i in (((value.strip()).split(',')))]
+			
 			if key == 'pconct': # seed particles input times (s)
 				if (value.strip()).split(';') == ['']:
 					pconct = np.zeros((1,1))
@@ -551,19 +564,7 @@ class PyCHAM(QWidget):
 					dil_fac = float(0.0)
 				else:
 					dil_fac = float(value)
-			# chemical scheme names of components with accommodation coefficient set by 
-			# user
-			if key == 'accom_coeff_comp':
-				if (value.strip()).split(',')==['']:
-					accom_coeff_ind = [] # empty list, must be list for kimt_prep
-				else: # fill list (must be list for kimt_prep)
-					accom_coeff_ind = [i for i in (((value.strip()).split(',')))]
-			# accommodation coefficient values or functions set by user
-			if key == 'accom_coeff_user':
-				if (value.strip()).split(',')==['']:
-					accom_coeff_user = [] # empty list, must be list for kimt_prep
-				else: # fill list (must be list for kimt_prep)
-					accom_coeff_user = [i for i in (((value.strip()).split(',')))] 		
+			 		
 			
 		# --------------------------------------------------------------------------------
 		# checks on inputs

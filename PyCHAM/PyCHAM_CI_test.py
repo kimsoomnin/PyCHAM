@@ -31,7 +31,7 @@ inputs = open(inname, mode='r')
 in_list = inputs.readlines()
 inputs.close()
 
-input_len = 60
+input_len = 62
 
 if len(in_list) != input_len:
 	print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list))))
@@ -338,6 +338,19 @@ for i in range(len(in_list)):
 			act_w = np.empty(0)
 		else:
 			act_w = [float(i) for i in (value.split(','))]
+	# chemical scheme names of components with accommodation coefficient set by 
+	# user
+	if key == 'accom_coeff_comp':
+		if (value.strip()).split(',')==['']:
+			accom_coeff_ind = [] # empty list, must be list for kimt_prep
+		else: # fill list (must be list for kimt_prep)
+			accom_coeff_ind = [i for i in (((value.strip()).split(',')))]
+	# accommodation coefficient values or functions set by user
+	if key == 'accom_coeff_user':
+		if (value.strip()).split(',')==['']:
+			accom_coeff_user = [] # empty list, must be list for kimt_prep
+		else: # fill list (must be list for kimt_prep)
+			accom_coeff_user = [i for i in (((value.strip()).split(',')))]
 	if key == 'pconct': # seed particles input times (s)
 		if (value.strip()) == ['']:
 			pconct = []
@@ -549,7 +562,8 @@ inflectDp, pwl_xpre, pwl_xpro, inflectk, Rader, xmlname, C0, Comp0,
 vol_Comp, volP, pconc, std, mean_rad, core_diss, light_stat, light_time,
 kgwt, dydt_trak, space_mode, Ct, Compt, injectt, seed_name, const_comp,
 const_infl, Cinfl, act_wi, act_w, seed_mw, umansysprop_update, seed_dens, p_char, 
-e_field, const_infl_t, chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct]
+e_field, const_infl_t, chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, 
+accom_coeff_ind, accom_coeff_user]
 	
 if os.path.isfile(dirpath+'/testf.txt'):
 	print('Model input buttons work successfully')
