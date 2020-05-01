@@ -381,8 +381,8 @@ const_comp = Name of component with continuous gas-phase concentration inside ch
 			Defaults to nothing if left empty.  To specifically account for constant
 			influx, see const_infl variable below.
 
-const_infl = Name of component with continuous gas-phase influx to chamber. Note, this is 
-			case sensitive, with the case matching that in the xml file.  Defaults to 
+const_infl = Name of component(s) with continuous gas-phase influx to chamber. Note, this 
+			is case sensitive, with the case matching that in the xml file.  Defaults to 
 			nothing if left empty.  For constant gas-phase concentration see const_comp
 			variable above.  Should be one dimensional array covering all components.  For 
 			example, if component A has constant influx of K ppb/s from 0 s to 10 s and 
@@ -419,29 +419,30 @@ Cinfl = Rate of gas-phase influx of components with constant influx (stated in t
 		therefore, the semicolon in Cinfl is used to distiniguish the influxes of
 		different components
 
-vol_Comp = names of components with vapour pressures to be manually assigned from volP, 
+vol_Comp = Names of components with vapour pressures to be manually assigned from volP, 
 		names must correspond to those in the chemical scheme file and if more than one, 
 		separated by commas.  Can be left empty, which is the default.
 
-volP = vapour pressures (Pa) of components with names given in vol_Comp variable above,
+volP = Vapour pressures (Pa) of components with names given in vol_Comp variable above,
 		where one vapour pressure must be stated for each component named in vol_Comp
 
-act_wi = index of components with activity coefficients for the wall stated in act_w 
-		variable below (multiple indices allowed, 
-		can be absolute or relative (if relative, please consider whether water or seed 
-		material will be included in components))
+act_comp = Names of components (names given in the chemical scheme) with activity 
+		coefficients stated in act_user 
+		variable below (if multiple names, separate with a comma).  Must have same length 
+		as act_user.
 		
-act_w = activity coefficients for the wall (dimensionless) of components with indices 
-		given in act_wi variable above
+act_user = Activity coefficients of components with names
+		given in act_comp variable above, if multiple values then separate with a comma.
+		Must have same length as act_comp.
 
-accom_coeff_comp = names of components (corresponding to names in chemical scheme file) 
+accom_coeff_comp = Names of components (corresponding to names in chemical scheme file) 
 					with accommodation coefficients set by the user in the 
 					accom_coeff_user variable below, therefore length must equal that 
 					of accom_coeff_user.  Multiple names must be separated by a comma.
 					For any components not mentioned in accom_coeff_comp, accommodation 
 					coefficient defaults to 1.0
 
-accom_coeff_user = accommodation coefficients (dimensionless) of the components with names
+accom_coeff_user = Accommodation coefficients (dimensionless) of the components with names
 					given in the variable accom_coeff_comp variable, therefore number
 					of accommodation coefficients must equal number of names, with 
 					multiple coefficients separated by a comma.  Can be a function of
@@ -465,10 +466,10 @@ pconct = Times (seconds) at which seed particles of number concentration given i
 		pconc = 10, 5; 6, 0
 		and the pconct input is
 		pconct = 0; 120
-		and the Number_size_bins input is
-		Number_size_bins = 1
+		and the number_size_bins input is
+		number_size_bins = 1
 
-pconc = Either total particle concentration at start of experiment, in which case should 
+pconc = Either total particle concentration, in which case should 
 		be a scalar, or particle concentration per size bin, in which case length should 
 		equal number of particle size bins (# particles/cc (air)).  If an array of 
 		numbers, then separate numbers by a comma.  If a scalar, the particles will be 
@@ -483,8 +484,8 @@ pconc = Either total particle concentration at start of experiment, in which cas
 		pconc = 10, 5; 6, 0
 		and the pconct input is
 		pconct = 0; 120
-		and the Number_size_bins input is
-		Number_size_bins = 1
+		and the number_size_bins input is
+		number_size_bins = 1
 
 seed_name = name of component comprising the seed particles, can either be core for a 
 			component not present in the equation file, or a name from the equation list
@@ -528,13 +529,15 @@ core_diss = core dissociation constant (for seed component) (dimensionless) (1),
 light_time = times (s) for light status, corresponding to the elements of light_status
 				(below), if empty defaults to lights off for whole experiment.
 				Use this setting regardless of whether light
-				is natural or artificial (chamber lamps).  The setting for a particular 
-				time is recognised when the time step will surpass the time given in 
-				light_time.
-				For example, for a 4 hour 
-				experiment, with lights on for first half and lights off for second, use:
+				is natural or artificial (chamber lamps).
+				For example, for a 4 hour experiment, with lights on for first half and 
+				lights off for second, use:
 				light_time = 0.0, 7200.0
 				light_status = 1, 0
+				
+				If light_time doesn't include the experiment start (0.0 s), default is
+				lights off at experiment start. 
+				
 
 light_status = 1 for lights on and 0 for lights off, with times given in light_time 
 				(above), if empty defaults to lights off for whole experiment.  Setting to
@@ -547,6 +550,8 @@ light_status = 1 for lights on and 0 for lights off, with times given in light_t
 				experiment, with lights on for first half and lights off for second, use:
 				light_time = 0.0, 7200.0
 				light_status = 1, 0
+				If status not given for the experiment start (0.0 s), default is
+				lights off at experiment start. 
 				
 				
 tracked_comp = name of component(s) to track rate of concentration change 

@@ -35,10 +35,10 @@ def run(testf):
 	pwl_xpro, inflectk, xmlname, init_conc, Comp0, Rader, vol_Comp, volP, 
 	pconc, std, mean_rad, core_diss, light_stat, light_time, kgwt, testm, 
 	dydt_trak, DayOfYear, space_mode, Ct, Compt, injectt, seed_name, 
-	const_comp, const_infl, Cinfl, act_wi, act_w, seed_mw, 
+	const_comp, const_infl, Cinfl, act_comp, act_user, seed_mw, 
 	umansysprop_update, core_dens, p_char, e_field, const_infl_t, 
 	chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, accom_coeff_ind, 
-	accom_coeff_user] = ui.run(0, testf)
+	accom_coeff_user, op_splt_step] = ui.run(0, testf)
 	
 	if testm == 1:
 		print('PyCHAM calls front fine, now returning to PyCHAM.py')
@@ -57,7 +57,7 @@ def run(testf):
 							TEMP, PInit, testf, RH, start_sim_time, lat, 
 							lon, act_flux_path, DayOfYear, chem_scheme_markers, 
 							photo_par_file)
-	
+
 	if testf==1:
 		print('eqn_parser.extract_mechanism called and returned fine')
 		print('calling init_conc_func')
@@ -79,9 +79,9 @@ def run(testf):
 		print('calling kimt_prep')
 	# set up partitioning variables
 	[DStar_org, mfp, accom_coeff, therm_sp, surfT, Cw, act_coeff] = kimt_prep(y_mw, TEMP, 
-												num_speci, testf, Cw, act_wi, act_w, 
-												accom_coeff_ind, accom_coeff_user, 
-												spec_namelist, num_sb)
+											num_speci, testf, Cw, act_comp, act_user, 
+											accom_coeff_ind, accom_coeff_user, 
+											spec_namelist, num_sb)
 
 	# volatility (molecules/cc (air)) and density (rho, kg/m3) of components
 	if testf==1:
@@ -130,7 +130,7 @@ def run(testf):
 				start_sim_time, lat, lon, act_flux_path, DayOfYear, Ct, injectt, inj_indx,
 				corei, const_compi, const_comp, const_infli, Cinfl, act_coeff, p_char, 
 				e_field, const_infl_t, int_tol, photo_par_file, Jlen, dil_fac, pconct,
-				lowersize, uppersize, mean_rad, std)
+				lowersize, uppersize, mean_rad, std, op_splt_step)
 				
 	
 	t2 = time.clock() # get wall clock time after call to solver

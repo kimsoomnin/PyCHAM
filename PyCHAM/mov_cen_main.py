@@ -5,7 +5,7 @@ import ipdb
 import scipy.constants as si
 
 def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0, MV, 
-				Psat, Cg, Cg0):
+				Psat, Cg, Cg0, bc_red):
 
 
 	# ---------------------------------------------------------------
@@ -35,6 +35,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 	# Psat - saturation vapour pressures (molecules/cm3 (air))
 	# Cg - new gas-phase concentration of components (molecules/cc (air))
 	# Cg0 - original gas-phase concentration of components (molecules/cc (air))
+	# bc_red - flag for time step reduction due to boundary conditions
 	# ---------------------------------------------------------------
 	# output:
 	
@@ -106,6 +107,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 		print('n0 = ', n0)
 		redt = 1
 		tnew = t/2.0 # new time for integration on next step (s)
+		bc_red = 0 # flag for time step reduction due to boundary conditions
 		
 		# prepare for output
 		if len(n0)>1:
@@ -115,7 +117,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 			n0 = np.zeros((1))
 			n0[0] = holder
 
-		return(np.squeeze(n0), np.squeeze(Vol0), C0, x, redt, t/2.0, tnew, Cg0)
+		return(np.squeeze(n0), np.squeeze(Vol0), C0, x, redt, t/2.0, tnew, Cg0, bc_red)
 	
 	# return if any volumes have moved up or down by more than one size bin
 	if (np.sum(Vnew[ind_moveup]>(s0[1::][ind_moveup2]))>0 or 
@@ -143,6 +145,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 		redt = 1
 			
 		tnew = t/2.0 # new time for integration on next step (s)
+		bc_red = 0 # flag for time step reduction due to boundary conditions
 		
 		# prepare for output
 		if len(n0)>1:
@@ -152,7 +155,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 			n0 = np.zeros((1))
 			n0[0] = holder
 
-		return(n0, np.squeeze(Vol0), C0, x, redt, t/2.0, tnew, Cg0)
+		return(n0, np.squeeze(Vol0), C0, x, redt, t/2.0, tnew, Cg0, bc_red)
 	
 	
 	# matrix of components and array of particle numbers that stay in same size bin
@@ -213,6 +216,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 	
 	# flag to show no reduction in time step needed
 	redt = 0
+
 	# if time is less than maximum integration time, then try increasing for the next
 	# integration step
 	if t<tmax and tinc_count<=0:
@@ -234,4 +238,4 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 		num_part_new[0] = holder
 		
 	return(num_part_new, Vsing, np.ravel(np.transpose(num_molec_new)), rad, 
-			redt, t, tnew, Cg)
+			redt, t, tnew, Cg, bc_red)

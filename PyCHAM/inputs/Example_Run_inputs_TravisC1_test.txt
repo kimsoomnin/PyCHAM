@@ -1,8 +1,9 @@
-Res_file_name = Example_output_Travis_CI
-Total_model_time = 60.0
-Time_step = 60.0
-Recording_time_step = 60.0
-Number_size_bins = 2
+res_file_name = Example_output_Travis_CI
+total_model_time = 60.0
+bc_time_step = 60.0
+op_spl_step = 60.0
+recording_time_step = 60.0
+number_size_bins = 2
 lower_part_size = 0.0
 upper_part_size = 8.0e-2
 space_mode = lin

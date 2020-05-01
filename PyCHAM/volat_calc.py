@@ -1,4 +1,10 @@
 '''module to estimate component volatilities and liquid densities'''
+
+# called/returned from/to the front.py module, this module is responsible for
+# setting key properties of components, including liquid-phase saturation vapour pressures
+# and liquid-phase densities.  It does this using either UManSysProp (default), or with
+# user settings
+
 import numpy as np
 import sys
 import os
@@ -100,7 +106,7 @@ def volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci, Psat_water, vol_
 			# index of component in list of components
 			vol_indx = spec_namelist.index(vol_Comp[i])
 			Psat[vol_indx, 0] = volP[i]
-
+	
 	Psat_Pa = np.zeros((len(Psat), 1)) # for storing vapour pressures in Pa (Pa)
 	Psat_Pa[:, 0] = Psat[:, 0]
     

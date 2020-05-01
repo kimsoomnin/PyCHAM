@@ -12,11 +12,65 @@ from matplotlib.colors import BoundaryNorm
 import matplotlib.ticker as ticker # set colormap tick labels to standard notation
 import os
 
+# testing plot ----------------------------------
+
+# check which low volatility components increase in concentration first
+
+# import results
+
+fname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/limonene_MCM_PRAM/test13/concentrations_all_components_all_times_gas_particle_wall'
+y1 = np.loadtxt(fname, delimiter=',', skiprows=1) # skiprows=1 omits header
+
+fname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/limonene_MCM_PRAM/test14/concentrations_all_components_all_times_gas_particle_wall'
+y2 = np.loadtxt(fname, delimiter=',', skiprows=1) # skiprows=1 omits header
+
+# name of file where experiment constants saved
+fname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/limonene_MCM_PRAM/test14/model_and_component_constants'
+
+const_in = open(fname)
+const = {} # prepare to create dictionary
+for line in const_in.readlines():
+
+	# convert to python list
+	dlist = []
+	for i in line.split(',')[1::]:
+		if str(line.split(',')[0]) == 'number_of_size_bins':
+			dlist.append(int(i))
+		if str(line.split(',')[0]) == 'number_of_components':
+			dlist.append(int(i))
+		if str(line.split(',')[0]) == 'molecular_weights_g/mol_corresponding_to_component_names' or  str(line.split(',')[0]) == 'molecular_volumes_cm3/mol':
+			i = i.strip('\n')
+			i = i.strip('[')
+			i = i.strip(']')
+			i = i.strip(' ')
+			dlist.append(float(i))
+		if str(line.split(',')[0]) == 'component_names':
+			i = i.strip('\n')
+			i = i.strip('[')
+			i = i.strip(']')
+			i = i.strip(' ')
+			i = i.strip('\'')
+			dlist.append(str(i))
+		if str(line.split(',')[0]) == 'factor_for_multiplying_ppb_to_get_molec/cm3':
+			dlist.append(float(i))
+			
+	const[str(line.split(',')[0])] = dlist
+
+num_sb = int((const['number_of_size_bins'])[0]) # number of size bins
+num_speci = int((const['number_of_components'])[0]) # number of species
+# conversion factor to change gas-phase concentrations from molecules/cc 
+# (air) into ppb
+Cfactor = float((const['factor_for_multiplying_ppb_to_get_molec/cm3'])[0])
+
+plt.plot(y1[:, 4+num_speci*0], 'r')
+plt.plot(y2[:, 4+num_speci*0], 'g')
+plt.show()
+
 # ----------------------------------------------------------------------------------------
 # import results files, all used the limonene MCM PRAM sheme (limonene_MCM_PRAM.txt) 
 
 # open saved files
-cwd = cwd = os.getcwd() # address of current working directory
+cwd = os.getcwd() # address of current working directory
 output_by_sim = str(cwd+'/limonene_output')
 
 # name of file where experiment constants saved

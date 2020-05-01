@@ -6,7 +6,7 @@
 import numpy as np
 import scipy.constants as si
 
-def kimt_prep(y_mw, TEMP, num_speci, testf, Cw, act_wi, act_w, accom_coeff_ind, 
+def kimt_prep(y_mw, TEMP, num_speci, testf, Cw, act_comp, act_user, accom_coeff_ind, 
 			accom_coeff_user, spec_namelist, num_sb):
 	
 	# ------------------------------------------------------------------
@@ -16,8 +16,10 @@ def kimt_prep(y_mw, TEMP, num_speci, testf, Cw, act_wi, act_w, accom_coeff_ind,
 	# num_speci - number of components
 	# testf - flag for whether in normal mode (0) or testing mode (1)
 	# Cw - effective absorbing mass of wall (g/m3 (air))
-	# act_wi - index of components with activity coefficients for the wall stated in act_w
-	# act_w - activity coefficients for the wall of components whose index given in act_wi
+	# act_comp - names of components (corresponding to chemical scheme name) with 
+	# 			activity coefficient stated in act_user
+	# act_user - user-specified activity coefficients of components with names given in
+	#			act_comp
 	# accom_coeff_ind - index of components with accommodation coefficient set by the user
 	# accom_coeff_user - accommodation coefficient set by the user
 	# spec_namelist - names of components as stated in the chemical scheme
@@ -51,6 +53,7 @@ def kimt_prep(y_mw, TEMP, num_speci, testf, Cw, act_wi, act_w, accom_coeff_ind,
 	
 	# list containing accommodation coefficients that are functions
 	accom_coeff_func = []
+	
 	# check for any accommodation coefficients set by user
 	if len(accom_coeff_ind)>0:
 		for i in range(len(accom_coeff_ind)):
@@ -97,10 +100,12 @@ def kimt_prep(y_mw, TEMP, num_speci, testf, Cw, act_wi, act_w, accom_coeff_ind,
 	f.write('	return accom_coeff\n')
 	f.close()
 	
-	# activity coefficient of components
+	# activity coefficient of components - affects the particle- and wall-phase
 	act_coeff = np.ones((num_speci, 1))*1.0e0
-	if len(act_wi)>0: # user-defined activity coefficients for wall
-		act_coeff[act_wi] = act_w
+	for i in range(len(act_comp)): # user-defined activity coefficients
+		# get index of component stated
+		ac_indx = spec_namelist.index(act_comp[i].strip())
+		act_coeff[ac_indx] = act_user[i].strip()
 
 	# convert Cw (effective absorbing mass of wall) from g/m3 (air) to 
 	# molecules/cc (air), assuming a molecular weight of 200g/mol (*1.0e-6 to convert from

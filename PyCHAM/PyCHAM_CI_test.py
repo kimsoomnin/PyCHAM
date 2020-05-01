@@ -1,5 +1,7 @@
 '''allows continuous integration testing using Travis CI without invoking the GUI (which doesn't work in the Travis application)'''
 
+# used to ensure that PyCHAM runs without error, using the travis continuous integrator
+# tool
 # address for Travis CI: https://travis-ci.org/account/repositories
 
 import sys
@@ -31,7 +33,7 @@ inputs = open(inname, mode='r')
 in_list = inputs.readlines()
 inputs.close()
 
-input_len = 62
+input_len = 63
 
 if len(in_list) != input_len:
 	print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list))))
@@ -39,30 +41,37 @@ if len(in_list) != input_len:
 for i in range(len(in_list)):
 	key, value = in_list[i].split('=')
 	key = key.strip() # a string with bounding white space removed
-	if key == 'Res_file_name':
+	if key == 'res_file_name':
 		if value.split(',')==['\n']:
 			print('Error: no requested results file name detected in model inputs file, please supply')
 			sys.exit()
 		resfname = str(value.strip())
-	if key == 'Total_model_time':
+	if key == 'total_model_time':
 		if value.split(',')==['\n']:
 			print('Error: no total model run time detected in model inputs file, please supply')
 			sys.exit()
 		else:
 			end_sim_time = float(value.strip())
-	if key == 'Time_step':
+	if key == 'bc_time_step':
 		if value.split(',')==['\n']:
-			print('Notice: No model time step detected in model inputs file, defaulting to 60s')
+			print('Notice: No boundary condition update time step (bc_time_step) detected in model variables file, defaulting to 60s')
 			tstep_len = float(60.0)
 		else:
 			tstep_len = float(value.strip())
-	if key == 'Recording_time_step':
+	# the time step (s) to be used for operator-split processes
+	if key == 'op_spl_step':
+		if (value.strip()).split(',')==['']:
+			print('Notice: No operator-splitting time step (op_spl_step) detected in model variables files, defaulting to 60s')
+			op_splt_step = float(60.0)
+		else:
+			op_splt_step = float(value.strip())
+	if key == 'recording_time_step':
 		if value.split(',')==['\n']:
 			print('Notice: no recording time step detected in model inputs file, defaulting to 60s')
 			save_step = float(60.0)
 		else:
 			save_step = float(value.strip())
-	if key == 'Number_size_bins':
+	if key == 'number_size_bins':
 		if value.split(',')==['\n']:
 			print('Notice: no number of size bins detected in model inputs, defaulting to zero')
 			num_sb = int(0)
@@ -563,7 +572,7 @@ vol_Comp, volP, pconc, std, mean_rad, core_diss, light_stat, light_time,
 kgwt, dydt_trak, space_mode, Ct, Compt, injectt, seed_name, const_comp,
 const_infl, Cinfl, act_wi, act_w, seed_mw, umansysprop_update, seed_dens, p_char, 
 e_field, const_infl_t, chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, 
-accom_coeff_ind, accom_coeff_user]
+accom_coeff_ind, accom_coeff_user, op_splt_step]
 	
 if os.path.isfile(dirpath+'/testf.txt'):
 	print('Model input buttons work successfully')

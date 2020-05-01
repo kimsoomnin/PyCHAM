@@ -37,10 +37,11 @@ def run(source, testf):
 			inflectk, Rader, xmlname, C0, Comp0, vol_Comp, volP, pconc, 
 			std, mean_rad, core_diss, light_stat, light_time, kgwt, 
 			dydt_trak, space_mode, Ct, Compt, injectt, seed_name, 
-			const_comp, const_infl, Cinfl, act_wi, act_w, seed_mw, 
+			const_comp, const_infl, Cinfl, act_comp, act_user, seed_mw, 
 			umansysprop_update, core_dens, p_char, e_field, 
 			const_infl_t, chem_scheme_markers, int_tol, photo_par_file, 
-			dil_fac, pconct, accom_coeff_ind, accom_coeff_user] = pickle.load(pk)	
+			dil_fac, pconct, accom_coeff_ind, accom_coeff_user, 
+			op_splt_step] = pickle.load(pk)	
 
 			
 			# convert chamber surface area (m2) to spherical equivalent radius (m)
@@ -72,10 +73,10 @@ def run(source, testf):
 		Cw, ChamR, nucv1, nucv2, nucv3, nuc_comp, new_partr, inflectDp, 
 		pwl_xpre, pwl_xpro, inflectk, xmlname, C0, Comp0, Rader, vol_Comp, volP, pconc, 
 		std, mean_rad, core_diss, light_stat, light_time, kgwt, 0, dydt_trak, DayOfYear, 
-		space_mode, Ct, Compt, injectt, seed_name, const_comp, const_infl, Cinfl, act_wi, 
-		act_w, seed_mw, umansysprop_update, core_dens, p_char, e_field, const_infl_t, 
-		chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, accom_coeff_ind, 
-		accom_coeff_user)
+		space_mode, Ct, Compt, injectt, seed_name, const_comp, const_infl, Cinfl, 
+		act_comp, act_user, seed_mw, umansysprop_update, core_dens, p_char, e_field, 
+		const_infl_t, chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, 
+		accom_coeff_ind, accom_coeff_user, op_splt_step)
 		
 	if source == 1:
 		return(fname, resfname, y_indx_plot, Comp0)

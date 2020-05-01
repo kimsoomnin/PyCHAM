@@ -30,12 +30,12 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			dydt_vst, daytime, lat, lon, act_flux_path, DayOfYear, Ct, injectt, inj_indx,
 			corei, const_compi, const_comp, const_infli, Cinfl, act_coeff, p_char, 
 			e_field, const_infl_t, int_tol, photo_par_file, Jlen, dil_fac, pconct,
-			lowersize, uppersize, mean_rad, std):
+			lowersize, uppersize, mean_rad, std, op_splt_step):
 	
 	# ----------------------------------------------------------
 	# inputs
 	
-	# t - suggested time step length (s)
+	# t - suggested time step length for updating boundary conditions (s)
 	# num_speci - number of components
 	# num_eqn - number of equations
 	# Psat - saturation vapour pressures (molecules/cm3 (air))
@@ -96,12 +96,10 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	# mean_rad - mean radius of particles (relevant if only one size bin or number size
 	# distribution being calculated (um)
 	# std - standard deviation for lognormal size distribution (dimensionless)
+	# op_splt_step - time step to use for operator-split processes (coagulation, particle 
+	#					loss to wall, nucleation)
 	# ------------------------------------------------------------------------------------
 
-	# count on injection times of seed particles
-	seedt_count = 0
-
-	# ------------------------------------------------------------------------------------
 	# testing mode
 	if testf==1:
 		return(0, 0, 0, 0) # return dummies
@@ -149,14 +147,16 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	else:
 		yp = 0.0
 	
-	if len(light_time)>0:
-		# check whether lights have changed
-		timediff = (sumt)-np.array(light_time)
-		timedish = (timediff == np.min(timediff[timediff>=0])) # index of reference time
-		lightm = (np.array(light_stat))[timedish] # whether lights on or off now
+	if len(light_time)>0: # check status of lights at simulation start (on of off)
+		if (light_time[0] == 0.0): # if a status given for simulation start
+			lightm = light_stat[0]
+		else: # if no status given for simulation start, default to no lights at this time
+			lightm = 0
 	else: # if no input provided default to lights off
 		lightm = 0
 		
+	# count on injection times of seed particles
+	seedt_count = 0
 	
 	if num_sb>1:
 		# update partitioning coefficients
@@ -185,15 +185,20 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				reac_coef)
 	
 	
-	tnew = t0 # initial time step (s)
+	tnew = t0 # initial maximum integration time step (s)
 	# number concentration of nucleated particles formed (# particles/cc (air))
 	new_part_sum1 = 0.0
 	
-	# count in number of time steps since time interval was last reduced
+	# count in number of time steps since time interval was last reduced due to 
+	# moving-centre
 	tinc_count = 10
-	
-	# count on injection times of components
-	inj_count = 0
+	# flag for whether maximum integration time step has been reduced due to boundary 
+	# conditions
+	bc_red = 0 
+	light_time_count = 0 # count on light setting changes
+	gasinj_count = 0 # count on injection times of components
+	influx_count = 0 # count on constant influx of gas-phase components
+	op_spl_count = 0.0 # count on time since operator-split processes last called (s)
 	
 	# number of components with constant gas-phase concentration and with constant influx
 	num_const_compi = len(const_compi)
@@ -208,63 +213,138 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		
 		if (sumt+tnew)>end_sim_time: # ensure we finish at correct time
 			tnew = end_sim_time-sumt # integration time step (s)
-		t = tnew # reset integration time (s)
+		t = tnew # reset maximum integration time (s)
+		
+		# start of update for changed boundary conditions --------------------------------
+		
+		# ---------------------
+		# change of light setting check
 		
 		if len(light_time)>0:
-			# check whether lights have changed
-			light_ind = ((sumt)>np.array(light_time)).sum()-1
-			# whether lights on (1) or off (0) during this step
-			lightm = (np.array(light_stat))[light_ind]
-		else: # if no input provided default to lights off
-			lightm = 0
 		
-		# --------------------------------------------------------------------------------
-		# component injections check
+			# check whether changes occur at start of this time step
+			if (sumt == light_time[light_time_count]):
+				# whether lights on (1) or off (0) during this step
+				lightm = light_stat[light_time_count]
+				light_time_count += 1 # keep count of light setting index
+				
+				# check whether maximum integration time step can return to original
+				if (bc_red == 1):
+					# return maximum integration time step to original
+					tnew = t0
+					t = tnew
+					# reset flag for time step reduction due to boundary conditions
+					bc_red = 0
+			
+			# check whether light on/off changes during proposed integration time step
+			if (sumt+tnew > light_time[light_time_count]):
+				# if yes, then reset integration time step so that next step coincides 
+				# with change
+				tnew = light_time[light_time_count]-sumt
+				t = tnew # reset maximum integration time (s)
+				bc_red = 1 # flag for time step reduction due to boundary conditions
+				
+			if (len(light_time) == 0): # if no input provided default to lights off
+				lightm = 0 
+		
+		# ---------------------
+		# check on instantaneous injection of components
 		
 		if len(injectt)>0: # if any injections occur
-			# check whether latest component injection occurs
-			inj_count_new = (sumt >= injectt).sum()
-			# update injections if new injection time reached
-			if inj_count_new>inj_count:
-				for i in range(len(inj_indx)):
-					# account for injection in gas-phase concentration 
-					# (molecules/cc (air))
-					y[int(inj_indx[i])] += Ct[i, inj_count]
-				inj_count = inj_count_new # update count on injections
-				
-				
-# 			# only need this if using inj_count_new = ((sumt+tnew)>injectt).sum() above
-#			# rather than inj_count_new = ((sumt)>injectt).sum()
-# 			# withdraw injections if previous injection time no longer reached, this is in
-# 			# case integration step has been reduced by moving centre method
-# 			if inj_count_new<inj_count:
-# 				for i in range(len(inj_indx)):
-# 					# account for injection in gas-phase concentration 
-# 					# (molecules/cc (air))
-# 					y[int(inj_indx[i])] -= Ct[i, inj_count]
-# 				inj_count = inj_count_new # update count on injections
-		# --------------------------------------------------------------------------------
-		# constant influxes check
 		
-		# update index counter for constant influxes - used in integrator below
-		if len(const_infl_t)>0:
-			inf_ind = int(((sumt)>=const_infl_t).sum())-1
-			
-		# --------------------------------------------------------------------------------
-		# seed particle influx check
+			# check whether changes occur at start of this time step
+			if (sumt == injectt[gasinj_count]):
+				# account for change in gas-phase concentration (molecules/cc (air))
+				y[inj_indx] += Ct[:, gasinj_count]
+				gasinj_count += 1 # update count on injections
+				
+				# check whether maximum integration time step can return to original
+				if (bc_red == 1):
+					# return maximum integration time step to original
+					tnew = t0
+					t = tnew
+					# reset flag for time step reduction due to boundary conditions
+					bc_red = 0
+					
+			# check whether changes occur during proposed integration time step
+			if (sumt+tnew > injectt[gasinj_count]):
+				# if yes, then reset integration time step so that next step coincides 
+				# with change
+				tnew = injectt[gasinj_count]-sumt
+				t = tnew # reset maximum integration time (s)
+				bc_red = 1 # flag for time step reduction due to boundary conditions
 		
-		if int((sumt>=pconct).sum())-1 > seedt_count:
-			
-			seedt_count += 1
-			
-			[y[num_speci:-num_speci], N_perbin, x, 
+		# ----------------------
+		# instantaneous seed particle influx check
+		
+		if (sum(pconct[0,:])>0): # if constant influx occurs
+		
+			# check whether changes occur at start of this time step
+			if (sumt == pconct[seedt_count]):
+				
+				# account for change in seed particles
+				[y[num_speci:-num_speci], N_perbin, x, 
 						Varr] = pp_dursim(y[num_speci:-num_speci], N_perbin, 
 									mean_rad[0, seedt_count],
 									pconc[:, seedt_count], corei, lowersize, 
 									uppersize, num_speci, num_sb, MV, rad0, 
 									std[0, seedt_count], y_dens, H2Oi)
+				seedt_count += 1
+			
+				# check whether maximum integration time step can return to original
+				if (bc_red == 1):
+					# return maximum integration time step to original
+					tnew = t0
+					t = tnew
+					# reset flag for time step reduction due to boundary conditions
+					bc_red = 0
+				
+			# check whether changes occur during proposed integration time step
+			if (sumt+tnew > pconct[seedt_count]): 
+				# if yes, then reset integration time step so that next step coincides 
+				# with change
+				tnew = pconct[seedt_count]-sumt
+				t = tnew # reset maximum integration time (s)
+				bc_red = 1 # flag for time step reduction due to boundary conditions
 
-		# --------------------------------------------------------------------------------
+		
+		# ----------------------
+		# check on constant influxes of components, note this different in nature to
+		# the instantaneous changes of lights on/off and instant injection of gases or
+		# seed particles
+		
+		if len(const_infl_t)>0: # if constant influx occurs
+		
+			# in case influxes begin after simulation start
+			if (sumt == 0.0 and const_infl_t[influx_count] != 0.0):
+				Cinfl_now = np.zeros((Cinfl.shape[0], 1))
+		
+			# check whether changes occur at start of this time step
+			if (sumt == const_infl_t[influx_count]):
+				
+				# influx of components now
+				Cinfl_now = (Cinfl[i, influx_count]).reshape(-1, 1)
+				# update index counter for constant influxes - used in integrator below
+				influx_count += 1
+				
+				# check whether maximum integration time step can return to original
+				if (bc_red == 1):
+					# return maximum integration time step to original
+					tnew = t0
+					t = tnew
+					# reset flag for time step reduction due to boundary conditions
+					bc_red = 0
+		
+			# check whether changes occur during proposed integration time step
+			if (sumt+tnew > const_infl_t[influx_count]):
+				# if yes, then reset integration time step so that next step coincides 
+				# with change
+				tnew = const_infl_t[influx_count]-sumt
+				t = tnew # reset maximum integration time (s)
+				bc_red = 1 # flag for time step reduction due to boundary conditions
+		
+		# end of update for changed boundary conditions ----------------------------------
+		
 		
 		# update reaction rate coefficients
 		reac_coef = rate_valu_calc(RO2_indices, y[H2Oi], TEMP, lightm, y, 
@@ -304,11 +384,14 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				dydt = np.zeros((len(y)))
 				# gas-phase rate of change ------------------------------------
 				for i in range(num_eqn): # equation loop
-			
+					
 					# gas-phase rate of change (molecules/cc (air).s)
-					gprate = ((y[rindx[i, 0:nreac[i]]]**rstoi[i, 0:nreac[i]]).prod())*reac_coef[i] 
-					dydt[rindx[i, 0:nreac[i]]] -= gprate*rstoi[i, 0:nreac[i]] # loss of reactants
-					dydt[pindx[i, 0:nprod[i]]] += gprate*pstoi[i, 0:nprod[i]] # gain of products
+					if (y[rindx[i, 0:nreac[i]]]==0.0).sum()>0:
+						continue
+					else:
+						gprate = ((y[rindx[i, 0:nreac[i]]]**rstoi[i, 0:nreac[i]]).prod())*reac_coef[i] 
+						dydt[rindx[i, 0:nreac[i]]] -= gprate*rstoi[i, 0:nreac[i]] # loss of reactants
+						dydt[pindx[i, 0:nprod[i]]] += gprate*pstoi[i, 0:nprod[i]] # gain of products
 				
 				# honour the constant concentration of components with this property
 				if num_const_compi>0:
@@ -316,7 +399,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				# the constant gas-phase influx of components with this property
 				if const_infli_len>0:
 					for i in range(const_infli_len):
-						dydt[const_infli[i]] += Cinfl[i, inf_ind]
+						dydt[const_infli[i]] += Cinfl_now[i, 0]
 					
 				if num_sb>1: # as num_sb includes 1 for wall
 					# gas-particle partitioning, based on eqs. 3 and 4 of Zaveri et al.
@@ -386,11 +469,11 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				
 				# call on the moving centre method for rebinning particles
 				(N_perbin, Varr, y[num_speci::], x, redt, t, tnew, 
-				y[0:num_speci]) = movcen(N_perbin, 
+				y[0:num_speci], bc_red) = movcen(N_perbin, 
 				Vbou, np.transpose(y[num_speci::].reshape(num_sb, num_speci)), 
 				(np.squeeze(y_dens*1.0e-3)), num_sb, num_speci, y_mw, x, Vol0, t, 
 				t0, tinc_count, y0[num_speci::], MV, Psat[:, 0], y[0:num_speci], 
-				y0[0:num_speci])
+				y0[0:num_speci], bc_red)
 			else: # if bypassing moving centre
 				redt = 0
 				if t<t0 and tinc_count<=0:
@@ -415,47 +498,58 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		
 		sumt += t # total time covered (s)
 		step += 1 # ode time interval step number
+		op_spl_count += t # count on time since operator-split processes last called (s)
 
-		if num_sb>1:
-			if (N_perbin>1.0e-10).sum()>0:
-				# coagulation
-				# y indices due to final element in y being number of ELVOC molecules
-				# contributing to newly nucleated particles
-				[N_perbin, y[num_speci:-(num_speci)], x, Gi, eta_ai, Varr] = coag(RH, 
-						TEMP, x*1.0e-6, (Varr*1.0e-18).reshape(1, -1), 
-						y_mw.reshape(-1, 1), x*1.0e-6, 
-						np.transpose(y[num_speci::].reshape(num_sb, num_speci)), 
-						(N_perbin).reshape(1, -1), t, (Vbou*1.0e-18).reshape(1, -1), 
-						num_speci, 0, (np.squeeze(y_dens*1.0e-3)), rad0, PInit, 0,
-						np.transpose(y[num_speci::].reshape(num_sb, num_speci)),
-						(N_perbin).reshape(1, -1), (Varr*1.0e-18).reshape(1, -1))
-
-				
-				if Rader > -1:
+		# start of operator-split section ------------------------------------------------
+		# the following particle-phase processes are evaluated on a possibly different 
+		# time step to those above: coagulation, particle loss to wall and nucleation
+		if op_spl_count >= op_splt_step:
+			if num_sb>1: 
+				if (N_perbin>1.0e-10).sum()>0:
+					# coagulation
+					# y indices due to final element in y being number of ELVOC molecules
+					# contributing to newly nucleated particles
+					[N_perbin, y[num_speci:-(num_speci)], x, Gi, eta_ai, Varr] = coag(RH, 
+							TEMP, x*1.0e-6, (Varr*1.0e-18).reshape(1, -1), 
+							y_mw.reshape(-1, 1), x*1.0e-6, 
+							np.transpose(y[num_speci::].reshape(num_sb, num_speci)), 
+							(N_perbin).reshape(1, -1), t, (Vbou*1.0e-18).reshape(1, -1), 
+							num_speci, 0, (np.squeeze(y_dens*1.0e-3)), rad0, PInit, 0,
+							np.transpose(y[num_speci::].reshape(num_sb, num_speci)),
+							(N_perbin).reshape(1, -1), (Varr*1.0e-18).reshape(1, -1))
+	
 					
-					# particle loss to walls
-					[N_perbin, 
-					y[num_speci:-(num_speci)]] = wallloss(N_perbin.reshape(-1, 1), 
+					if Rader > -1:
+						
+						# particle loss to walls
+						[N_perbin, 
+						y[num_speci:-(num_speci)]] = wallloss(N_perbin.reshape(-1, 1), 
 														y[num_speci:-(num_speci)], Gi, 
 														eta_ai, x*2.0e-6, y_mw, 
 														Varr*1.0e-18, num_sb, num_speci, 
 														TEMP, t, inflectDp, pwl_xpre,
 														pwl_xpro, inflectk, ChamR, Rader, 
 														0, p_char, e_field)
+						
+				# particle nucleation
+				if len(nuc_comp)>0:
 					
-			# particle nucleation
-			if len(nuc_comp)>0:
+					[N_perbin, y, x[0], Varr[0], new_part_sum1] = nuc(sumt, new_part_sum1, 
+								N_perbin, y, y_mw.reshape(-1, 1), 
+								np.squeeze(y_dens*1.0e-3),  
+								num_speci, x[0], new_partr, t, MV, nucv1, nucv2, 
+								nucv3, nuc_comp[0])
 				
-				[N_perbin, y, x[0], Varr[0], new_part_sum1] = nuc(sumt, new_part_sum1, 
-							N_perbin, y, y_mw.reshape(-1, 1), np.squeeze(y_dens*1.0e-3),  
-							num_speci, x[0], new_partr, t, MV, nucv1, nucv2, 
-							nucv3, nuc_comp[0])
+				# reset count on time since operator-split processes last called (s)
+				op_spl_count = 0
+				
+		# end of operator-split section --------------------------------------------------
 							
-			# dilution of aerosol (gases and particles), most likely due to extraction
-			# from chamber
-			y -= y*(dil_fac*t) # dilution of gases (molecules/cc (air))
-			N_perbin -= N_perbin*(dil_fac*t) # dilution of particle phase (#/cc (air))
-# 			print('y af', y)
+		# dilution of aerosol (gases and particles), most likely due to extraction
+		# from chamber
+		y -= y*(dil_fac*t) # dilution of gases (molecules/cc (air))
+		N_perbin -= N_perbin*(dil_fac*t) # dilution of particle phase (#/cc (air))
+
 			
 		# save at every time step given by save_step (s) and at end of experiment
 		if sumt>=save_step*save_count or sumt == end_sim_time:
