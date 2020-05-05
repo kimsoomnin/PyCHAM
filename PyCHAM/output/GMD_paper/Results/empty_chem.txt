@@ -272,6 +272,6 @@ RO2 = NISOPO2 + ISOP34O2 + CH3C2H2O2 + MACO3 + MACRO2 + MACROHO2 +
       C3DIOLO2 + C23O3CCO3 ;
 *;
 * Reaction definitions. ;
-% 0.0 : SA = SA ;
+% 0.0 : two-methylglyceric_acid = two-methylglyceric_acid ;
 *;
 * End of Subset.  No. of Species = 1, No. of Reactions = 1 ;

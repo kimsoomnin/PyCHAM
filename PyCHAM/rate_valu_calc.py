@@ -1,4 +1,7 @@
-'''module to link ode_gen with Rate_coefficients for calculation of gas-phase reaction coefficients'''
+'''module to link ode_gen with Rate_coeffs for calculation of gas-phase reaction coefficients'''
+# called and returned to ode_gen, this module sets up the final details for calculating
+# reaction rate coefficient, which is done via the called module Rate_coeffs 
+
 
 import numpy as np
 

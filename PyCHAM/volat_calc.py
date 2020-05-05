@@ -1,6 +1,7 @@
 '''module to estimate component volatilities and liquid densities'''
 
-# called/returned from/to the front.py module, this module is responsible for
+# called/returned from/to the front.py and ode_gen.py modules, 
+# this module is responsible for
 # setting key properties of components, including liquid-phase saturation vapour pressures
 # and liquid-phase densities.  It does this using either UManSysProp (default), or with
 # user settings
@@ -15,14 +16,15 @@ import errno
 import stat
 
 def volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci, Psat_water, vol_Comp, 
-				volP, testf, corei, pconc, umansysprop_update, core_dens, spec_namelist):
+				volP, testf, corei, pconc, umansysprop_update, core_dens, spec_namelist,
+				ode_gen_flag):
 
-	# ------------------------------------------------------------
-	# inputs:
+	# inputs: ------------------------------------------------------------
 	# spec_list - array of SMILE strings for components 
 	# (omitting water and core, if present)
 	# Pybel_objects - list of Pybel objects representing the species in spec_list
 	# (omitting water and core, if present)
+	# TEMP - temperature (K) in chamber at time function called
 	# vol_Comp - names of components (corresponding to those in chemical scheme file)
 	# 			that have vapour pressures manually set in volP
 	# testf - flag for whether in normal mode (0) or testing mode (1)
@@ -31,6 +33,7 @@ def volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci, Psat_water, vol_
 	# umansysprop_update - marker for cloning UManSysProp so that latest version used
 	# core_dens - density of core material (g/cc (liquid/solid density))
 	# spec_namelist - list of components' names in chemical equation file
+	# ode_gen_flag - whether or not called from front or ode_gen
 	# ------------------------------------------------------------
 	
 	
@@ -71,26 +74,41 @@ def volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci, Psat_water, vol_
 	y_dens = np.zeros((num_speci, 1)) # components' liquid density (kg/m3)
 	Psat = np.zeros((num_speci, 1)) # species' vapour pressure
 
+	
+	if ode_gen_flag == 0: # estimate densities if called from front.py
+		
+		for i in range (num_speci):
+			
+			# density estimation ---------------------------------------------------------
+			if i == H2Oi:
+				y_dens[i] = 1.0*1.0E3 # (kg/m3 (particle))
+				continue
+			# core properties (only used if seed particles present)
+			if i == corei and sum(sum(pconc))>0.0:
+				y_dens[i] = core_dens*1.0E3 # core density (kg/m3 (particle))
+				continue
+			if spec_list[i] == '[HH]': # omit H2 as unliked by liquid density code
+				# liquid density code does not like H2, so manually input kg/m3
+				y_dens[i] = 1.0e3
+			else:
+				# density (convert from g/cc to kg/m3)
+				y_dens[i] = liquid_densities.girolami(Pybel_objects[i])*1.0E3
+			# ----------------------------------------------------------------------------
+	
+	# estimate vapour pressures (log10(atm))
 	for i in range (num_speci):
 		
-		# omit estimation for water as it's value is already given in Psat_water 
-		# (log10(atm))
+		
+		if i == corei and sum(sum(pconc))>0.0:
+			continue # core component not included in Pybel_objects
+		
+		# water vapour pressure already given by Psat_water (log10(atm))
 		if i == H2Oi:
 			Psat[i] = Psat_water
-			y_dens[i] = 1.0*1.0E3 # (kg/m3 (particle))
-			continue 
-		if i == corei and sum(sum(pconc))>0.0: # core properties (only used if seed particles present)
-			y_dens[i] = core_dens*1.0E3 # core density (kg/m3 (particle))
-			continue
-		if spec_list[i] == '[HH]': # omit H2 as unliked by liquid density code
-			# liquid density code does not like H2, so manually input kg/m3
-			y_dens[i] = 1.0e3
-		else:
-			# density (convert from g/cc to kg/m3)
-			y_dens[i] = liquid_densities.girolami(Pybel_objects[i])*1.0E3
+			continue # water not included in Pybel_objects
 		
-		# vapour pressure (log10 atm) (# eqn. 6 of Nannoolal et al. (2008), with dB of 
-		# that equation given by eq. 7)
+		# vapour pressure (log10 atm) (# eq. 6 of Nannoolal et al. (2008), with dB of 
+		# that equation given by eq. 7 of same reference)
 		Psat[i] = ((vapour_pressures.nannoolal(Pybel_objects[i], TEMP, 
 						boiling_points.nannoolal(Pybel_objects[i]))))
 	
@@ -101,7 +119,7 @@ def volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci, Psat_water, vol_
 	Psat[ish] = 0.0
 	
 	# manually assigned vapour pressures (Pa)
-	if len(vol_Comp)>0:
+	if len(vol_Comp)>0 and ode_gen_flag==0:
 		for i in range (len(vol_Comp)):
 			# index of component in list of components
 			vol_indx = spec_namelist.index(vol_Comp[i])

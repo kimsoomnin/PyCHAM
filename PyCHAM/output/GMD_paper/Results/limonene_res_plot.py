@@ -18,14 +18,11 @@ import os
 
 # import results
 
-fname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/limonene_MCM_PRAM/test13/concentrations_all_components_all_times_gas_particle_wall'
-y1 = np.loadtxt(fname, delimiter=',', skiprows=1) # skiprows=1 omits header
-
-fname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/limonene_MCM_PRAM/test14/concentrations_all_components_all_times_gas_particle_wall'
+fname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/limonene_MCM_PRAM/test17/concentrations_all_components_all_times_gas_particle_wall'
 y2 = np.loadtxt(fname, delimiter=',', skiprows=1) # skiprows=1 omits header
 
 # name of file where experiment constants saved
-fname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/limonene_MCM_PRAM/test14/model_and_component_constants'
+fname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/limonene_MCM_PRAM/test17/model_and_component_constants'
 
 const_in = open(fname)
 const = {} # prepare to create dictionary
@@ -62,8 +59,10 @@ num_speci = int((const['number_of_components'])[0]) # number of species
 # (air) into ppb
 Cfactor = float((const['factor_for_multiplying_ppb_to_get_molec/cm3'])[0])
 
-plt.plot(y1[:, 4+num_speci*0], 'r')
-plt.plot(y2[:, 4+num_speci*0], 'g')
+plt.semilogy(y2[:, 6+num_speci*0], 'r')
+plt.semilogy(y2[:, 6+num_speci*1]/Cfactor, 'g')
+plt.semilogy(y2[:, 6+num_speci*2]/Cfactor, 'b')
+plt.semilogy(y2[:, 6+num_speci*3]/Cfactor, 'k')
 plt.show()
 
 # ----------------------------------------------------------------------------------------
@@ -71,7 +70,7 @@ plt.show()
 
 # open saved files
 cwd = os.getcwd() # address of current working directory
-output_by_sim = str(cwd+'/limonene_output')
+output_by_sim = str(cwd+'/limonene_output2')
 
 # name of file where experiment constants saved
 fname = str(output_by_sim+'/model_and_component_constants')

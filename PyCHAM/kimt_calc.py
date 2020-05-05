@@ -8,7 +8,7 @@ import ipdb
 
 def kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw, surfT, R_gas, TEMP, NA, 
 				y_dens, N_perbin, DStar_org, radius, Psat, therm_sp,
-				H2Oi):
+				H2Oi, act_coeff):
 
 	# ------------------------------------------------------------------------------------
 	# inputs:
@@ -16,6 +16,7 @@ def kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw, surfT, R_gas, TEMP, 
 	# y - concentration of components' molecules (molecules/cc (air))
 	# N_perbin - number of particles in a size bin (excluding wall)
 	# mfp - mean free path of gas molecules (m) (num_speci, 1)
+	# accom_coeff - accommodation coefficients of components in each size bin
 	# DStar_org - gas molecule diffusion coefficient (m2/s) (num_speci, 1)
 	# radius - particle radius (m)
 	# Psat - liquid-phase saturation vapour pressures of components (molecules/cc (air))
@@ -23,6 +24,7 @@ def kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw, surfT, R_gas, TEMP, 
 	# y_dens - density of components (kg/m3)
 	# therm_sp - thermal speed of components (m/s) (num_speci, 1)
 	# H2Oi - water index (integer)
+	# act_coeff - activity coefficient of components (dimensionless)
 	# ------------------------------------------------------------------------------------
 	
 	# density (g/cm3) and average molecular weight (g/mol) of particles (excluding wall)
@@ -36,7 +38,7 @@ def kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw, surfT, R_gas, TEMP, 
 	# note, using __import__ rather than import allows opening in run time, thereby using
 	# updated module
 	accom_coeff_calc = __import__('accom_coeff_calc')
-	accom_coeff = accom_coeff_calc.accom_coeff_func(accom_coeff, radius)
+	accom_coeff_now = accom_coeff_calc.accom_coeff_func(accom_coeff, radius)
 
 	# Non-continuum regime correction 
     # calculate a correction factor according to the continuum versus non-continuum 
@@ -48,7 +50,7 @@ def kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw, surfT, R_gas, TEMP, 
     # Pruppacher and Klett 1997
 	Inverse_Kn = np.power(Kn, -1.0E0)
 	correct_1 = (1.33E0+0.71*Inverse_Kn)/(1.0+Inverse_Kn)
-	correct_2 = (4.0E0*(1.0E0-accom_coeff))/(3.0E0*accom_coeff)
+	correct_2 = (4.0E0*(1.0E0-accom_coeff_now))/(3.0E0*accom_coeff_now)
 	correct_3 = 1.0E0+(correct_1+correct_2)*Kn
 	correction = np.power(correct_3, -1.0E0)
 
@@ -68,12 +70,10 @@ def kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw, surfT, R_gas, TEMP, 
 	# eq. 16.2 of Jacobson (2005) and eq. 5 Zaveri et al. (2008)
 	# species in rows and size bins in columns (/s)
 	kimt = (4.0E0*np.pi*(radius*1.0e2)*N_perbin.reshape(1, -1))*kimt
-	
-	# zero partitioning to particles for any components with high vapour pressures
-	# - accelerates computation time with negligible change to 
-	# output
-	highVPi = Psat>1.0e12
-	highVPi = highVPi[:, 0] # ignore second dimension
+# 	print('whoop again', kimt[6,:], kimt[5,:])
+	# zero partitioning to particles for any components with low partitioning rates
+	# provides significant computation acceleration
+	highVPi = (Psat*act_coeff>1.0e12)[:, 0] # ignore second dimension
 	highVPi[H2Oi] = 0 # mask water, thereby allowing water partitioning in ode
 	kimt[highVPi, :] = 0.0
 	

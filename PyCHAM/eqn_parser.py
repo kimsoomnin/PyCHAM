@@ -1,4 +1,6 @@
 ''' module for parsing the equation file, including converting MCM names of components into SMILES strings - see the README for how to format the equation and xml files'''
+# utilising python's inherent ability to readily parse inputs into code, this module
+# reads in and prepares the chemical reactions
 
 import os
 import re
@@ -14,13 +16,12 @@ from water_calc import water_calc
 
 # ----------Extraction of eqn info----------
 # Extract the mechanism information
-def extract_mechanism(filename, xmlname, TEMP, PInit, testf, RH, 
+def extract_mechanism(filename, xmlname, PInit, testf, RH, 
 						start_sim_time, lat, lon, act_flux_path, DayOfYear, 
 						chem_scheme_markers, photo_par_file):
 
 	
 	# inputs: ----------------------------------------------------------------------------
-	# TEMP - experiment temperature (K)
 	# testf - flag for operating in normal mode (0) or testing mode (1)
 	# chem_scheme_markers - markers for different sections of the chemical scheme
 	# photo_par_file - path (from PyCHAM home directory) to file containing photolysis
@@ -30,17 +31,8 @@ def extract_mechanism(filename, xmlname, TEMP, PInit, testf, RH,
 	if testf == 1: # for just testing mode
 		return(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
     
-    # calculate gas-phase concentrations of M, N2 and O2 (molecules/cc (air))
-	# 1.0e-6 converts from molecules/m3 to molecules/cc
-	# R and Avogadro's constant set the same as in atmosphereFunctions.f90 of AtChem2
-	M_val = (PInit/(8.3144621*TEMP)*6.02214129e+23)*1.0e-6
-	# N2 and O2 given the same multiplication as in atmosphereFunctions.f90 of AtChem2
-	N2_val = M_val*0.7809
-	O2_val = M_val*0.2095
-	# water concentration (C_H2O) (molecules/cc (air))
-	[C_H2O, Psat_water, H2O_mw] = water_calc(TEMP, RH, 6.02214129e+23)
     
-	# Open the file
+	# open the chemical scheme file
 	f_open_eqn = open(filename, mode='r')
 	
 	# read the file and store everything into a list
@@ -380,7 +372,7 @@ def extract_mechanism(filename, xmlname, TEMP, PInit, testf, RH,
 	# automatically generate the Rate_coeffs module that will allow rate coefficients to
 	# be calculated inside ode_gen module
 	# now create reaction rate file (reaction rates are set up to have units /s)
-	write_rate_file(reac_coef, rrc, rrc_name, M_val, N2_val, O2_val, TEMP, C_H2O, testf)
+	write_rate_file(reac_coef, rrc, rrc_name, testf)
 
 	# number of photolysis reactions, if this relevant
 	cwd = os.getcwd() # address of current working directory
@@ -425,21 +417,17 @@ def extract_mechanism(filename, xmlname, TEMP, PInit, testf, RH,
 	# nprod - number of products per equation
 	# prodn - number of columns in pindx
 	# reacn - rindx number of columns
-	# M_val - gas-phase concentration of M (molecules/cc (air))
-	# N2_val - gas-phase concentration of nitrogen (molecules/cc (air))
-	# O2_val - gas-phase concentration of oxygen (molecules/cc (air))
 	# spec_namelist - list of component names used in the chemical reaction file
 	
 	return (rindx, pindx, rstoi, pstoi, reac_coef, spec_list, Pybel_objects, num_eqn, 
 			species_step, RO2_indices, nreac,
-			nprod, prodn, reacn, M_val, N2_val, O2_val, C_H2O, 
-			Psat_water, H2O_mw, spec_namelist, Jlen)
+			nprod, prodn, reacn, spec_namelist, Jlen)
 
 
 
 # This function generates a python script that calculate rate coef. numerically
 # main part by Dave (/s)
-def write_rate_file(reac_coef, rrc, rrc_name, M, N2, O2, TEMP, C_H2O, testf):
+def write_rate_file(reac_coef, rrc, rrc_name, testf):
 	if testf==0:
 		f = open('PyCHAM/Rate_coeffs.py', mode='w')
 	if testf==2:

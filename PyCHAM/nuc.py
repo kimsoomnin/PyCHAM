@@ -4,7 +4,7 @@ import numpy as np
 import scipy.constants as si
 import ipdb
 
-def nuc(sumt, new_part_sum1, n0, y, MW, rho, num_speci, x, new_partr, t, MV, 
+def nuc(sumt, new_part_sum1, n0, y, MW, rho, num_speci, x, new_partr, MV, 
 		nucv1, nucv2, nucv3, nuc_comp):
 
 
@@ -23,7 +23,6 @@ def nuc(sumt, new_part_sum1, n0, y, MW, rho, num_speci, x, new_partr, t, MV,
 	# x - particles radius in smallest size bin(s) (um)
 	# new_partr - radius of two ELVOC molecules together in a newly nucleating 
 	# particle (cm)
-	# t - time step (s)
 	# MV - molar volume (cc/mol)
 	# nucv1/v2/v3 - parameter values for nucleation equation
 	# nuc_comp - index of the nucleating component

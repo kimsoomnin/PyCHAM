@@ -4,21 +4,21 @@ import numpy as np
 import eqn_parser
 import scipy.constants as si
 import math
+from water_calc import water_calc
 
-def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH, M, N2, 
-					O2, reac_coef, filename, PInit, time, lat, lon, Pybel_objects,
+def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH, 
+					reac_coef, filename, PInit, time, lat, lon, Pybel_objects,
 					testf, pconc, act_flux_path, dydt_trak, end_sim_time, save_step, 
-					rindx, pindx, num_eqn, nreac, nprod, DayOfYear, C_H2O, H2O_mw, 
-					spec_namelist, Compt, Ct, seed_name, const_comp, const_infl, seed_mw,
-					Cinfl, core_diss):
+					rindx, pindx, num_eqn, nreac, nprod, DayOfYear, 
+					spec_namelist, Compt, seed_name, const_comp, const_infl, seed_mw,
+					core_diss):
 		
 	# -----------------------------------------------------------
 	# inputs:
 	
 	# Comp0 - chemical scheme names of components present at start of experiment
-	# M - initial concentration of M (molecules/cc (air))
-	# N2 - initial concentration of N2 (molecules/cc (air))
-	# O2 - initial concentration of O2 (molecules/cc (air))
+	# TEMP - temperature in chamber at start of experiment (K)
+	# RH - relative humidity in chamber (dimensionless fraction 0-1)
 	# PInit - initial pressure (Pa)
 	# init_SMIL - SMILES of components present at start of experiment (whose 
 	# concentrations are given in init_conc)
@@ -32,16 +32,12 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH, M, N2,
 	# save_step - recording frequency (s)
 	# num_eqn - number of equations
 	# DayOfYear - day of year for natural light calculation (integer 1-365)
-	# C_H2O - concentration of water (molecules/cc (air))
-	# H2O_mw - molecular weight of water
 	# spec_namelist - list of components' names in chemical equation file
 	# Compt - name of component injected after start of experiment
-	# Ct - concentration of injected components after experiment start (ppb)
 	# seed_name - name of core material (input by user)
 	# const_comp - names of components with constant gas-phase concentration
 	# const_infl - names of components with constant influx
 	# seed_mw - molecular weight of seed material (g/mol)
-	# Cinfl - concentrations of component with a specified constant influx (ppb/s)
 	# core_diss - dissociation constant of seed material
 	# -----------------------------------------------------------
 
@@ -59,14 +55,8 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH, M, N2,
 	# convert concentrations
 	# total number of molecules in 1 cc air using ideal gas law.  R has units cc.Pa/K.mol
 	ntot = PInit*(NA/(8.3144598e6*TEMP))
-	# number of molecules in one billionth of this
+	# one billionth of number of molecules in chamber unit volume
 	Cfactor = ntot*1.0e-9 # ppb-to-molecules/cc
-	# convert concentrations of component injected after experiment start to  
-	# molecules/cc (air) from ppb
-	if len(Ct)>0: # if not empty
-		Ct = Ct*Cfactor
-	if len(Cinfl)>0: # conversion for components injected with constant influx
-			Cinfl = Cinfl*Cfactor # convert from ppb/s to molecules/cc.s (air)
 	
 
 	# prepare dictionary for tracking tendency to change of user-specified components
@@ -142,6 +132,11 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH, M, N2,
 	# account for water's properties
 	H2Oi = num_speci # index for water
 	num_speci += 1 # update number of species to account for water
+	
+	# update gas-phase concentration (molecules/cc (air)) and vapour pressure
+	# of water (log10(atm))
+	[C_H2O, Psat_water, H2O_mw] = water_calc(TEMP, RH, 6.02214129e+23)
+	
 	# append empty element to y and y_mw to hold water values
 	y = np.append(y, C_H2O)
 	y_mw = (np.append(y_mw, H2O_mw)).reshape(-1, 1)
@@ -178,7 +173,10 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH, M, N2,
 			# index of where initial species occurs in SMILE string
 			inj_indx[i] = spec_namelist.index(Compt[i])
 	else:
-		inj_indx = 0 # dummy	
+		inj_indx = np.zeros((1)) # dummy
+	# ensure inj_indx is integer type
+	inj_indx = inj_indx.astype('int')
 	
 	return (y, H2Oi, y_mw, num_speci, Cfactor, y_indx_plot, corei, dydt_vst, 
-				spec_namelist, inj_indx, Ct, const_compi, const_infli, Cinfl, core_diss)
+				spec_namelist, inj_indx, const_compi, const_infli, core_diss,
+				Psat_water)

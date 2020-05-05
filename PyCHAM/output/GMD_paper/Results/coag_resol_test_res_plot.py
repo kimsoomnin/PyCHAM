@@ -16,6 +16,8 @@ import matplotlib.pyplot as plt
 # for all number of size bins we use the radius bounds (um) input:
 lower_part_size = 0.005
 upper_part_size = 6
+space_mode = log
+
 # in the case of 8 size bins we use the following input:
 pconc = 45000.0, 13000.0, 2500.0, 3200.0, 200.0, 3.5e-1, 5.0e-1, 6.0e-2
 # in the case of 32 size bins we use the following input:
@@ -51,7 +53,7 @@ t_array = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header)
 
 # withdraw number-size distributions (# particles/cc (air))
 fname = str(output_by_sim+'/N_dry')
-N = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header)
+N = np.loadtxt(fname, delimiter=',', skiprows=1)
 
 # withdraw radii at size bin centre (um)
 fname = str(output_by_sim+'/x')
@@ -59,7 +61,7 @@ x = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header)
 
 # withdraw size bin bounds, represented by radii (um)
 fname = str(output_by_sim+'/sbb')
-sbb = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header)
+sbb = np.loadtxt(fname, delimiter=',', skiprows=1)
 
 # withdraw molecular concentrations (molecules/cc)
 fname = str(output_by_sim+'/y')

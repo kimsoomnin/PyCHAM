@@ -6,7 +6,7 @@ import scipy.constants as si
 from scipy import stats # import the scipy.stats module
 
 def pp_dursim(y, N_perbin, mean_rad, pconc, corei, lowersize, uppersize, num_speci, 
-				num_sb, MV, rad0, std, y_dens, H2Oi):
+				num_sb, MV, rad0, std, y_dens, H2Oi, rbou):
 	
 			
 	# inputs -----------------------------------
@@ -24,6 +24,7 @@ def pp_dursim(y, N_perbin, mean_rad, pconc, corei, lowersize, uppersize, num_spe
 	# std - standard deviation for lognormal size distribution calculation (dimensionless)
 	# y_dens  - density of components (kg/m3)
 	# H2Oi - index of water
+	# rbou - radius bounds per size bin (um)
 	# ------------------------------------------
 	
 	
@@ -39,8 +40,12 @@ def pp_dursim(y, N_perbin, mean_rad, pconc, corei, lowersize, uppersize, num_spe
 	
 	if num_sb == 2:
 		N_perbin += np.array((pconc)) # (# particles/cc (air))
-	if num_sb > 2 and len(pconc)==num_sb-1:
+		pconc_new = pconc
+	# number concentration stated per size bin in multi size bin simulation
+	if num_sb > 2 and len(pconc)==num_sb-1: 
 		N_perbin += np.array((pconc)) # (# particles/cc (air))
+		pconc_new = pconc
+	# total number concentration stated in multi size bin simulation
 	if num_sb > 2 and len(pconc)==1:
 		
 		# set scale and standard deviation input for lognormal probability distribution 
@@ -52,15 +57,11 @@ def pp_dursim(y, N_perbin, mean_rad, pconc, corei, lowersize, uppersize, num_spe
 	
 		# number fraction-size distribution - enforce high resolution to ensure size
 		# distribution of seed particles fully captured
-		if lowersize>0.0:
-			hires = 10**(np.linspace(np.log10(lowersize), np.log10(uppersize), (num_sb-1)*1.0e2))
-		else:
-			hires = 10**(np.linspace(-4, np.log10(uppersize), (num_sb-1)*1.0e2))
+		hires = 10**(np.linspace(np.log10((rad0[0]-(rbou[1]-rbou[0])/2.1)), np.log10(uppersize), (num_sb-1)*1.0e2))
 		pdf_output = stats.lognorm.pdf(hires, std, loc, scale)
 		pdf_out = np.interp(rad0, hires, pdf_output)	
 		# number concentration of seed in all size bins (# particle/cc (air))
 		pconc_new = (pdf_out/sum(pdf_out))*pconc
-		mean_rad = rad0
 		N_perbin += pconc_new # (# particles/cc (air))
 	
 	# molecular concentration of seed required to comprise these additional seed particle
@@ -69,9 +70,9 @@ def pp_dursim(y, N_perbin, mean_rad, pconc, corei, lowersize, uppersize, num_spe
 # 	print(pconc_new)
 # 	print((pdf_out/sum(pdf_out)))
 	
-	# volume concentration of seed particles (cm3/cc (air)), note mean_rad scaled up to 
+	# volume concentration of seed particles (cm3/cc (air)), note rad0 scaled up to 
 	# cm from um
-	Vperbin = ((pconc_new*(4.0/3.0)*np.pi*(mean_rad*1.0e-4)**3.0))
+	Vperbin = ((pconc_new*(4.0/3.0)*np.pi*(rad0*1.0e-4)**3.0))
 	# corresponding molecular concentration of seed material (molecules/cc (air))
 	y[corei:(num_speci*(num_sb-1)+corei):num_speci] += Vperbin/(MV[corei]/NA)
 	

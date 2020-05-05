@@ -10,10 +10,12 @@ def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 			mfp, accom_coeff, y_mw, surfT, 
 			DStar_org, RH, num_sb, lowersize, uppersize, pconc, tmax, 
 			nuc_comp, testf, std, mean_rad, therm_sp,
-			Cw, y_dens, Psat, core_diss, kgwt, space_mode, corei, spec_namelist):
+			Cw, y_dens, Psat, core_diss, kgwt, space_mode, corei, spec_namelist, 
+			act_coeff):
 	
 			
 	# inputs -----------------------------------
+	# TEMP - temperature (K) in chamber at start of experiment
 	# y_mw - molecular weight (g/mol) of components (num_speci, 1)
 	# num_sb - number of size bins (excluding wall)
 	# lowersize - lowest size bin radius bound (um)
@@ -40,6 +42,7 @@ def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 	# linearly
 	# corei - index of component comprising seed particles
 	# spec_namelist - names of components noted in chemical scheme file
+	# act_coeff - activity coefficient of components
 	# ------------------------------------------
 	
 	if testf==1: # in test mode
@@ -91,6 +94,7 @@ def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 		[N_perbin, x, rbou, Vbou, Varr, upper_bin_rad_amp] = Size_distributions.lognormal(num_sb, 
 									pconc, std, lowersize, uppersize, loc, scale, 
 									space_mode)
+		
 		if testf==2:
 			print('finished with Size_distributions.lognormal')
 		
@@ -124,7 +128,7 @@ def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 	
 	if num_sb>0:
 		# remember the radii (um) and volumes (um3) at size bin centre before water 
-		# partitioning 
+		# partitioning
 		rad0 = np.zeros((len(x)))
 		rad0[:] = x[:]
 		Vol0 = np.zeros((len(Varr)))
@@ -153,10 +157,10 @@ def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 		print('calling init_water_partit.py')
 
 	# allow water to equilibrate with particles and walls
-	[y, Varr, x] = init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci, 
+	[y, Varr, x, N_perbin] = init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci, 
 					accom_coeff, y_mw, surfT, R_gas, TEMP, NA, y_dens, 
 					N_perbin, DStar_org, RH, core_diss, Varr, Vbou, Vol0, tmax, MV,
-					therm_sp, Cw, pconc, kgwt, corei)
+					therm_sp, Cw, pconc, kgwt, corei, act_coeff)
 
 	if testf==2:
 		print('finished with init_water_partit.py')

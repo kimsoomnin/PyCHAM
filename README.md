@@ -215,15 +215,20 @@ return (so one line per variable, an error message will show if a variable is mi
 note that if a variable is irrelevant for your simulation, it can be left empty 
 (e.g. vol_Comp = ):
 
-Res_file_name = Name of folder to save results to
+res_file_name = Name of folder to save results to.
 
-Total_model_time = Simulation time (s)
+total_model_time = Total experiment time to be simulated (s).
 
-Time_step = Maximum time interval for ode (s)
+bc_time_step = Maximum time interval for ode solver and updating boundary conditions (s).
+				Must be at most the value of op_spl_step.  Default is 60 s.
 
-Recording_time_step = Time interval for recording results (s)
+op_spl_step = Time (s) interval for solving operator-split processes over, must be at 
+				least as long as bc_time_step.  Default to 60 s.
 
-Number_size_bins = Number of size bins (excluding wall); to turn off particle
+recording_time_step = Time interval for recording results (s).  Must be at least the value
+					of bc_time_step.  Defaults to 60 s.
+
+number_size_bins = Number of size bins (excluding wall); to turn off particle
 					considerations set to 0 (which is also the default), likewise
 					set pconc and seed_name variables below off.  Must be integer (e.g. 1)
 					not float (e.g. 1.0)
@@ -241,11 +246,29 @@ kgwt = mass transfer coefficient of vapour-wall partitioning (/s), if left empty
 eff_abs_wall_massC = effective absorbing wall mass concentration (g/m3 (air)), if left 
 		 empty defaults to zero
 
-Temperature = Temperature (K)
+temperature = Air temperature inside the chamber (K).  At least one value must be given
+				for the experiment start (times corresponding to temperatures given in 
+				tempt variable below).  If multiple values, representing changes in
+				temperature at different times, then separate by a comma.
+				For example, if the temperature at experiment start is 290.0 K and this
+				increases to 300.0 K after 3600.0 s of the experiment, inputs are:
+				temperature = 290.0, 300.0
+				tempt = 0.0, 3600.0
+				
+tempt = Times since start of experiment (s) at which the temperature(s) set by the
+		temperature variable above, are reached.  Defaults to 0.0 if left empty as at 
+		least the temperature at experiment start needs to be known.
+		If multiple values, representing changes in
+		temperature at different times, then separate by a comma.
+		For example, if the temperature at experiment start is 290.0 K and this
+		increases to 300.0 K after 3600.0 s of the experiment, inputs are:
+		temperature = 290.0, 300.0
+		tempt = 0.0, 3600.0
+		
 
-PInit = the chamber pressure (Pa)
+p_init = Pressure of air inside the chamber (Pa).
 
-RH = Relative Humidity (fraction, 0-1)
+rh = Relative Humidity (fraction, 0-1).
 
 lat = latitude (degrees) for natural light intensity (if applicable, leave empty if not (if experiment is dark set light_status below to 0 for all times))
 
@@ -375,8 +398,7 @@ injectt = Time(s) at which injections occur (seconds), which correspond to the
 			Note this is for components with concentrations allowed  
 			to change, see const_comp for those with invariable concentrations
 
-const_comp = Name of component with continuous gas-phase concentration inside chamber, 
-			e.g. through continous inward flow to replenish lost gas-phase presence. 
+const_comp = Name of component with continuous gas-phase concentration inside chamber. 
 			Note, this is case sensitive, with the case matching that in the xml file.  
 			Defaults to nothing if left empty.  To specifically account for constant
 			influx, see const_infl variable below.
@@ -424,7 +446,9 @@ vol_Comp = Names of components with vapour pressures to be manually assigned fro
 		separated by commas.  Can be left empty, which is the default.
 
 volP = Vapour pressures (Pa) of components with names given in vol_Comp variable above,
-		where one vapour pressure must be stated for each component named in vol_Comp
+		where one vapour pressure must be stated for each component named in vol_Comp and
+		multiple values should be separated by a comma.
+		Acceptable for inputs to use e for standard notation, such as 1.0e-2 for 0.01 Pa
 
 act_comp = Names of components (names given in the chemical scheme) with activity 
 		coefficients stated in act_user 

@@ -1,4 +1,7 @@
 '''The module that generates the Graphical User Interface for PyCHAM, and connects that GUI with the core PyCHAM model'''
+# first module called when PyCHAM started from the terminal/command window, takes inputs
+# and sends to model modules, also calls the saving module
+
 
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QFileDialog, QLabel
@@ -62,7 +65,8 @@ class PyCHAM(QWidget):
 	def on_click1(self):
 		
 		dirpath = os.getcwd() # get current path
-		fname = dirpath+'/PyCHAM/inputs/limonene_MCM_PRAM.txt' # hard-code chemical scheme input
+# 		fname = dirpath+'/PyCHAM/inputs/limonene_MCM_PRAM.txt' # hard-code chemical scheme input
+		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/tr_tests_chem.txt' # hard-code chemical scheme input
 # 		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
 		with open(dirpath+'/fname.txt','w') as f:
 			f.write(fname)
@@ -81,7 +85,8 @@ class PyCHAM(QWidget):
 	@pyqtSlot()
 	def on_click3(self):
 		dirpath = os.getcwd() # get current path
-		inname = dirpath+'/PyCHAM/inputs/limonene_inputs_test.txt' # hard-code model variables input
+# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/limonene_inputs.txt' # hard-code model variables input
+		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/tr_tests_mvcen_inputs.txt' # hard-code model variables input
 # 		inname = self.openFileNameDialog() # name of model variables inputs file
 		
 		# open the file
@@ -92,7 +97,7 @@ class PyCHAM(QWidget):
 		inputs.close()
 		
 		# check on whether correct number of inputs supplied
-		input_len = 63
+		input_len = 64
 		if len(in_list) != input_len:
 			print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list)) + ', please see the README file for guidance'))
 			sys.exit()
@@ -161,19 +166,27 @@ class PyCHAM(QWidget):
 					Cw = float(0.0)
 				else:
 					Cw = float(value.strip())
-			if key == 'Temperature':
+					
+			# temperature inputs		
+			if key == 'temperature':
 				if value.split(',')==['\n']:
-					print('Error: no air temperature detected in model inputs file')
+					print('Error: no air temperature detected in model variables file, but this required to run, see README for guidance')
 					sys.exit()
 				else:
-					TEMP = float(value.strip())
-			if key == 'PInit':
+					TEMP = [float(i) for i in ((value.strip()).split(','))]
+			if key == 'tempt': # times (s) that temperature values correspond to
+				if (value.strip()).split(',')==['']:
+					tempt = [0.0] # relates to start of experiment (s) 
+				else: # list of times
+					tempt = [float(i) for i in ((value.strip()).split(','))]
+					
+			if key == 'p_init':
 				if value.split(',')==['\n']:
-					print('Error: no air pressure detected in model inputs file')
+					print('Error: no air pressure detected in model variables file, but this required to run, see README for guidance')
 					sys.exit()
 				else:
 					PInit = float(value.strip())
-			if key == 'RH':
+			if key == 'rh':
 				if value.split(',')==['\n']:
 					print('Error: no relative humidity detected in model variables input file')
 					sys.exit()
@@ -577,10 +590,16 @@ class PyCHAM(QWidget):
 		# --------------------------------------------------------------------------------
 		# checks on inputs
 		
+		# cannot have operator-split step less than boundary condition step as the 
+		# operator split processes won't be called with sufficient frequency
+		if op_splt_step<tstep_len:
+			print('Note: inside the model variables input file the time interval for integrating over by the ode solver and updating boundary conditions (bc_time_step) is more than that for the opertaor split (op_spl_step) processes, therefore reducing to value of the operator-split.  Please see README for guidance.')
+			tstep_len -= (tstep_len-op_splt_step)
+		
 		# can't have a recording time step (s) less than the ode solver time step (s),
 		# so force to be equal and tell user
 		if save_step<tstep_len:
-			print('Recording time step cannot be less than the ode solver time step, so increasing recording time step to be equal to input ode solver time step')
+			print('Recording time step (tstep_len) cannot be less than the ode solver time step, so increasing recording time step to be equal to ode solver time step (save_step), note both variables set in the model variables input file.  Please see README for guidance.')
 			save_step = tstep_len
 		
 		# if initial particle concentration is an array, its elements must align with the
@@ -637,7 +656,10 @@ class PyCHAM(QWidget):
 				sys.exit()
 		if len(accom_coeff_ind)!=len(accom_coeff_user):
 			print('Error: the variables accom_coeff_ind and accom_coeff_user, both set in the model variables input file, have different lengths, but they must be the same length, please check README for guidance')
-			sys.exit()		
+			sys.exit()	
+		if len(TEMP)!=len(tempt):
+			print('Error: the variables temperature and tempt, both set in the model variables input file, have different lengths, but they must be the same length, please check README for guidance')
+			sys.exit()
 		
 		# --------------------------------------------------------------------------------
 		# get names of chemical scheme and xml files
@@ -667,7 +689,7 @@ class PyCHAM(QWidget):
 		kgwt, dydt_trak, space_mode, Ct, Compt, injectt, seed_name, const_comp,
 		const_infl, Cinfl, act_comp, act_user, seed_mw, umansysprop_update, seed_dens, 
 		p_char, e_field, const_infl_t, chem_scheme_markers, int_tol, photo_par_file, 
-		dil_fac, pconct, accom_coeff_ind, accom_coeff_user, op_splt_step]
+		dil_fac, pconct, accom_coeff_ind, accom_coeff_user, op_splt_step, tempt]
 		
 		if os.path.isfile(dirpath+'/testf.txt'):
 			print('Model input buttons work successfully')

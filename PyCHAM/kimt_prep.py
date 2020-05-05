@@ -12,7 +12,7 @@ def kimt_prep(y_mw, TEMP, num_speci, testf, Cw, act_comp, act_user, accom_coeff_
 	# ------------------------------------------------------------------
 	# inputs:
 	# y_mw - molecular weight of components (g/mol) (num_speci,1)
-	# TEMP - temperature (K)
+	# TEMP - temperature of chamber at start of experiment (K)
 	# num_speci - number of components
 	# testf - flag for whether in normal mode (0) or testing mode (1)
 	# Cw - effective absorbing mass of wall (g/m3 (air))

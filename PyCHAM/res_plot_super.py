@@ -87,7 +87,7 @@ def run(testf):
 	PyCHAM_names = const['component_names']
 	# conversion factor to change gas-phase concentrations from molecules/cc 
 	# (air) into ppb
-	Cfactor = float((const['factor_for_multiplying_ppb_to_get_molec/cm3'])[0])
+	Cfactor = const['factor_for_multiplying_ppb_to_get_molec/cm3_with_time']
 
 	
 	# name of file where concentration (molecules/cc (air)) results saved

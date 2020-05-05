@@ -38,7 +38,7 @@ def run(testf):
 	const_comp, const_infl, Cinfl, act_comp, act_user, seed_mw, 
 	umansysprop_update, core_dens, p_char, e_field, const_infl_t, 
 	chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, accom_coeff_ind, 
-	accom_coeff_user, op_splt_step] = ui.run(0, testf)
+	accom_coeff_user, op_splt_step, tempt] = ui.run(0, testf)
 	
 	if testm == 1:
 		print('PyCHAM calls front fine, now returning to PyCHAM.py')
@@ -52,9 +52,8 @@ def run(testf):
 	# obtain gas-phase reaction info
 	[rindx, pindx, rstoi, pstoi, reac_coef, spec_list, Pybel_objects, num_eqn, num_speci, 
 		RO2_indices, nreac, nprod, prodn, 
-		reacn, M_val, N2_val, O2_val, C_H2O, Psat_water, 
-		H2O_mw, spec_namelist, Jlen] = eqn_parser.extract_mechanism(fname, xmlname, 
-							TEMP, PInit, testf, RH, start_sim_time, lat, 
+		reacn, spec_namelist, Jlen] = eqn_parser.extract_mechanism(fname, xmlname, 
+							PInit, testf, RH, start_sim_time, lat, 
 							lon, act_flux_path, DayOfYear, chem_scheme_markers, 
 							photo_par_file)
 
@@ -64,21 +63,23 @@ def run(testf):
 	# set up initial gas-phase concentration array
 	[y, H2Oi, y_mw, num_speci, 
 	Cfactor, y_indx_plot, corei, dydt_vst, spec_namelist, 
-							inj_indx, Ct, const_compi, 
-							const_infli, Cinfl, core_diss] = init_conc_func(num_speci, 
-							Comp0, 
-							init_conc, TEMP, RH, M_val, N2_val, O2_val, reac_coef, fname, 
+							inj_indx, const_compi, 
+							const_infli, core_diss, 
+							Psat_water] = init_conc_func(num_speci, 
+							Comp0, init_conc, TEMP[0], RH, 
+							reac_coef, fname, 
 							PInit, start_sim_time, lat, lon, Pybel_objects, testf, pconc,
 							act_flux_path, dydt_trak, end_sim_time, save_step, rindx, 
-							pindx, num_eqn, nreac, nprod, DayOfYear, C_H2O, H2O_mw, 
-							spec_namelist, Compt, Ct, seed_name, const_comp, const_infl, 
-							seed_mw, Cinfl, core_diss)
+							pindx, num_eqn, nreac, nprod, DayOfYear, 
+							spec_namelist, Compt, seed_name, const_comp, const_infl, 
+							seed_mw, core_diss)
 
 	if testf==1:
 		print('init_conc_func called and returned fine')
 		print('calling kimt_prep')
 	# set up partitioning variables
-	[DStar_org, mfp, accom_coeff, therm_sp, surfT, Cw, act_coeff] = kimt_prep(y_mw, TEMP, 
+	[DStar_org, mfp, accom_coeff, therm_sp, surfT, Cw, act_coeff] = kimt_prep(y_mw, 
+											TEMP[0], 
 											num_speci, testf, Cw, act_comp, act_user, 
 											accom_coeff_ind, accom_coeff_user, 
 											spec_namelist, num_sb)
@@ -88,9 +89,10 @@ def run(testf):
 		print('kimt_prep called and returned fine')
 		print('calling volat_calc.py')
 		
-	[Psat, y_dens, Psat_Pa] = volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci,  
+	[Psat, y_dens, Psat_Pa] = volat_calc(spec_list, Pybel_objects, TEMP[0], H2Oi, 
+								num_speci,  
 								Psat_water, vol_Comp, volP, testf, corei, pconc,
-								umansysprop_update, core_dens, spec_namelist)
+								umansysprop_update, core_dens, spec_namelist, 0)
 
 	if testf==1:
 		print('volat_calc called and returned fine')
@@ -101,14 +103,20 @@ def run(testf):
 		print('calling pp_intro')
 	
 	# set up particle phase part
+	# check whether there are particles at the start of simulation
+	if pconct[0, 0] == 0.0:
+		pconc_now = pconc[:, 0]
+	else:
+		pconc_now = np.zeros((1))
+
 	[y, N_perbin, x, Varr, Vbou, rad0, Vol0, rbou, 
 							MV, num_sb, nuc_comp, rbou00, upper_bin_rad_amp] = pp_intro(y, 
-							num_speci, Pybel_objects, TEMP, H2Oi, 
+							num_speci, Pybel_objects, TEMP[0], H2Oi, 
 							mfp, accom_coeff, y_mw, surfT, DStar_org, 
-							RH, num_sb, lowersize, uppersize, pconc[:, 0], tmax, nuc_comp, 
+							RH, num_sb, lowersize, uppersize, pconc_now, tmax, nuc_comp, 
 							testf, std[0, 0], mean_rad[0, 0], 
 							therm_sp, Cw, y_dens, Psat, core_diss, kgwt, space_mode, 
-							corei, spec_namelist)
+							corei, spec_namelist, act_coeff)
 	
 	t1 = time.clock() # get wall clock time before call to solver
 	if testf==1:
@@ -116,7 +124,8 @@ def run(testf):
 		print('calling ode_gen')
 	
 	# call on ode function
-	[t_out, y_mat, Nresult_dry, Nresult_wet, x2, dydt_vst] = ode_gen(tstep_len, y, 
+	[t_out, y_mat, Nresult_dry, Nresult_wet, x2, 
+				dydt_vst, Cfactor_vst] = ode_gen(tstep_len, y, 
 				num_speci, num_eqn, 
 				rindx, pindx, 
 				rstoi, pstoi, H2Oi, TEMP, RO2_indices, 
@@ -130,7 +139,8 @@ def run(testf):
 				start_sim_time, lat, lon, act_flux_path, DayOfYear, Ct, injectt, inj_indx,
 				corei, const_compi, const_comp, const_infli, Cinfl, act_coeff, p_char, 
 				e_field, const_infl_t, int_tol, photo_par_file, Jlen, dil_fac, pconct,
-				lowersize, uppersize, mean_rad, std, op_splt_step)
+				lowersize, uppersize, mean_rad, std, op_splt_step, Pybel_objects, tempt,
+				Cfactor)
 				
 	
 	t2 = time.clock() # get wall clock time after call to solver
@@ -159,7 +169,7 @@ def run(testf):
 	output_by_sim = saving(fname, y_mat, t_out, Nresult_dry, Nresult_wet, x2, num_sb, 
 							y_mw, num_speci, 
 							resfname, rbou, Cfactor, MV, testf, dydt_vst, dydt_trak,
-							spec_namelist, rbou00, upper_bin_rad_amp)
+							spec_namelist, rbou00, upper_bin_rad_amp, Cfactor_vst)
 	if testf==1:
 		print('saving called and returned successfully')
 	return()

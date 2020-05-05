@@ -3,6 +3,7 @@
 import numpy as np
 import ipdb
 import scipy.constants as si
+import matplotlib.pyplot as plt
 
 def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0, MV, 
 				Psat, Cg, Cg0, bc_red):
@@ -130,6 +131,9 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 			print('Vnew = ', Vnew)
 			print('s0 = ', s0)
 			print('n0 = ', n0)
+# 			plt.plot(n0, 'ob')
+# 			plt.plot(s0[1::]-Vnew, '--xr')
+# 			plt.show()
 		if np.sum(Vnew[ind_movedn]<(s0[0:-1][ind_movedn2]))>0:
 			print('excess shrinkage in moving centre, reducing time step')
 			print('index of shrinking particles followed by boolean array of those with excess shrinkage:')

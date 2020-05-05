@@ -33,7 +33,7 @@ inputs = open(inname, mode='r')
 in_list = inputs.readlines()
 inputs.close()
 
-input_len = 63
+input_len = 64
 
 if len(in_list) != input_len:
 	print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list))))
@@ -102,19 +102,25 @@ for i in range(len(in_list)):
 			Cw = float(0.0)
 		else:
 			Cw = float(value.strip())
-	if key == 'Temperature':
+	if key == 'temperature':
 		if value.split(',')==['\n']:
 			print('Error: no air temperature detected in model inputs file')
 			sys.exit()
 		else:
-			TEMP = float(value.strip())
-	if key == 'PInit':
+			TEMP = [float(i) for i in ((value.strip()).split(','))]
+	if key == 'tempt': # times (s) that temperature values correspond to
+		if (value.strip()).split(',')==['']:
+			tempt = [0.0] # relates to start of experiment (s) 
+		else: # list of times
+			tempt = [float(i) for i in ((value.strip()).split(','))]
+			
+	if key == 'p_init':
 		if value.split(',')==['\n']:
 			print('Error: no air pressure detected in model inputs file')
 			sys.exit()
 		else:
 			PInit = float(value.strip())
-	if key == 'RH':
+	if key == 'rh':
 		if value.split(',')==['\n']:
 			print('Error: no relative humidity detected in model variables input file')
 			sys.exit()
@@ -572,7 +578,7 @@ vol_Comp, volP, pconc, std, mean_rad, core_diss, light_stat, light_time,
 kgwt, dydt_trak, space_mode, Ct, Compt, injectt, seed_name, const_comp,
 const_infl, Cinfl, act_wi, act_w, seed_mw, umansysprop_update, seed_dens, p_char, 
 e_field, const_infl_t, chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, 
-accom_coeff_ind, accom_coeff_user, op_splt_step]
+accom_coeff_ind, accom_coeff_user, op_splt_step, tempt]
 	
 if os.path.isfile(dirpath+'/testf.txt'):
 	print('Model input buttons work successfully')

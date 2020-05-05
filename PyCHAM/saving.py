@@ -6,7 +6,7 @@ import numpy as np
 
 def saving(filename, y_mat, t_out, Nresult_dry, Nresult_wet, x2, numsb, y_mw, num_speci, 
 			savefolder, rbou, Cfactor, MV, testf, dydt_vst, dydt_trak, spec_namelist, 
-			rbou00, upper_bin_rad_amp):
+			rbou00, upper_bin_rad_amp, Cfactor_vst):
 			
 	#  -------------------------------
 	# inputs:
@@ -25,6 +25,8 @@ def saving(filename, y_mat, t_out, Nresult_dry, Nresult_wet, x2, numsb, y_mw, nu
 	# upper_bin_rad_amp - factor upper bin radius found increased by in 
 	#						Size_distributions.py for more than 1 size bin, or in 
 	# 						pp_intro.py for 1 size bin
+	# Cfactor_vst - one billionth the molecular concentration in a unit volume of chamber
+	#				(molecules/cc) per recording time step
 	# -------------------------------
 	
 	if testf==1:
@@ -48,14 +50,14 @@ def saving(filename, y_mat, t_out, Nresult_dry, Nresult_wet, x2, numsb, y_mw, nu
 	const["molecular_weights_g/mol_corresponding_to_component_names"] = (np.squeeze(y_mw[:, 0]).tolist())
 	const["molecular_volumes_cm3/mol"] = (MV[:, 0].tolist())
 	const["component_names"] = spec_namelist
-	const["factor_for_multiplying_ppb_to_get_molec/cm3"] = Cfactor
+	const["factor_for_multiplying_ppb_to_get_molec/cm3_with_time"] = (Cfactor_vst.tolist())
 	with open(os.path.join(output_by_sim,'model_and_component_constants'),'w') as f:
 		for key in const.keys():
 			f.write("%s,%s\n"%(key, const[key]))
 	
 	# convert gas-phase concentrations from molecules/cc (air) into ppb
 	# leaving any particle-phase concentrations as molecules/cc (air)
-	y_mat[:, 0:num_speci] = y_mat[:, 0:num_speci]/Cfactor
+	y_mat[:, 0:num_speci] = y_mat[:, 0:num_speci]/(Cfactor_vst.reshape(len(Cfactor_vst), 1))
 	
 	# prepare header for concentrations with time file 
 	y_header = str('')

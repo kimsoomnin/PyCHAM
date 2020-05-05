@@ -77,10 +77,9 @@ def lognormal(num_bins, pconc, std, lowersize, uppersize, loc, scale, space_mode
 	# linear method
 	if space_mode == 'lin' or space_mode == 'none':
 		rad_bounds = np.linspace(lowersize, uppersize, (num_bins+1))
-		rwid = (rad_bounds[1]-rad_bounds[0]) # width of size bins (um)
+		# width of size bins (um)
+		rwid = np.array((rad_bounds[1]-rad_bounds[0])).reshape(1)
 		x_output = rad_bounds[0:-1]+rwid/2.0 # particle radius (um)
-
-
 
 	# ---------------------------------------
 	# enhance upper radius bound (um) to reduce possibility of particles growing beyond 
@@ -91,7 +90,9 @@ def lognormal(num_bins, pconc, std, lowersize, uppersize, loc, scale, space_mode
 	if len(pconc)==1 and sum(pconc)>0.0: # for calculating the number size distribution
 		# number fraction-size distribution - enforce high resolution to ensure size
 		# distribution of seed particles fully captured
-		hires = 10**(np.linspace(np.log10(lowersize), np.log10(uppersize), num_bins*1.0e2))
+		# note dividing rwid[0,0] by 2.1 rather than 2.0 prevents the lower bound reaching 
+		# zero and still gives a useful range
+		hires = 10**(np.linspace(np.log10(x_output[0]-rwid[0]/2.1), np.log10(uppersize), num_bins*1.0e2))
 		pdf_output = stats.lognorm.pdf(hires, std, loc, scale)
 		pdf_out = np.interp(x_output, hires, pdf_output)	
 		# number concentration of all size bins (# particle/cc (air))

@@ -1,4 +1,8 @@
 '''function to record ode results in model real-time, but not to save a hard copy of results'''
+# this function is called from ode_gen to log the variables of interest as simulation
+# time develops, with the resulting objects passed to the saving module which is
+# responsible for storing the log on the computer
+
 import numpy as np
 import ipdb
 
@@ -7,7 +11,7 @@ def recording(y, N_perbin, x, step, sumt, y_mat, Nresult_dry, Nresult_wet, x2, t
 				pindx, nprod, dydt_vst, RO2_indices, H2Oi, TEMP, lightm, nreac, 
 				pconc, core_diss, Psat, kelv_fac, kimt, kwgt, Cw, timeoday, lat, lon, 
 				act_flux_path, DayOfYear, act_coeff, PInit, photo_par_file, Jlen, 
-				reac_coef):
+				reac_coef, Cfactor, Cfactor_vst):
 
 	# -------------------------------------------------		
 	# inputs:
@@ -28,12 +32,16 @@ def recording(y, N_perbin, x, step, sumt, y_mat, Nresult_dry, Nresult_wet, x2, t
 	# photo_par_file - name of file containing photochemical reaction parameters
 	# Jlen - number of photochemical reactions
 	# reac_coef - reaction rate coefficients during this time step (/s)
+	# Cfactor - one billionth the number of molecules in a unit volume of chamber 
+	#			(molecules/cc)
+	# Cfactor_vst - Cfactor (as described above), but stored over simulation time
 	# -------------------------------------------------
 	
     
     # set up recording matrices on the first step
 	if step == 0:
 		y_mat = np.zeros((tot_stps+1, num_speci+num_sb*num_speci))
+		Cfactor_vst = np.zeros((tot_stps+1)) # storing the conversion factor for concentrations from molecules/cc to ppb
 		if num_sb>0:
 			x2 = np.zeros((tot_stps+1, num_sb-1))
 			Nresult_dry = np.zeros((tot_stps+1, num_sb-1))
@@ -48,6 +56,8 @@ def recording(y, N_perbin, x, step, sumt, y_mat, Nresult_dry, Nresult_wet, x2, t
     
 	# note that radius is saved as part of mov_cen_main.py
 	y_mat[step, :] = y
+	Cfactor_vst[step] = Cfactor
+	
 	if num_sb>1:
 	
 		MV = (MW/rho).reshape(num_speci, 1) # molar volume (cc/mol)
@@ -101,4 +111,4 @@ def recording(y, N_perbin, x, step, sumt, y_mat, Nresult_dry, Nresult_wet, x2, t
 					dydt_vst, nreac, num_sb, num_speci, pconc, core_diss, Psat, kelv_fac, 
 					kimt, kwgt, Cw, act_coeff)
 
-	return(t_out, y_mat, Nresult_dry, Nresult_wet, x2, dydt_vst)
+	return(t_out, y_mat, Nresult_dry, Nresult_wet, x2, dydt_vst, Cfactor_vst)
