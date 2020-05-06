@@ -11,10 +11,10 @@ import scipy.constants as si
 def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci, 
 						accom_coeff, y_mw, surfT, R_gas, TEMP, NA, y_dens, 
 						N_perbin, DStar_org, RH, core_diss, Varr, Vbou, Vol0, tmax, MV,
-						therm_sp, Cw, total_pconc, kgwt, corei, act_coeff):
+						therm_sp, Cw, total_pconc, kgwt, corei, act_coeff, x0):
 						
 	# inputs: ------------------------------------------------------
-	# x - radius of particles at size bin centres (um)
+	# x - radius of particles per size bin (um)
 	# Psat - saturation vapour pressure of components (molecules/cc (air))
 	# therm_sp - thermal speed of components (m/s) (num_speci)
 	# Cw - concentration of wall (molecules/cc (air))
@@ -22,15 +22,14 @@ def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci,
 	# kgwt - mass transfer coefficient for vapour-wall partitioning (/s)
 	# corei - index of core component
 	# act_coeff - activity coefficients of components (dimensionless)
+	# x0 - radius of particles at size bin centres (um)
 	# --------------------------------------------------------------
 	
 
 	if sum(total_pconc)>0.0: # if seed particles present
-		# new array of size bin radii (um)		
-		radius = np.zeros((len(x)))
-		radius[:] = x[:]
+		# new array of size bin radii (um)
 		print('equilibrating water in vapour with water in seed particles')
-
+# 		plt.semilogy(x, 'r')
 		for sbstep in range(len(x)): # loop through size bins
 			if N_perbin[sbstep]<1.0e-10: # no need to partition if no particle present
 				continue
@@ -113,7 +112,7 @@ def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci,
 		
 				
 				dydt = kimt[H2Oi, sbstep]*(Cgit-Csit) # partitioning rate (molecules/cc.s)
-				dydtn = dydt*(dydtfac*RH*radius[sbstep]**3.0)
+				dydtn = dydt*(dydtfac*RH*x[sbstep]**3.0)
 				# new estimate of concentration of condensed water (molecules/cc (air))
 				y[num_speci*(sbstep+1)+H2Oi] += dydtn
 				# if iteration becomes unstable, reset and reduce change per step
@@ -126,26 +125,28 @@ def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci,
 					dydtfac = dydtfac/2.0
 				
 				# check on iteration
-# 				print(sbstep, Cgit-Csit, dydt*(dydtfac*RH*radius[sbstep]**3.0), y[num_speci*(sbstep+1)+H2Oi], (np.sum(y[num_speci*(sbstep+1):num_speci*(sbstep+2)])), dydt0, dydtn) # check on iteration progress
+# 				print(sbstep, Cgit-Csit, dydt*(dydtfac*RH*x[sbstep]**3.0), y[num_speci*(sbstep+1)+H2Oi], (np.sum(y[num_speci*(sbstep+1):num_speci*(sbstep+2)])), dydt0, dydtn) # check on iteration progress
 # 				print(dydtfac)
 # 				ipdb.set_trace()
 				# remember change in this step
 				dydt0 = dydtn
+			
+			
 			# call on the moving centre method for redistributing particles that have grown beyond their upper size bin boundary due to water condensation, note, any do this after the iteration per size bin when we know the new particle-phase concentration of water
-			(N_perbin, Varr, y[num_speci:-num_speci], radius, redt, blank, tnew) = movcen(N_perbin, Vbou, 
+			(N_perbin, Varr, y[num_speci:-num_speci], x, redt, blank, tnew) = movcen(N_perbin, Vbou, 
 			np.transpose(y[num_speci:-num_speci].reshape(num_sb-1, num_speci)), 
-			(np.squeeze(y_dens*1.0e-3)), num_sb-1, num_speci, y_mw, x, Vol0, 0.0,
+			(np.squeeze(y_dens*1.0e-3)), num_sb-1, num_speci, y_mw, x0, Vol0, 0.0,
 			0, MV)
 			
 			if redt == 1: # check on whether exception raised by moving centre
-					print('Error whilst equilibrating seed particles with water vapour (inside init_water_partit module).  Please investigate, perhaps by checking rh and pconc inputs in model variables input file.  See README for guidance and how to report bugs.')
-					sys.exit()
+				print('Error whilst equilibrating seed particles with water vapour (inside init_water_partit module).  Please investigate, perhaps by checking rh and pconc inputs in model variables input file.  See README for guidance and how to report bugs.')
+				sys.exit()
 			
 			sbstep += 1
 
-
-		# revalue radius at particle bin centres following water partitioning (um)
-		x[:] = radius[:]
+	
+	plt.semilogy(x, 'k')
+	plt.show()
 	
 	
 

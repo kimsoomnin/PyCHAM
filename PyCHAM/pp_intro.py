@@ -160,7 +160,7 @@ def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 	[y, Varr, x, N_perbin] = init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci, 
 					accom_coeff, y_mw, surfT, R_gas, TEMP, NA, y_dens, 
 					N_perbin, DStar_org, RH, core_diss, Varr, Vbou, Vol0, tmax, MV,
-					therm_sp, Cw, pconc, kgwt, corei, act_coeff)
+					therm_sp, Cw, pconc, kgwt, corei, act_coeff, x)
 
 	if testf==2:
 		print('finished with init_water_partit.py')

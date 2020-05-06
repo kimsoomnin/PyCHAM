@@ -26,7 +26,7 @@ import os
 # PyCHAM
 cwd = os.getcwd() # get current path
 
-output_by_sim = str(cwd + '/tr_tests_data/mov_cen_sens2tr_8sb_chng1sb_tempconst_nosv_tol_change')
+output_by_sim = str(cwd + '/tr_tests_data/mov_cen_sens_2ts_128sb_chng1sb_tempconst_seeded')
 
 # name of file where experiment constants saved
 fname = str(output_by_sim + '/model_and_component_constants')
@@ -86,15 +86,27 @@ N = np.loadtxt(fname, delimiter=',', skiprows=1)
 fname = str(output_by_sim+'/size_bin_bounds')
 sbb = np.loadtxt(fname, delimiter=',', skiprows=1)
 
-timehr = t_array/3600.0
-# plot of 2-methylglutaric acid in gas-, particle- and wall-phases
-plt.plot(timehr, y[:, 1], 'r')
-plt.plot(timehr, (y[:, 4::3].sum(axis=1)-y[:, -2])/Cfactor, 'b')
-plt.plot(timehr, y[:, -2]/Cfactor, 'g')
-plt.plot(timehr, (y[:, 1::3].sum(axis=1))/Cfactor, '--k')
+# particle sizes (um)
+fname = str(output_by_sim+'/size_bin_radius')
+x = np.loadtxt(fname, delimiter=',', skiprows=1) # skiprows=1 omits header
 
+timehr = t_array/3600.0
+# plot of component in gas-, particle- and wall-phases
+# plt.plot(timehr, y[:, 1], 'r')
+# plt.plot(timehr, (y[:, 4::3].sum(axis=1)-y[:, -2])/Cfactor, 'b')
+# plt.plot(timehr, y[:, -2]/Cfactor, 'g')
+# plt.plot(timehr, (y[:, 1::3].sum(axis=1))/Cfactor, '--k')
+# plt.show()
+
+# dN/dlog10(Dp) at start
+dN_start = N[0, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
+# 3-point moving average
+dN_start_av = (dN_start[0:-2]+dN_start[1:-1]+dN_start[2::])/3.0
+# 3-point moving average particle centre (um)
+rad_start = (x[0, 0:-2]+x[0, 1:-1]+x[0, 2::])/3.0
+
+plt.loglog(rad_start, dN_start_av, 'k')
 plt.show()
 
-plt.semilogy(N[0, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0)), 'k')
-plt.semilogy(N[-1, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0)), '--r')
+plt.plot(x[0, :])
 plt.show()

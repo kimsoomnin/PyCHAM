@@ -561,7 +561,7 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 	(num_part, Vnew, y, rad, redt, blank, tnew) = movcen(num_part, 
 	sbbound[0, :]*1.0e18, 
 	np.transpose(y.reshape(sbn, num_comp)), 
-	rho, sbn, num_comp, M, rad, sbVi[0, :], 0.0,
+	rho, sbn, num_comp, M, rad0, sbVi[0, :], 0.0,
 	0, MV)
 
 

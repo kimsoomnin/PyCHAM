@@ -8,9 +8,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tinc_count, MV):
 
 
 
-	# ---------------------------------------------------------------
-	# input:
-	
+	# input:---------------------------------------------------------
 	# n0 - particle number concentration per size bin before time step
 	# (# particle/cc (air)) (excluding wall)
 	# s0 - volume bounds per size bin (um3) (number of size bins +1) (molecules/cc (air))
@@ -140,6 +138,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tinc_count, MV):
 	num_molec_new[:, isb[0,:]] = 1.0e-40 # very low concentration of components
 	# fill radius array elements for bins without particles with central radii (um)
 	rad[0::][isb[0, :]] = x[0::][isb[0, :]]
+	
 	# fill volume array elements for bins without particles with central volume (um3)
 	Vsing[isb[0,:]] = ((4.0/3.0)*np.pi)*(rad[isb[0,:]]**3.0)
 	

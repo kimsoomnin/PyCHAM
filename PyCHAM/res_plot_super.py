@@ -118,7 +118,7 @@ def run(testf):
 	
 		# name of file where particle size results saved
 		fname = str(output_by_sim+'/size_bin_radius')
-		x = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header
+		x = np.loadtxt(fname, delimiter=',', skiprows=1) # skiprows=1 omits header
 		if t_array.ndim==0: # occurs if only one time step saved
 			x = np.array(x.reshape(1, num_sb-1))
 		if num_sb==2: # just one particle size bin (wall included in num_sb)
