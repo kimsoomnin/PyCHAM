@@ -278,9 +278,10 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				# new temperature (K)
 				temp_now = TEMP[temp_count]
 				
-				# update gas-phase concentration (molecules/cc (air)) and vapour pressure
-				# of water (log10(atm))
-				[y[H2Oi], Psat_water, H2O_mw] = water_calc(temp_now, RH, 6.02214129e+23)
+				# update vapour pressure of water (log10(atm)), but don't change 
+				# gas-phase concentration because we assume RH allowed to change with
+				# varying temperature
+				[_, Psat_water, _] = water_calc(temp_now, RH, 6.02214129e+23)
 				
 				# update vapour pressures of all components (molecules/cc and Pa), 
 				# ignore density output
@@ -584,10 +585,8 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				(np.squeeze(y_dens*1.0e-3)), num_sb, num_speci, y_mw, x, Vol0, t, 
 				t0, tinc_count, y0[num_speci::], MV, Psat[:, 0], y[0:num_speci], 
 				y0[0:num_speci], bc_red)
+				print('after movcen', N_perbin)
 				
-				
-				print('N_perbin after moving centre')
-				print(N_perbin)
 # 				print(t, sumt, t0, op_spl_count, op_splt_step, tnew, redt)
 			else: # if bypassing moving centre
 				redt = 0
@@ -620,11 +619,13 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		# the following particle-phase processes are evaluated on a possibly different 
 		# time step to those above: coagulation, particle loss to wall and nucleation
 		if op_spl_count >= op_splt_step:
+			
 			if num_sb>1: 
 				if (N_perbin>1.0e-10).sum()>0:
 					# coagulation
 					# y indices due to final element in y being number of ELVOC molecules
 					# contributing to newly nucleated particles
+					print('coag')
 					[N_perbin, y[num_speci:-(num_speci)], x, Gi, eta_ai, Varr] = coag(RH, 
 							temp_now, x*1.0e-6, (Varr*1.0e-18).reshape(1, -1), 
 							y_mw.reshape(-1, 1), x*1.0e-6, 
@@ -634,7 +635,6 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 							num_speci, 0, (np.squeeze(y_dens*1.0e-3)), rad0, Pnow, 0,
 							np.transpose(y[num_speci::].reshape(num_sb, num_speci)),
 							(N_perbin).reshape(1, -1), (Varr*1.0e-18).reshape(1, -1))
-	
 					
 					if Rader > -1:
 						
@@ -657,7 +657,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 								np.squeeze(y_dens*1.0e-3),  
 								num_speci, x[0], new_partr, MV, nucv1, nucv2, 
 								nucv3, nuc_comp[0])
-				
+			
 			# reset count on time since operator-split processes last called (s)
 			op_spl_count = 0
 				

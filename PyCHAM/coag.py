@@ -1,5 +1,8 @@
 '''module to estimate coagulation kernel using p. 508 of Jacobson (2005), called on by ode_gen'''
 
+# number- but not mass-conserving coagulation code, called from ode_gen and operator-split
+# from ode solver
+
 import numpy as np 
 import scipy.constants as si
 from fl_reg_determ import reg_determ
@@ -9,13 +12,13 @@ import scipy.integrate as integ
 import matplotlib.pyplot as plt
 import scipy.constants as si
 import ipdb
+from mov_cen_water_eq import mov_cen_main as movcen # moving centre method for rebinning
 
 def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 			num_comp, vdWon, rho, rad0, PInit, testf, num_molec_rint, num_part_rint, 
 			sbVj):
 
-	# --------------------------------------------------------------
-	# inputs:
+	# inputs:---------------------------------------------------------
 	
 	# RH - relative humidity (fraction)
 	# T - temperature (K)
@@ -32,7 +35,7 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 	# num_comp - number of components
 	# vdWon - flagging whether the van der Waals kernel should be calculated or ignored (0
 	# for ignore, 1 for calculate)
-	# rho - components densities (g/cm3) in a 1D array
+	# rho - component densities (g/cm3) in a 1D array
 	# rad0 - original radius at size bin centre (um)
 	# PInit - pressure inside chamber (Pa)
 	# testf - unit testing flag (0 for off, 1 for on)
@@ -536,6 +539,11 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 	Vnew = np.zeros((sbrn))
 	Vnew[ish] = np.sum(((molec_k[:, ish]/(si.N_A*num_part[0, ish]))*MV*1.0e12), 0)
 
+	# check that new volumes fit inside intended size bin bounds
+# 	plt.plot(sbbound[0, 1:20]-Vnew[0:19]*1.0e-18)
+# 	plt.show()
+	
+	
 	# new radius per size bin (um)
 	rad = ((3.0*Vnew)/(4.0*np.pi))**(1.0/3.0)
 	# size bins with no particle assigned central radius
@@ -544,7 +552,19 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 	# just want particle number concentration as an array with one dimension
 	if num_part.ndim>1:
 		num_part = num_part[0, :]
+	
+	# molecular concentrations
+	y = molec_k.flatten(order='F')
+	y0 = num_molec.flatten(order='F')
+	
+	# call on the moving centre method for redistributing particles that have grown beyond their upper size bin boundary due to water condensation, note, any do this after the iteration per size bin when we know the new particle-phase concentration of water
+	(num_part, Vnew, y, rad, redt, blank, tnew) = movcen(num_part, 
+	sbbound[0, :]*1.0e18, 
+	np.transpose(y.reshape(sbn, num_comp)), 
+	rho, sbn, num_comp, M, rad, sbVi[0, :], 0.0,
+	0, MV)
+
 
 	# return number of particles/cc(air) per size bin (columns) and
 	# number of molecules (molecules/cc(air)) flattened into species followed by size bins
-	return(num_part, molec_k.flatten(order='F'), rad, Gi, eta_ai, Vnew)
+	return(num_part, y, rad, Gi, eta_ai, Vnew)

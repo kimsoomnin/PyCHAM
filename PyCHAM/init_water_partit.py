@@ -124,21 +124,18 @@ def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci,
 				# if iteration oscillates, reduce change per step
 				if dydt0<0 and dydtn>0:
 					dydtfac = dydtfac/2.0
+				
 				# check on iteration
-# 				print(y00[num_speci*(sbstep+1)+H2Oi])
-# 				if sbstep >= 97:
-				print(sbstep, Cgit-Csit, dydt*(dydtfac*RH*radius[sbstep]**3.0), y[num_speci*(sbstep+1)+H2Oi], (np.sum(y[num_speci*(sbstep+1):num_speci*(sbstep+2)])), dydt0, dydtn) # check on iteration progress
+# 				print(sbstep, Cgit-Csit, dydt*(dydtfac*RH*radius[sbstep]**3.0), y[num_speci*(sbstep+1)+H2Oi], (np.sum(y[num_speci*(sbstep+1):num_speci*(sbstep+2)])), dydt0, dydtn) # check on iteration progress
 # 				print(dydtfac)
 # 				ipdb.set_trace()
 				# remember change in this step
 				dydt0 = dydtn
 			# call on the moving centre method for redistributing particles that have grown beyond their upper size bin boundary due to water condensation, note, any do this after the iteration per size bin when we know the new particle-phase concentration of water
-			(N_perbin, Varr, y[num_speci::], radius, redt, blank, tnew, 
-			y[0:num_speci], bc_red) = movcen(N_perbin, Vbou, 
-			np.transpose(y[num_speci::].reshape(num_sb, num_speci)), 
-			(np.squeeze(y_dens*1.0e-3)), num_sb, num_speci, y_mw, x, Vol0, 0.0,
-			tmax, 0, y0[num_speci::], MV, Psat[:, 0], y[0:num_speci], 
-			y0[0:num_speci], 0)
+			(N_perbin, Varr, y[num_speci:-num_speci], radius, redt, blank, tnew) = movcen(N_perbin, Vbou, 
+			np.transpose(y[num_speci:-num_speci].reshape(num_sb-1, num_speci)), 
+			(np.squeeze(y_dens*1.0e-3)), num_sb-1, num_speci, y_mw, x, Vol0, 0.0,
+			0, MV)
 			
 			if redt == 1: # check on whether exception raised by moving centre
 					print('Error whilst equilibrating seed particles with water vapour (inside init_water_partit module).  Please investigate, perhaps by checking rh and pconc inputs in model variables input file.  See README for guidance and how to report bugs.')

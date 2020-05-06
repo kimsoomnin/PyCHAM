@@ -4,8 +4,8 @@ import numpy as np
 import ipdb
 import scipy.constants as si
 
-def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0, MV, 
-				Psat, Cg, Cg0, bc_red):
+def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tinc_count, MV):
+
 
 
 	# ---------------------------------------------------------------
@@ -13,12 +13,9 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 	
 	# n0 - particle number concentration per size bin before time step
 	# (# particle/cc (air)) (excluding wall)
-	# s0 - volume bounds per size bin (um3) (1st dim.)
-	# before a time step over which gas phase reaction and 
-	# gas-particle partitioning have occurred (molecules/cc (air))
+	# s0 - volume bounds per size bin (um3) (number of size bins +1) (molecules/cc (air))
 	# Cn - particle phase concentration per component per size bin
-	# after a time step over which gas phase reaction and 
-	# gas-particle partitioning have occurred (molecules/cc (air)), with rows representing
+	# (molecules/cc (air)), with rows representing
 	# components and columns size bins (including wall as final size bin)
 	# rho - particle phase component densities (g/cc (particle))
 	# sbn - number of size bins
@@ -27,15 +24,9 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 	# x - original particle size bin radii (cm)
 	# Vol0 - original volume of size bins (um3) (excluding wall)
 	# t - integration time (s)
-	# tmax - maximum integration time (s)
 	# tinc_count - count on number of time steps since time interval last required 
 	# decreasing
-	# C0 - original concentrations in particle phase (molecules/cc (air))
 	# MV - molar volume (cc/mol)
-	# Psat - saturation vapour pressures (molecules/cm3 (air))
-	# Cg - new gas-phase concentration of components (molecules/cc (air))
-	# Cg0 - original gas-phase concentration of components (molecules/cc (air))
-	# bc_red - flag for time step reduction due to boundary conditions
 	# ---------------------------------------------------------------
 	# output:
 	
@@ -48,11 +39,6 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 	# ---------------------------------------------------------------
 	
 	NA = si.Avogadro # Avogadro's number (molecules/mol)
-	
-	# wall parts
-	Cwall = Cn[:, -1]
-	Cn = Cn[:, 0:-1]
-	sbn -= 1 # exclude wall
 		
 	Mrho = ((rho*1.0e-12)/MW[:, 0]).reshape(nc, 1) # molar density (mol/um3)
 	
@@ -66,6 +52,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 
 	# new volume of single particle per size bin (um3) including volume of water
 	Vnew[ish] = np.sum(nmolC*MV*1.0e12, axis=0)
+	
 	Vnew[n0<=1.0e-10] = Vol0[0::][n0<=1.0e-10]
 	
 	# truth array of size bins where particles have moved up a size bin
@@ -78,23 +65,6 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 	# ensure we consider only size bins with particles inside
 	ind_movedn = (Vnew>0.0)*ind_movedn
 	ind_movedn2 = np.asarray(np.where(ind_movedn==1))-1 # ready for excess shrink check
-	
-	# allow for complete evaporation of the smallest size bin particles, for example,
-	# due to their relatively high kelvin factor, but only if they contain only volatile 
-	# components and the time step is small compared to the typical time for gas-particle
-	# partitioning
-	ish = Cn[:, 0]>1.0e-40 # index of components present in smallest size bin
-	if Vnew[0]<0 and sum(Psat[ish]<1.0e-20)==0 and t<1.0e-3:
-		# allow complete evaporation of the smallest size bin
-		Cg += Cn[:, 0]
-		Cn[:, 0] = 1.0e-40
-		# flag for removal of particles from particle number array
-		nremf = 1
-		Vnew[0] = Vol0[0]
-		
-	else:
-		# flag for removal of particles from particle number array
-		nremf = 0
 		
 	
 	
@@ -107,7 +77,6 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 		print('n0 = ', n0)
 		redt = 1
 		tnew = t/2.0 # new time for integration on next step (s)
-		bc_red = 0 # flag for time step reduction due to boundary conditions
 		
 		# prepare for output
 		if len(n0)>1:
@@ -117,7 +86,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 			n0 = np.zeros((1))
 			n0[0] = holder
 
-		return(np.squeeze(n0), np.squeeze(Vol0), C0, x, redt, t/2.0, tnew, Cg0, bc_red)
+		return(0, 0, 0, 0, 0, 0, 0, 0)
 		
 	
 	
@@ -126,9 +95,6 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 	num_molec_stay[:, (ind_moveup+ind_movedn)==0] = Cn[:, (ind_moveup+ind_movedn)==0]
 	num_part_stay = np.zeros((1, sbn))
 	num_part_stay[0, (ind_moveup+ind_movedn)==0] = n0[(ind_moveup+ind_movedn)==0]
-	if nremf==1: # if complete evaporation of first size bin
-		num_molec_stay[:, 0] = 1.0e-40
-		num_part_stay[0,0] = 1.0e-40
 		
 	
 	# matrix of components and array of particle numbers that go up a size bin
@@ -180,17 +146,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 	# flag to show no reduction in time step needed
 	redt = 0
 
-	# if time is less than maximum integration time, then try increasing for the next
-	# integration step
-	if t<tmax and tinc_count<=0:
-		tnew = t*2.0
-		if tnew>tmax: # in case tnew exceeds user-defined maximum for time step
-			tnew = tmax
-	else:
-		tnew = t
-	
-	# append wall concentrations
-	num_molec_new = np.append(num_molec_new, Cwall.reshape(-1, 1), axis=1)
+	tnew = t
 	
 	# prepare for output by ensuring number of dimensions is one for num_part_new
 	if sbn>1:
@@ -199,6 +155,6 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 		holder = num_part_new
 		num_part_new = np.zeros((1))
 		num_part_new[0] = holder
-		
+	
 	return(num_part_new, Vsing, np.ravel(np.transpose(num_molec_new)), rad, 
-			redt, t, tnew, Cg, bc_red)
+			redt, t, tnew)
