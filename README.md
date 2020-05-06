@@ -13,9 +13,9 @@ PyCHAM is an open-access computer code (written in Python) for simulating aeroso
 
 ## Documentation
 
-This README file you are reading serves as a manual explaining how to setup the software and use it.  
+The README file you are now reading serves as a manual explaining how to setup the software and use it.  
 
-The [article](https://doi.org/10.21105/joss.01918) published in the Journal for Open Source Software explains the underlying mechanisms of PyCHAM and its purpose.  This article was reviewed using [v0.2.4](https://doi.org/10.5281/zenodo.3752677) of PyCHAM.
+The [article](https://doi.org/10.21105/joss.01918) published in the Journal for Open Source Software explains the underlying mechanisms of PyCHAM and its purpose.  This article was reviewed using v0.2.4 of PyCHAM, which is stored in the releases of the PyCHAM github repository and [here](https://doi.org/10.5281/zenodo.3752677).
 
 Version numbers of PyCHAM try to adhere to the semantics described by [semver](https://semver.org).
 
@@ -30,11 +30,13 @@ There are two options for installing, via conda and from source.  Experience ind
 
 2. Download and install the package manager Anaconda using the following address and selecting the appropriate operating system version: https://www.anaconda.com/distribution/#download-section
 
-3. To set-up PyCHAM, use the terminal/command prompt, cd to the directory where the PyCHAM package is stored (likely called PyCHAM-master), then use the following command to install: conda env create -f PyCHAM_OSenv.yml -n PyCHAM, where OS is replaced by your operating system name (win (for Windows), lin (for Linux), mac (for Mac))
+Following steps need to be in the terminal/command prompt:
 
-4. This will install all PyCHAM dependencies, with no need for further installations.
+3. cd into the directory where the PyCHAM package is stored.
 
-5. Now the environment is setup you can activate it by typing into terminal: conda activate PyCHAM
+4. Use the following command to install: conda env create -f PyCHAM_OSenv.yml -n PyCHAM, where OS is replaced by your operating system name (win (for Windows), lin (for Linux), mac (for Mac)).
+
+5. Now the environment is setup you can activate it with the command: conda activate PyCHAM
 
 Install is complete
 
