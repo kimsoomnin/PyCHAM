@@ -26,7 +26,7 @@ import os
 # PyCHAM
 cwd = os.getcwd() # get current path
 
-output_by_sim = str(cwd + '/tr_tests_data/mov_cen_sens_2ts_128sb_chng1sb_tempconst_seeded')
+output_by_sim = str(cwd + '/tr_tests_data/mov_cen_sens2tr_no_opsplt_chng1sb_128sb_tempconst_seeded')
 
 # name of file where experiment constants saved
 fname = str(output_by_sim + '/model_and_component_constants')
@@ -98,15 +98,49 @@ timehr = t_array/3600.0
 # plt.plot(timehr, (y[:, 1::3].sum(axis=1))/Cfactor, '--k')
 # plt.show()
 
-# dN/dlog10(Dp) at start
+# dN/dlog10(Dp) at start and finish
 dN_start = N[0, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
-# 3-point moving average
-dN_start_av = (dN_start[0:-2]+dN_start[1:-1]+dN_start[2::])/3.0
-# 3-point moving average particle centre (um)
-rad_start = (x[0, 0:-2]+x[0, 1:-1]+x[0, 2::])/3.0
+dN_finis = N[-1, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
 
-plt.loglog(rad_start, dN_start_av, 'k')
+# number of points in moving average
+np_mvav = 3
+dN_start_av = np.zeros((num_sb-np_mvav)) # dN/dlog10(Dp) moving average
+rad_start = np.zeros((num_sb-np_mvav)) # particle centre (um) moving average
+
+dN_finis_av = np.zeros((num_sb-np_mvav)) # dN/dlog10(Dp) moving average
+rad_finis = np.zeros((num_sb-np_mvav)) # particle centre (um) moving average
+
+for i in range(np_mvav):
+
+	if np_mvav-(i+1)>0:
+		# moving average number concentration
+		dN_start_av += (dN_start[i:-(np_mvav-(i+1))])/np_mvav
+		dN_finis_av += (dN_finis[i:-(np_mvav-(i+1))])/np_mvav
+		# moving average particle centre (um)
+		rad_start += x[0, i:-(np_mvav-(i+1))]/np_mvav
+		rad_finis += x[-1, i:-(np_mvav-(i+1))]/np_mvav
+	else: # reach the inclusion of the final element of the original array
+		dN_start_av += (dN_start[i::])/np_mvav
+		dN_finis_av += (dN_finis[i::])/np_mvav
+		rad_start += x[0, i::]/np_mvav
+		rad_finis += x[-1, i::]/np_mvav
+
+
+# plot of number-size distribution
+plt.loglog(rad_start*2.0, dN_start_av, 'k')
+plt.loglog(rad_finis*2.0, dN_finis_av, '--r')
 plt.show()
 
-plt.plot(x[0, :])
+# plot of water-concentration
+yp = y[:, 3:-3] # just particle-phase concentrations
+plt.semilogy(yp[:, 1::3].sum(axis=1), 'xk')
+plt.semilogy(y[:, 1]*2.0, 'or')
+plt.semilogy(y[:, -2]*2.0, '+g')
 plt.show()
+
+# plot of radii
+plt.semilogy(x[-1, :], 'xk')
+plt.semilogy(rad_finis, 'or')
+plt.show()
+
+

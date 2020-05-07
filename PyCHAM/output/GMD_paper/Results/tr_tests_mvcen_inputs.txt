@@ -1,8 +1,8 @@
-res_file_name = mov_cen_sens2tr_128sb_chng1sb_tempconst_seeded
+res_file_name = mov_cen_sens2tr_no_opsplt_128sb_tempconst_seeded
 total_model_time = 86400.0
-bc_time_step = 3600.0
-op_spl_step = 43200.0
-recording_time_step = 3600.0
+bc_time_step = 60.0
+op_spl_step = 100000.0
+recording_time_step = 60.0
 number_size_bins = 128
 lower_part_size = 0.005
 upper_part_size = 6

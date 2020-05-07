@@ -25,7 +25,7 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 	# sbn - number of size bins
 	# nc - number of components
 	# MW - molar weight of components (g/mol)
-	# x - original particle size bin radii (cm)
+	# x - original particle size bin radii (um)
 	# Vol0 - original volume of size bins (um3) (excluding wall)
 	# t - integration time (s)
 	# tmax - maximum integration time (s)
@@ -125,15 +125,17 @@ def mov_cen_main(n0, s0, Cn, rho, sbn, nc, MW, x, Vol0, t, tmax, tinc_count, C0,
 		np.sum(Vnew[ind_movedn]<(s0[0:-1][ind_movedn2]))>0 or (Vnew<0).sum()>0):
 		if np.sum(Vnew[ind_moveup]>(s0[1::][ind_moveup2]))>0:
 			print('excess growth in moving centre, reducing time step')
-			print('index of growing particles followed by boolean array of those with excess growth:')
-			print(ind_moveup)
-			print(Vnew[ind_moveup]>(s0[1::][ind_moveup2]))
-			print('Vnew = ', Vnew)
-			print('s0 = ', s0)
-			print('n0 = ', n0)
-# 			plt.plot(n0, 'ob')
-# 			plt.plot(s0[1::]-Vnew, '--xr')
-# 			plt.show()
+			iaff = []
+			iaffpc = []
+			for i in range(sbn-2):
+				if Vnew[i]>(s0[2::][i]):
+					iaff.append(i)
+					iaffpc.append(((Vnew[i]-s0[2::][i])/s0[2::][i])*100.0)
+			print('index of size bins affected')
+			print(iaff)
+			print('percentage exceedance over allowable volume bound')
+			print(iaffpc)
+
 		if np.sum(Vnew[ind_movedn]<(s0[0:-1][ind_movedn2]))>0:
 			print('excess shrinkage in moving centre, reducing time step')
 			print('index of shrinking particles followed by boolean array of those with excess shrinkage:')

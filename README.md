@@ -225,7 +225,9 @@ bc_time_step = Maximum time interval for ode solver and updating boundary condit
 				Must be at most the value of op_spl_step.  Default is 60 s.
 
 op_spl_step = Time (s) interval for solving operator-split processes over, must be at 
-				least as long as bc_time_step.  Default to 60 s.
+				least as long as bc_time_step.  Default to 60 s.  Can be set to more than
+				the total_model_time variable above to prevent opertaor-split processes
+				occuring.
 
 recording_time_step = Time interval for recording results (s).  Must be at least the value
 					of bc_time_step.  Defaults to 60 s.

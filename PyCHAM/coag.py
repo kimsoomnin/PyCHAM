@@ -557,12 +557,11 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 	y = molec_k.flatten(order='F')
 	y0 = num_molec.flatten(order='F')
 	
-	# call on the moving centre method for redistributing particles that have grown beyond their upper size bin boundary due to water condensation, note, any do this after the iteration per size bin when we know the new particle-phase concentration of water
+	# call on the moving centre method for esnuring particles in correct size bin
 	(num_part, Vnew, y, rad, redt, blank, tnew) = movcen(num_part, 
 	sbbound[0, :]*1.0e18, 
 	np.transpose(y.reshape(sbn, num_comp)), 
-	rho, sbn, num_comp, M, rad0, sbVi[0, :], 0.0,
-	0, MV)
+	rho, sbn, num_comp, M, sbVi[0, :], 0.0, 0, MV)
 
 
 	# return number of particles/cc(air) per size bin (columns) and

@@ -11,7 +11,7 @@ import scipy.constants as si
 def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci, 
 						accom_coeff, y_mw, surfT, R_gas, TEMP, NA, y_dens, 
 						N_perbin, DStar_org, RH, core_diss, Varr, Vbou, Vol0, tmax, MV,
-						therm_sp, Cw, total_pconc, kgwt, corei, act_coeff, x0):
+						therm_sp, Cw, total_pconc, kgwt, corei, act_coeff):
 						
 	# inputs: ------------------------------------------------------
 	# x - radius of particles per size bin (um)
@@ -22,7 +22,6 @@ def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci,
 	# kgwt - mass transfer coefficient for vapour-wall partitioning (/s)
 	# corei - index of core component
 	# act_coeff - activity coefficients of components (dimensionless)
-	# x0 - radius of particles at size bin centres (um)
 	# --------------------------------------------------------------
 	
 
@@ -131,23 +130,21 @@ def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci,
 				# remember change in this step
 				dydt0 = dydtn
 			
-			
-			# call on the moving centre method for redistributing particles that have grown beyond their upper size bin boundary due to water condensation, note, any do this after the iteration per size bin when we know the new particle-phase concentration of water
-			(N_perbin, Varr, y[num_speci:-num_speci], x, redt, blank, tnew) = movcen(N_perbin, Vbou, 
-			np.transpose(y[num_speci:-num_speci].reshape(num_sb-1, num_speci)), 
-			(np.squeeze(y_dens*1.0e-3)), num_sb-1, num_speci, y_mw, x0, Vol0, 0.0,
-			0, MV)
-			
-			if redt == 1: # check on whether exception raised by moving centre
-				print('Error whilst equilibrating seed particles with water vapour (inside init_water_partit module).  Please investigate, perhaps by checking rh and pconc inputs in model variables input file.  See README for guidance and how to report bugs.')
-				sys.exit()
-			
 			sbstep += 1
 
+	# call on the moving centre method for redistributing particles that have grown 
+	# beyond their upper size bin boundary due to water condensation, note, only do this
+	# after the iteration per size bin when we know the new particle-phase concentration 
+	# of water
+
+	(N_perbin, Varr, y[num_speci:-num_speci], x, redt, blank, tnew) = movcen(N_perbin, Vbou, 
+	np.transpose(y[num_speci:-num_speci].reshape(num_sb-1, num_speci)), 
+	(np.squeeze(y_dens*1.0e-3)), num_sb-1, num_speci, y_mw, Vol0, 0.0,
+	0, MV)
 	
-	plt.semilogy(x, 'k')
-	plt.show()
-	
+	if redt == 1: # check on whether exception raised by moving centre
+		print('Error whilst equilibrating seed particles with water vapour (inside init_water_partit module).  Please investigate, perhaps by checking rh and pconc inputs in model variables input file.  See README for guidance and how to report bugs.')
+		sys.exit()
 	
 
 	if kgwt>1.0e-10 and Cw>0.0:
@@ -157,12 +154,7 @@ def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci,
 		# fraction (molecules/cc (air))
 		y[num_speci*num_sb+H2Oi] = Cw*RH
 		
-		# gas phase concentration of water (molecules/cc (air)) responds to loss to walls
-		# y[H2Oi] = y[H2Oi]-y[num_speci*(num_sb)+H2Oi]
-		
-		
-		
-		
+
 		# allow gas-phase water to equilibrate with walls
 		while np.abs(y[H2Oi]-Psat[H2Oi,0]*((y[num_speci*(num_sb)+H2Oi]/Cw))*act_coeff[H2Oi, 0])>1.0e2:
 			
