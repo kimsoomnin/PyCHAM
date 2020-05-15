@@ -225,12 +225,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	print('starting ode solver')
 	
 	while sumt < end_sim_time: # step through time intervals to do ode
-
-		if (sumt+tnew)>end_sim_time: # ensure we finish at correct time
-			tnew = end_sim_time-sumt # integration time step (s)
-		t = tnew # reset maximum integration time (s)
 		
-# 		print('before checking, before ode', t, sumt, t0, op_spl_count, op_splt_step, tnew, bc_red)
 		# start of update for changed boundary conditions --------------------------------
 		
 		# ---------------------
@@ -247,21 +242,15 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 					light_time_count += 1 # keep count of light setting index
 				else:
 					light_time_count = -1 # reached end
-				
-				# check whether maximum integration time step can return to original
-				if (bc_red == 1):
-					# return maximum integration time step to original
-					tnew = t0
-					t = tnew
-					# reset flag for time step reduction due to boundary conditions
-					bc_red = 0
+				# reset flag for time step reduction due to boundary conditions
+				bc_red = 0
+					
 			
 			# check whether light on/off changes during proposed integration time step
 			elif (sumt+tnew > light_time[light_time_count] and light_time_count!=-1):
 				# if yes, then reset integration time step so that next step coincides 
 				# with change
 				tnew = light_time[light_time_count]-sumt
-				t = tnew # reset maximum integration time (s)
 				bc_red = 1 # flag for time step reduction due to boundary conditions
 				
 		if (len(light_time) == 0): # if no input provided default to lights off
@@ -319,21 +308,13 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 					temp_count += 1 # keep count of temperature setting index
 				else:
 					temp_count = -1 # reached end
-				
-				# check whether maximum integration time step can return to original
-				if (bc_red == 1):
-					# return maximum integration time step (s) to original
-					tnew = t0
-					t = tnew
-					# reset flag for time step reduction due to boundary conditions
-					bc_red = 0
+				bc_red = 0 # reset flag for time step reduction due to boundary conditions
 				
 			# check whether light on/off changes during proposed integration time step
 			elif (sumt+tnew > tempt[temp_count] and temp_count!=-1):
 				# if yes, then reset integration time step so that next step coincides 
 				# with change
 				tnew = tempt[temp_count]-sumt
-				t = tnew # reset maximum integration time (s)
 				bc_red = 1 # flag for time step reduction due to boundary conditions
 				
 		# ---------------------
@@ -351,21 +332,13 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 					gasinj_count += 1 # update count on injections
 				else:
 					gasinj_count = -1 # reached end
-				
-				# check whether maximum integration time step can return to original
-				if (bc_red == 1):
-					# return maximum integration time step to original
-					tnew = t0
-					t = tnew
-					# reset flag for time step reduction due to boundary conditions
-					bc_red = 0
+				bc_red = 0 # reset flag for time step reduction due to boundary conditions
 					
 			# check whether changes occur during proposed integration time step
 			elif (sumt+tnew > injectt[gasinj_count] and gasinj_count!=-1):
 				# if yes, then reset integration time step so that next step coincides 
 				# with change
 				tnew = injectt[gasinj_count]-sumt
-				t = tnew # reset maximum integration time (s)
 				bc_red = 1 # flag for time step reduction due to boundary conditions
 		
 		# ----------------------
@@ -387,21 +360,13 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 					seedt_count += 1
 				else:
 					seedt_count = -1 # reached end
-			
-				# check whether maximum integration time step can return to original
-				if (bc_red == 1):
-					# return maximum integration time step to original
-					tnew = t0
-					t = tnew
-					# reset flag for time step reduction due to boundary conditions
-					bc_red = 0
+				bc_red = 0 # reset flag for time step reduction due to boundary conditions
 				
 			# check whether changes occur during proposed integration time step
 			elif (sumt+tnew > pconct[0, seedt_count] and seedt_count!=-1): 
 				# if yes, then reset integration time step so that next step coincides 
 				# with change
 				tnew = pconct[0, seedt_count]-sumt
-				t = tnew # reset maximum integration time (s)
 				bc_red = 1 # flag for time step reduction due to boundary conditions
 
 		
@@ -428,26 +393,23 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 					influx_count += 1
 				else:
 					influx_count = -1 # reached end
-				
-				# check whether maximum integration time step can return to original
-				if (bc_red == 1):
-					# return maximum integration time step to original
-					tnew = t0
-					t = tnew
-					# reset flag for time step reduction due to boundary conditions
-					bc_red = 0
-		
+				bc_red = 0 # reset flag for time step reduction due to boundary conditions
+			
 			# check whether changes occur during proposed integration time step
 			elif (sumt+tnew > const_infl_t[influx_count] and influx_count!=-1):
 				# if yes, then reset integration time step so that next step coincides 
 				# with change
 				tnew = const_infl_t[influx_count]-sumt
-				t = tnew # reset maximum integration time (s)
 				bc_red = 1 # flag for time step reduction due to boundary conditions
 		
 		# end of update for changed boundary conditions ----------------------------------
-		print('cumulative time through simulation (s) before int', sumt, tnew)
 		
+		# update integration time step
+		if (sumt+tnew)>end_sim_time: # ensure we finish at correct time
+			tnew = end_sim_time-sumt # integration time step (s)
+		t = tnew # reset maximum integration time (s)
+		
+		print('cumulative time through simulation (s) before int', sumt, tnew)
 		
 		# update reaction rate coefficients
 		reac_coef = rate_valu_calc(RO2_indices, y[H2Oi], temp_now, lightm, y, 
@@ -564,11 +526,8 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			# vapour
 			mod_sim.rtol = int_tol[1]
 			mod_sim.discr = 'BDF' # the integration approach, default is 'Adams'
-			t_array, res = mod_sim.simulate(t)
-			
-# 			print('right after ode solver', t, sumt, t0, op_spl_count, op_splt_step, tnew, redt, bc_red)
-		
-			y = res[-1, :]
+			t_array, res = mod_sim.simulate(t)		
+			y = res[-1, :] # new concentrations (molecule/cc (air))
 			
 			# low value filler for concentrations (molecules/cc (air)) to prevent 
 			# numerical errors
@@ -577,44 +536,39 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			
 			
 			if num_sb>1 and (N_perbin>1.0e-10).sum()>0:
-				
+			
 				# call on the moving centre method for rebinning particles
-				(N_perbin, Varr, y[num_speci::], x, redt, t, tnew, 
-				y[0:num_speci], bc_red) = movcen(N_perbin, 
-				Vbou, np.transpose(y[num_speci::].reshape(num_sb, num_speci)), 
-				(np.squeeze(y_dens*1.0e-3)), num_sb, num_speci, y_mw, x, Vol0, t, 
-				t0, tinc_count, y0[num_speci::], MV, Psat[:, 0], y[0:num_speci], 
-				y0[0:num_speci], bc_red)
-				print('after movcen', N_perbin)
-				
-# 				print(t, sumt, t0, op_spl_count, op_splt_step, tnew, redt)
-			else: # if bypassing moving centre
-				redt = 0
+				(N_perbin, Varr, y, x, redt, t, bc_red) = movcen(N_perbin, 
+				Vbou, num_sb, num_speci, y_mw, x, Vol0, t, 
+				t0, tinc_count, y0, MV, Psat[:, 0], bc_red, res, t_array)
+
+			if (redt == 0):
 				if t<t0 and tinc_count<=0:
 					tnew = t*2.0
 				if tnew>t0: # in case tnew exceeds user-defined maximum for time step
 					tnew = t0
+			# if time step needs reducing then reset concentrations to their
+			# values preceding the ode
+			if (redt == 1):
+				y[:] = y0[:]
 			
-			
-			# if time step needs reducing then reset gas-phase concentrations to their
-			# values preceding the ode, this will already have been done inside moving
-			# centre module for particle-phase
+			# check whether maximum integration time step can return to original
+			if (redt == 0) and (bc_red == 1) and tinc_count == 10:
+				# return maximum integration time step (s) to original
+				tnew = t0
+			# start counter to determine number of integrations before next trying to 
+			# increasing time interval
 			if redt == 1:
-				y[0:num_speci] = y0[0:num_speci]
-			
-			# start counter to determine when to next try increasing time interval
-			if redt == 1:
-				tinc_count = 10
+				tinc_count = 10 # reset to maximum
 			if redt == 0 and tinc_count>-1:
-				tinc_count -= 1
+				tinc_count -= 1 # decrease number of steps remaining
 			if tinc_count==-1:
-				tinc_count = 10
+				tinc_count = 10 # reset to maximum
 		
-# 		print('after moving centre, before sumt calculation', t, sumt, t0, op_spl_count, op_splt_step, tnew, redt, bc_red)
 		sumt += t # total time covered (s)
 		step += 1 # ode time interval step number
 		op_spl_count += t # count on time since operator-split processes last called (s)
-# 		print('after moving centre, before next step', t, sumt, t0, op_spl_count, op_splt_step, tnew, redt, bc_red)
+
 		# start of operator-split section ------------------------------------------------
 		# the following particle-phase processes are evaluated on a possibly different 
 		# time step to those above: coagulation, particle loss to wall and nucleation
@@ -662,7 +616,6 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			op_spl_count = 0
 				
 		# end of operator-split section --------------------------------------------------
-# 		print('after operator split, before next step', t, sumt, t0, op_spl_count, op_splt_step, tnew, redt, bc_red)
 							
 		# dilution of aerosol (gases and particles), most likely due to extraction
 		# from chamber
@@ -697,6 +650,6 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				
 			save_count += int(1) # track number of times saved at
 		
-		print('cumulative time through simulation (s)', sumt, tnew)
+		print('cumulative time through simulation (s)', sumt, t)
 		
 	return(t_out, y_mat, Nresult_dry, Nresult_wet, x2, dydt_vst, Cfactor_vst)

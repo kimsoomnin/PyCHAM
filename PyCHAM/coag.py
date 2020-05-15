@@ -539,6 +539,16 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 	Vnew = np.zeros((sbrn))
 	Vnew[ish] = np.sum(((molec_k[:, ish]/(si.N_A*num_part[0, ish]))*MV*1.0e12), 0)
 
+	# new combined volume of all particles per size bin (um3)
+	Vtot = Vnew*num_part[0, :]
+	# remove particles and their corresponding component concentrations if their volume
+	# is negligibly small
+	negl_indx = (Vtot/Vtot.sum())<1.0e-12
+	num_part[0, negl_indx] = 1.0e-40
+	Vnew[negl_indx] = 0.0
+	molec_k[:, negl_indx] = 1.0e-40
+	
+	
 	# check that new volumes fit inside intended size bin bounds
 # 	plt.plot(sbbound[0, 1:20]-Vnew[0:19]*1.0e-18)
 # 	plt.show()
@@ -553,11 +563,10 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 	if num_part.ndim>1:
 		num_part = num_part[0, :]
 	
-	# molecular concentrations
+	# molecular concentrations (molecules/cc (air))
 	y = molec_k.flatten(order='F')
-	y0 = num_molec.flatten(order='F')
 	
-	# call on the moving centre method for esnuring particles in correct size bin
+	# call on the moving centre method for ensuring particles in correct size bin
 	(num_part, Vnew, y, rad, redt, blank, tnew) = movcen(num_part, 
 	sbbound[0, :]*1.0e18, 
 	np.transpose(y.reshape(sbn, num_comp)), 

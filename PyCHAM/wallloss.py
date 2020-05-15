@@ -1,4 +1,6 @@
 '''module to model particle loss to walls, called on by ode_gen'''
+# the process of particle deposition to walls is reproduced here using either
+# the McMurry and Rader (1985) model, or the user-defined parameters
 
 import numpy as np
 import scipy.constants as si
@@ -9,8 +11,7 @@ def wallloss(Pn, Cn, Gi, eta_ai, Dp, MW, Varr, sbn, nc, TEMP, t,
 			inflectDp, pwl_xpre, pwl_xpro, inflectk, ChamR, Rader, testf, p_char, 
 			e_field):
 
-	# ----------------------------------------------------------------
-	# inputs:
+	# inputs:----------------------------------------------------------
 	
 	# Pn - particle number concentration per size bin before time step
 	# (# particle/cc (air))
