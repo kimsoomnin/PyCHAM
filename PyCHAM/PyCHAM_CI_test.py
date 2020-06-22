@@ -481,7 +481,7 @@ for i in range(len(in_list)):
 		if (value.strip()).split(',')==['']:
 			umansysprop_update = int(0)
 		else:
-			umansysprop_update = int(i)
+			umansysprop_update = int(value.strip())
 			
 		# if no update requested, check that there is an existing UManSysProp
 		# folder
@@ -493,7 +493,7 @@ for i in range(len(in_list)):
 			else:
 				print('Note, no download of UManSysProp requested by user via model variables input file, but no existing UManSysProp module found, so will try to update via internet')
 				umansysprop_update = 1
-		
+		print('whoop', umansysprop_update)
 		if umansysprop_update == 1: # test whether UManSysProp can be updated
 			import urllib.request # module for checking internet connection
 			# function for testing internet connection

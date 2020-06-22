@@ -546,7 +546,7 @@ class PyCHAM(QWidget):
 				if (value.strip()).split(',')==['']:
 					umansysprop_update = int(0)
 				else:
-					umansysprop_update = int(i)
+					umansysprop_update = int(value.strip())
 					
 				# if no update requested, check that there is an existing UManSysProp
 				# folder
