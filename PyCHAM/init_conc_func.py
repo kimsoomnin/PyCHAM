@@ -80,12 +80,13 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH,
 	
 	# empty array for storing index of components with constant influx
 	const_infli = []
-	for i in range (len(const_infl)):
+	num_const_infl = len(const_infl)
+	const_infli = np.zeros((num_const_infl))
+
+	for i in range (num_const_infl):
 		# index of where constant components occur in list of components
 		y_indx = spec_namelist.index(const_infl[i])
-		const_infli.append(y_indx) # remember their index
-	# transform to numpy array
-	const_infli = np.squeeze(np.array(const_infli))
+		const_infli[i] = y_indx # remember their index
 		
 
 	# get index of user-specified components for tracking their dydt due to model 

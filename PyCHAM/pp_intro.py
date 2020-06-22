@@ -94,7 +94,8 @@ def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 		[N_perbin, x, rbou, Vbou, Varr, upper_bin_rad_amp] = Size_distributions.lognormal(num_sb, 
 									pconc, std, lowersize, uppersize, loc, scale, 
 									space_mode)
-		
+# 		print(rbou)
+# 		ipdb.set_trace()
 		if testf==2:
 			print('finished with Size_distributions.lognormal')
 		

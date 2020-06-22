@@ -25,7 +25,7 @@ dependencies:
   - gitpython=3.0.4=py_0
   - glib=2.56.2=hd9629dc_0
   - icu=58.2=h4b95b61_1
-  - intel-openmp=2019.5=281
+  - intel-openmp
   - ipdb=0.12.2=py_0
   - ipython
   - ipython_genutils=0.2.0=py_1

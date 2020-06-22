@@ -33,22 +33,23 @@ inputs = open(inname, mode='r')
 in_list = inputs.readlines()
 inputs.close()
 
-input_len = 64
-
+# check on whether correct number of inputs supplied
+input_len = 65
 if len(in_list) != input_len:
-	print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list))))
+	print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list)) + ', please see the README file for guidance'))
 	sys.exit()
+	
 for i in range(len(in_list)):
 	key, value = in_list[i].split('=')
 	key = key.strip() # a string with bounding white space removed
 	if key == 'res_file_name':
 		if value.split(',')==['\n']:
-			print('Error: no requested results file name detected in model inputs file, please supply')
+			print('Error: no requested results file name detected in model variables file, please supply')
 			sys.exit()
 		resfname = str(value.strip())
 	if key == 'total_model_time':
 		if value.split(',')==['\n']:
-			print('Error: no total model run time detected in model inputs file, please supply')
+			print('Error: no total model run time detected in model variables file, please supply')
 			sys.exit()
 		else:
 			end_sim_time = float(value.strip())
@@ -65,7 +66,7 @@ for i in range(len(in_list)):
 			op_splt_step = float(60.0)
 		else:
 			op_splt_step = float(value.strip())
-	if key == 'recording_time_step':
+	if key == 'recording_time_step': # frequency (s) of storing results
 		if value.split(',')==['\n']:
 			print('Notice: no recording time step detected in model inputs file, defaulting to 60s')
 			save_step = float(60.0)
@@ -102,9 +103,11 @@ for i in range(len(in_list)):
 			Cw = float(0.0)
 		else:
 			Cw = float(value.strip())
+			
+	# temperature inputs		
 	if key == 'temperature':
 		if value.split(',')==['\n']:
-			print('Error: no air temperature detected in model inputs file')
+			print('Error: no air temperature detected in model variables file, but this required to run, see README for guidance')
 			sys.exit()
 		else:
 			TEMP = [float(i) for i in ((value.strip()).split(','))]
@@ -116,7 +119,7 @@ for i in range(len(in_list)):
 			
 	if key == 'p_init':
 		if value.split(',')==['\n']:
-			print('Error: no air pressure detected in model inputs file')
+			print('Error: no air pressure detected in model variables file, but this required to run, see README for guidance')
 			sys.exit()
 		else:
 			PInit = float(value.strip())
@@ -162,12 +165,16 @@ for i in range(len(in_list)):
 			photo_par_file = str(cwd + '/PyCHAM/photofiles/' + 'MCMv3.2')
 		else:
 			photo_par_file = str(cwd + '/PyCHAM/photofiles/' + value.strip())
-
 	if key == 'ChamSA': # chamber surface area used for particle loss to walls
 		if value.split(',')==['\n']:
 			ChamSA = float(0.0)
 		else:
 			ChamSA = float(value.strip())
+	if key == 'coag_on': # flag of whether or not to model coagulation
+		if (value.strip()).split(',')==['']:
+			coag_on = int(1)
+		else:
+			coag_on = int(value.strip())
 	if key == 'nucv1': # first parameter in the nucleation equation
 		if value.split(',')==['\n']:
 			nucv1 = float(0.0)
@@ -189,27 +196,27 @@ for i in range(len(in_list)):
 		else:
 			nuc_comp = [str(i).strip() for i in (value.split(','))]
 	if key == 'new_partr': # radius of newly nucleated particles (cm)
-		if value.split(',')==['\n']:
-			new_partr = float(0.0)
+		if (value.strip()).split(',')==['']:
+			new_partr = float(2.0e-7)
 		else:
 			new_partr = float(value.strip())
 	if key == 'inflectDp':
-		if value.split(',')==['\n']:
+		if (value.strip()).split(',')==['']:
 			inflectDp = float(0.0)
 		else:
 			inflectDp = float(value.strip())
 	if key == 'Grad_pre_inflect':
-		if value.split(',')==['\n']:
+		if (value.strip()).split(',')==['']:
 			pwl_xpre = float(0.0)
 		else:
 			pwl_xpre = float(value.strip())
 	if key == 'Grad_post_inflect':
-		if value.split(',')==['\n']:
+		if (value.strip()).split(',')==['']:
 			pwl_xpro = float(0.0)
 		else:
 			pwl_xpro = float(value.strip())
 	if key == 'Rate_at_inflect':
-		if value.split(',')==['\n']:
+		if (value.strip()).split(',')==['']:
 			inflectk = float(0.0)
 		else:
 			inflectk = float(value.strip())
@@ -304,7 +311,6 @@ for i in range(len(in_list)):
 			const_infl = np.array(([])) # empty numpy array
 		else:
 			const_infl = [str(i).strip() for i in (value.split(','))]
-			const_infl = np.squeeze(np.array(const_infl))
 			
 	if key == 'const_infl_t': # times of constant influxes (s)
 		if (value.strip()).split(',')==['']:
@@ -333,26 +339,28 @@ for i in range(len(in_list)):
 			for i in range(comp_count):
 				Cinfl[i, :] = [float(ii.strip()) for ii in ((value.split(';')[i]).split(','))]
 	
+	
 	if key == 'vol_Comp':
 		if (value.strip()).split(',')==['']:
 			vol_Comp = [] # empty list
 		else:
-			vol_Comp = [str(i).strip() for i in (value.split(','))]
+			vol_Comp = [str(i).strip() for i in (value.split(','))]	
 	if key == 'volP':
 		if (value.strip()).split(',')==['']:
 			volP = np.empty(0)
 		else:
 			volP = [float(i) for i in (value.split(','))]
-	if key == 'act_wi':
+	# user-defined activity coefficients
+	if key == 'act_comp':
 		if (value.strip()).split(',')==['']:
-			act_wi = np.empty(0)
+			act_comp = []
 		else:
-			act_wi = [int(i) for i in (value.split(','))]	
-	if key == 'act_w':
+			act_comp = [i for i in (((value.strip()).split(',')))]	
+	if key == 'act_user':
 		if (value.strip()).split(',')==['']:
-			act_w = np.empty(0)
+			act_user = np.empty(0)
 		else:
-			act_w = [float(i) for i in (value.split(','))]
+			act_user = [i for i in (((value.strip()).split(',')))]
 	# chemical scheme names of components with accommodation coefficient set by 
 	# user
 	if key == 'accom_coeff_comp':
@@ -366,9 +374,10 @@ for i in range(len(in_list)):
 			accom_coeff_user = [] # empty list, must be list for kimt_prep
 		else: # fill list (must be list for kimt_prep)
 			accom_coeff_user = [i for i in (((value.strip()).split(',')))]
+	
 	if key == 'pconct': # seed particles input times (s)
-		if (value.strip()) == ['']:
-			pconct = []
+		if (value.strip()).split(';') == ['']:
+			pconct = np.zeros((1,1))
 		else:
 			# keep track of number of times given
 			time_count = 1
@@ -378,10 +387,10 @@ for i in range(len(in_list)):
 			# times in columns
 			pconct = np.zeros((1, time_count))
 			pconct[0, :] = [float(i) for i in ((value.strip()).split(';'))]
-	
-	if key == 'pconc':
+			
+	if key == 'pconc': # seed particle number concentrations (#/cc)
 		if (value.strip()).split(',')==['']:
-				pconc = []
+			pconc = np.zeros((1,1))
 		else:
 			# keep track of number of times given
 			time_count = 1
@@ -414,9 +423,10 @@ for i in range(len(in_list)):
 			seed_dens = 1.00
 		else:
 			seed_dens = float(value.strip())
+			
 	if key == 'mean_rad': # seed particle mean radius (um)
 		if (value.strip()).split(',')==['']:
-			mean_rad = np.zeros((1,1))
+			mean_rad = np.zeros((1, 1))
 			mean_rad[0, 0] = -1.0e6
 		else:
 			# keep track of number of times given
@@ -429,8 +439,8 @@ for i in range(len(in_list)):
 			mean_rad[0, :] = [float(i) for i in ((value.strip()).split(';'))]
 	
 	if key == 'std':
-		if (value.strip()).split(',')==['']:
-			std = np.zeros((1,1)) 
+		if value.split(',')==['\n']:
+			std = np.zeros((1, 1))
 			std[0, 0] = 1.1
 		else:
 			# keep track of number of times given
@@ -441,6 +451,7 @@ for i in range(len(in_list)):
 			# times in columns
 			std = np.zeros((1, time_count))
 			std[0, :] = [float(i) for i in ((value.strip()).split(';'))]
+	
 	if key == 'core_diss':
 		if value.split(',')==['\n']:
 			core_diss = float(1.0)
@@ -470,7 +481,7 @@ for i in range(len(in_list)):
 		if (value.strip()).split(',')==['']:
 			umansysprop_update = int(0)
 		else:
-			umansysprop_update = int(value)
+			umansysprop_update = int(i)
 			
 		# if no update requested, check that there is an existing UManSysProp
 		# folder
@@ -494,14 +505,14 @@ for i in range(len(in_list)):
 					return False
 			# test internet connection
 			if connect():
-				print('Internet connection confirmed and either user has requested cloning of UManSysProp via the model variables input file or no pre-existing UManSysProp folder found') 
+				print('Internet connection confirmed and either user has requested cloning of UManSysProp via the model variables input file or no existing UManSysProp module was found') 
 			else:
 				print('Error: user has requested cloning of UManSysProp via the model variables input file but connection to the page failed, possibly due to no internet connection (UManSysProp repository site: https://github.com/loftytopping/UManSysProp_public.git)')
 				sys.exit()
-	if key == 'chem_scheme_markers':
+	if key == 'chem_scheme_markers': # formatting for chemical scheme
 		if (value.strip()).split(',')==['']:
-			# default to MCM inputs
-			chem_scheme_markers = ['* Reaction definitions. ;', '%', '(.*) End (.*)', '* Generic Rate Coefficients ;', ';', '\*\*\*\*', 'RO2', '+', '*;']
+			# default to Kinetic Preprocessor (KPP) inputs
+			chem_scheme_markers = ['{', 'RO2', '+', 'C(ind_', ')', 20, '']
 		else:
 			chem_scheme_markers = [str(i).strip() for i in (value.split(','))]
 	if key == 'int_tol': # tolerances for integration
@@ -515,13 +526,21 @@ for i in range(len(in_list)):
 			dil_fac = float(0.0)
 		else:
 			dil_fac = float(value)
+			
+	
 # --------------------------------------------------------------------------------
 # checks on inputs
+
+# cannot have operator-split step less than boundary condition step as the 
+# operator split processes won't be called with sufficient frequency
+if op_splt_step<tstep_len:
+	print('Note: inside the model variables input file the time interval for integrating over by the ode solver and updating boundary conditions (bc_time_step) is more than that for the opertaor split (op_spl_step) processes, therefore reducing to value of the boundary condition time step to equal the operator-split time step.  Please see README for guidance.')
+	tstep_len = op_splt_step
 
 # can't have a recording time step (s) less than the ode solver time step (s),
 # so force to be equal and tell user
 if save_step<tstep_len:
-	print('Recording time step cannot be less than the ode solver time step, so increasing recording time step to be equal to input ode solver time step')
+	print('Recording time step (recording_time_step in model variables file) cannot be less than the boundary condition time step (bc_time_step in model variables file), so increasing recording time step to be equal to boundary condition time step, note both variables set in the model variables input file.  Please see README for guidance.')
 	save_step = tstep_len
 
 # if initial particle concentration is an array, its elements must align with the
@@ -530,6 +549,15 @@ if len(pconc)>1 and len(pconc)!=num_sb:
 	print('If pconc (set in Model Variables .txt file) is an array, its length must equal the number of particle size bins, but currently length of pconc is '+str(len(pconc))+' and number of size bins is '+str(num_sb))
 	sys.exit()
 
+# overide any particle number concentration inputs if number of size bins left empty or set to zero
+if num_sb == 0 and pconc != 0.0:
+	print('Notice, since no size bins detected in Model Variables .txt file, pconc variable will be set to empty (even if values supplied)')
+	pconc = []
+
+if (pconct.shape[0]!=0): # if input given pconct will not be empty
+	if max(pconct.shape) != pconc.shape[1]: # pconct should have dimensions 1, number of times pconc given for
+		print('Error: number of times given for pconct input variable in model variables input file does not match number of times particle number concentration given for in the pconc input variable in the same file.  Please see README for guidance.')
+		sys.exit()
 # components with constant influx for set periods of time
 if len(Cinfl)>0:
 	if len(const_infl)!=(Cinfl.shape[0]):
@@ -538,7 +566,9 @@ if len(Cinfl)>0:
 	if len(const_infl_t)!=(Cinfl.shape[1]):
 		print('Error: the number of times given for constant influx by the const_infl_t variable inside the model variables input file does not match the number of times with constant influx concentrations provided by the Cinfl variable of that file, please see the README for guidance.')
 		sys.exit()
-
+		
+if len(chem_scheme_markers)!=7:
+	print('Error: length of chem_scheme_markers (specified in model variables input file) is not 7 and should be, please see README for guidance')
 # components with assigned vapour pressures
 if len(vol_Comp)!=len(volP):
 	print('Error: the number of components with assigned vapour pressures does not equal the number of assigned vapour pressures (vol_Comp and volP variables, respectively, in the model variables input folder), please see the README for guidance')
@@ -546,8 +576,32 @@ if len(vol_Comp)!=len(volP):
 
 # nucleation inputs
 if nucv1>0.0 and nuc_comp == []:
-		print('Error: the nucleation parameter nucv1 set in the model variables input folder is greater than zero, but no nucleating component is recognised from the nuc_comp variable, so nucleation cannot proceed.  Please see README for guidance.')
+	print('Error: the nucleation parameter nucv1 set in the model variables input folder is greater than zero, but no nucleating component is recognised from the nuc_comp variable, so nucleation cannot proceed.  Please see README for guidance.')
+	sys.exit()
+
+# check actinic flux and photochemical parameter files in expected place
+if (photo_par_file != str(cwd + '/PyCHAM/photofiles/MCMv3.2')): # photochemical parameters
+	
+	if os.path.isfile(photo_par_file):
+		pass
+	else:
+		print('Error: file given for the photo_par_file input in the model variables input file has not been found, please check README for guidance')
 		sys.exit()
+	
+if act_flux_path != 'no': # actinic flux file
+	
+	if os.path.isfile(act_flux_path):
+		pass
+	else:
+		print('Error: path name given for the act_flux_path input in the model variables input file has not been found, please check README for guidance')
+		sys.exit()
+if len(accom_coeff_ind)!=len(accom_coeff_user):
+	print('Error: the variables accom_coeff_ind and accom_coeff_user, both set in the model variables input file, have different lengths, but they must be the same length, please check README for guidance')
+	sys.exit()	
+if len(TEMP)!=len(tempt):
+	print('Error: the variables temperature and tempt, both set in the model variables input file, have different lengths, but they must be the same length, please check README for guidance')
+	sys.exit()
+		
 
 # ----------------------------------------------------------------------------------------
 
@@ -576,9 +630,9 @@ save_step, ChamSA, nucv1, nucv2, nucv3, nuc_comp, new_partr,
 inflectDp, pwl_xpre, pwl_xpro, inflectk, Rader, xmlname, C0, Comp0, 
 vol_Comp, volP, pconc, std, mean_rad, core_diss, light_stat, light_time,
 kgwt, dydt_trak, space_mode, Ct, Compt, injectt, seed_name, const_comp,
-const_infl, Cinfl, act_wi, act_w, seed_mw, umansysprop_update, seed_dens, p_char, 
-e_field, const_infl_t, chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, 
-accom_coeff_ind, accom_coeff_user, op_splt_step, tempt]
+const_infl, Cinfl, act_comp, act_user, seed_mw, umansysprop_update, seed_dens, 
+p_char, e_field, const_infl_t, chem_scheme_markers, int_tol, photo_par_file, 
+dil_fac, pconct, accom_coeff_ind, accom_coeff_user, op_splt_step, tempt, coag_on]
 	
 if os.path.isfile(dirpath+'/testf.txt'):
 	print('Model input buttons work successfully')

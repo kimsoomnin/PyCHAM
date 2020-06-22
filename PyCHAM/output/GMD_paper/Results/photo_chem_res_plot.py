@@ -2,7 +2,8 @@
 
 # introduction
 # aim is to calculate deviation of PyCHAM photochemistry output from AtChem2
-# use the AtChem2_apinene_scheme.txt in the Results folder of the GMD_paper for input
+# use the AtChem2_apinene_scheme.txt in the Results folder of the GMD_paper for chemical 
+# scheme input
 # use the xml file from the PyCHAM inputs folder
 # use the Photo_chem_inputs_hiNOx.txt and Photo_chem_inputs_loNOx.txt of the 
 # GMD_paper/Results folder, for the high and low NOx simulations, respectively, where for 

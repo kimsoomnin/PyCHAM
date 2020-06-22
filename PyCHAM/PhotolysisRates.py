@@ -1,5 +1,4 @@
 '''module for calculating photolysis rates'''
-
 # can use ambient sunlight expression or artificial chamber lights for calculating a
 # photolysis rate that is fixed when the lights are on
 
@@ -14,8 +13,10 @@ from lamp_photo import lamp_photo
 def PhotolysisCalculation(time, lat, lon, TEMP, act_flux_path, DayOfYear, photo_par_file,
 							Jlen):
 
-	# ------------------------------------------------------------------------------------
-	# inputs:
+	# inputs:-----------------------------------------------------------------------------	
+	# act_flux_path - name of path to file containing known actinic flux (only used if 
+	#				lights on inside chamber)
+	# DayOfYear - number of days through the calendar year
 	# photo_par_file - name of file containing estimates for wavelength-dependent
 	# 					absorption cross-sections and quantum yields
 	# Jlen - number of photolysis reactions
@@ -23,10 +24,11 @@ def PhotolysisCalculation(time, lat, lon, TEMP, act_flux_path, DayOfYear, photo_
 	
 	(secx, cosx) = zenith(time, lat, lon, DayOfYear)
 	
-	J = [0.0 for i in range(Jlen)] # modified, so that we dont have to check None type
+	J = [0.0 for i in range(Jlen)] # don't have to check None type
     
     # if using MCM and natural light
 	cwd = os.getcwd() # address of current working directory
+
 	if photo_par_file == str(cwd + '/PyCHAM/photofiles/MCMv3.2') and act_flux_path == 'no':
 		#J          L           M          N
 		J[1]=6.073E-05*cosx**(1.743)*numpy.exp(-1.0*0.474*secx)

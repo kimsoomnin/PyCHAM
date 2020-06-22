@@ -16,7 +16,7 @@ from mov_cen_water_eq import mov_cen_main as movcen # moving centre method for r
 
 def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 			num_comp, vdWon, rho, rad0, PInit, testf, num_molec_rint, num_part_rint, 
-			sbVj):
+			sbVj, coag_on):
 
 	# inputs:---------------------------------------------------------
 	
@@ -44,7 +44,7 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 	# num_part_rint - concentration of particles per size bin 
 	# (particle/cc (air)) (columns) (excluding walls), for particles in rint
 	# sbVj -  - single particle volume for j sizes (relating to rint) (m3)
-	
+	# coag_on - whether to allow coagulation to occur (1) or not (0)
 	# --------------------------------------------------------------
 	# outputs:
 	
@@ -409,7 +409,7 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 	# close to unity it says in the coalescence efficiency section.
 	Beta = (K_B+K_DE+K_GC+K_TI+K_TS+K_V)
 	
-	if testf==1: # plot to compare to Fig. 15.7 of Jacobson (2005)
+	if (testf == 1): # plot to compare to Fig. 15.7 of Jacobson (2005)
 		ax0.loglog(sbr*10**6, Beta[:,0]*10**6, label='Total')
 		ax1.loglog(sbr*10**6, Beta[:,1]*10**6, label='Total')
 		plt.legend()
@@ -431,8 +431,10 @@ def coag(RH, T, sbr, sbVi, M, rint, num_molec, num_part, tint, sbbound,
 	# only the k,j coordinates in beta, where j goes as high as k-1, therefore, production
 	# only uses the lower left triangle in beta.  However, the loss term below uses
 	# k,j coordinates where j goes from 1 to the number of size bins
-	Beta = Beta*1.0e6
-	
+	if coag_on == 1:
+		Beta = Beta*1.0e6
+	if coag_on == 0:
+		Beta = Beta*0.0
 	
 	# matrix with volume of coagulated particles resulting from pairing of k and j 
 	# particles single particle volumes of k and j (m3) 

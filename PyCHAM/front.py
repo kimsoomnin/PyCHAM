@@ -38,7 +38,7 @@ def run(testf):
 	const_comp, const_infl, Cinfl, act_comp, act_user, seed_mw, 
 	umansysprop_update, core_dens, p_char, e_field, const_infl_t, 
 	chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, accom_coeff_ind, 
-	accom_coeff_user, op_splt_step, tempt] = ui.run(0, testf)
+	accom_coeff_user, op_splt_step, tempt, coag_on] = ui.run(0, testf)
 	
 	if testm == 1:
 		print('PyCHAM calls front fine, now returning to PyCHAM.py')
@@ -140,13 +140,13 @@ def run(testf):
 				corei, const_compi, const_comp, const_infli, Cinfl, act_coeff, p_char, 
 				e_field, const_infl_t, int_tol, photo_par_file, Jlen, dil_fac, pconct,
 				lowersize, uppersize, mean_rad, std, op_splt_step, Pybel_objects, tempt,
-				Cfactor)
+				Cfactor, coag_on)
 				
 	
 	t2 = time.clock() # get wall clock time after call to solver
+	time_taken = t2-t1 # computer time taken for entire simulation (s)
 	if testf==0: # in normal mode
-		print('time taken=')
-		print(t2-t1)
+		print(str('time taken= '+str(time_taken)))
 	
 		# make new pickle dump to store the indices and names of interesting gas-phase 
 		# components along with initial pickle variables
@@ -169,7 +169,8 @@ def run(testf):
 	output_by_sim = saving(fname, y_mat, t_out, Nresult_dry, Nresult_wet, x2, num_sb, 
 							y_mw, num_speci, 
 							resfname, rbou, Cfactor, MV, testf, dydt_vst, dydt_trak,
-							spec_namelist, rbou00, upper_bin_rad_amp, Cfactor_vst)
+							spec_namelist, rbou00, upper_bin_rad_amp, Cfactor_vst, 
+							time_taken)
 	if testf==1:
 		print('saving called and returned successfully')
 	return()

@@ -64,18 +64,18 @@ def Vchange_check(res, MV, sbb, sbn, NA, n0, nc, solv_time, ts0, bc_red, Vol0, P
 					(ytest, n0, Vnew) = compl_evap(ytest, n0, Vnew, Vol0, nc, sbn)
 				else: # change integration time step
 					Vchang_flag = 1
-					print('negative volume seen in Vchange_check.py, size bin affected: ' + str(sbi) + ', concentration of components: ' + str(Cnow))
+# 					print('negative volume seen in Vchange_check.py, size bin affected: ' + str(sbi) + ', concentration of components: ' + str(Cnow))
 			if (Vnew[sbi]>sbb[-1]): # grown to unpractical positive volume
 				Vchang_flag = 1
-				print('volume above uppermost size bin bound seen in Vchange_check.py, size bin affected: ' + str(sbi) + ', concentration of components: ' + str(Cnow))
+# 				print('volume above uppermost size bin bound seen in Vchange_check.py, size bin affected: ' + str(sbi) + ', concentration of components: ' + str(Cnow))
 			if ((sbi-acc_sb_chng) >= 1):
 				if (Vnew[sbi]<sbb[sbi-acc_sb_chng]): # excessive shrink
 					Vchang_flag = 1
-					print('volume below acceptable change in Vchange_check.py, size bin affected: ' + str(sbi) + ', concentration of components: ' + str(Cnow) + ', percentage away from allowed change bound: ' + str(((sbb[sbi-acc_sb_chng]-Vnew[sbi])/sbb[sbi-acc_sb_chng])*100.0))
+# 					print('volume below acceptable change in Vchange_check.py, size bin affected: ' + str(sbi) + ', concentration of components: ' + str(Cnow) + ', percentage away from allowed change bound: ' + str(((sbb[sbi-acc_sb_chng]-Vnew[sbi])/sbb[sbi-acc_sb_chng])*100.0))
 			if (((sbi+1)+acc_sb_chng) < sbn+1):
 				if (Vnew[sbi]>sbb[(sbi+1)+acc_sb_chng]): # excessive growth
 					Vchang_flag = 1
-					print('volume above acceptable change in Vchange_check.py, size bin affected: ' + str(sbi) + ', concentration of components: ' + str(Cnow) + ', percentage away from allowed change bound: ' + str(((Vnew[sbi]-sbb[(sbi+1)+acc_sb_chng])/sbb[(sbi+1)+acc_sb_chng])*100.0))
+# 					print('volume above acceptable change in Vchange_check.py, size bin affected: ' + str(sbi) + ', concentration of components: ' + str(Cnow) + ', percentage away from allowed change bound: ' + str(((Vnew[sbi]-sbb[(sbi+1)+acc_sb_chng])/sbb[(sbi+1)+acc_sb_chng])*100.0))
 					
 			# decision based on volume change condition ----------------------------------
 			if (Vchang_flag==1): # if volume condition not met
@@ -83,6 +83,7 @@ def Vchange_check(res, MV, sbb, sbn, NA, n0, nc, solv_time, ts0, bc_red, Vol0, P
 				# break out of size bin loop and change adaptive time step index
 				if (tsi < res.shape[0]):
 					Vchang_flag = 3 # update flag and try next integrator time step
+# 					print('trying earlier ode solver result, number of results from the final: ', tsi)
 					break # stop size bin loop
 				else: # need to reduce integration time step (s) below the minimum here
 					redt = 1 # flag for time step reduction due to volume change
@@ -90,6 +91,8 @@ def Vchange_check(res, MV, sbb, sbn, NA, n0, nc, solv_time, ts0, bc_red, Vol0, P
 					bc_red = 0 # flag for time step reduction due to boundary conditions
 					Vchang_flag = 0 # will exit while loop for volume condition not met
 					break # stop size bin loop
+			else: # if volume condition met
+				Vchang_flag = 2
 		
 		# applies if size bin loop finished and volume condition met ---------------------		
 		# if volume condition met after all size bins checked adopt the results at this 
@@ -99,7 +102,7 @@ def Vchange_check(res, MV, sbb, sbn, NA, n0, nc, solv_time, ts0, bc_red, Vol0, P
 			if (tsi==1): # integration time step unchanged
 				t = ts0 # time for integration on next step (s)
 				redt = 0 # flag for no time step reduction due to volume change
-			if (tsi>1): # if a sub-step used, then reduce integration time step to this
+			if (tsi>1): # if a sub-step used, then get associated time
 				t = solv_time[-tsi] # new time for integration on next step (s)
 				redt = 2 # flag for time step reduction due to volume change
 			Vchang_flag = 0 # will exit while loop for volume condition not met

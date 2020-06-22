@@ -23,7 +23,8 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 	
 	# inputs: ----------------------------------------------------------------------------
 	# testf - flag for operating in normal mode (0) or testing mode (1)
-	# chem_scheme_markers - markers for different sections of the chemical scheme
+	# chem_scheme_markers - markers for different sections of the chemical scheme, 
+	#						default input is for the kinetic pre-processor (KPP) format
 	# photo_par_file - path (from PyCHAM home directory) to file containing photolysis
 	#					information (absorption cross sections and quantum yields)
 	# ------------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 
 	eqn_flag = 0 # don't collate reaction equations until seen
 	pr_flag = 0 # don't collate peroxy radicals until seen
-	rrc_flag = 0 # don't collate reaction rate coefficients until seen
+	RO2_count = 0 # count on number of lines considered in peroxy radical list
 	
 	# obtain lists for reaction rate coefficients, peroxy radicals and equation reactions
 	# using chemical scheme input file separators
@@ -61,56 +62,59 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 		
 		# --------------------------------------------------------------------------------
 		# generic reaction rate coefficients part
-		# look out for start of coefficients
-		if line1 == str(chem_scheme_markers[3]):
-			rrc_flag = 1 # ready to collate reaction rate coefficients
-		matchObj = re.match(chem_scheme_markers[5], line1) # look out for end of coefficients
-		if matchObj:
-			rrc_flag = 0 # stop appending reaction equations
-		# collate reaction rate coefficients
-# 		if (rrc_flag==1 and re.match( r"(.*) = (.*)", line1)!=None): 
-		if (rrc_flag==1 and re.match(str('(.*)' +' = ' + '(.*)'), line1)!=None): 
-			# remove end characters
-			line2 = line1.replace(str(chem_scheme_markers[4]), '')
-			# remove all white space
-			line2 = line2.replace(' ', '')
-			# convert fortran-type scientific notation to python type
-			line2 = formatting.SN_conversion(line2)
-			# ensure rate coefficient is python readable
-			line2 = formatting.convert_rate_mcm(line2)
-			rrc.append(line2.strip())
-			# get just name of reaction rate coefficient
-			rrc_name.append((line2.split('=')[0]).strip())
-		
+		# look out for start of generic reaction rate coefficients
+		# could be generic reaction coefficient if just one = in line
+		if len(line1.split('='))==2:
+
+			# dont consider if start of peroxy radical list
+			if (line1.split('=')[0]).strip() != chem_scheme_markers[1]:
+				# don't consider if a chemical scheme reaction
+				if ((line1.split('=')[0]).strip())[0] != chem_scheme_markers[0]:
+					# remove end characters
+					line2 = line1.replace(str(chem_scheme_markers[6]), '')
+					# remove all white space
+					line2 = line2.replace(' ', '')
+					# convert fortran-type scientific notation to python type
+					line2 = formatting.SN_conversion(line2)
+					# ensure rate coefficient is python readable
+					line2 = formatting.convert_rate_mcm(line2)
+					rrc.append(line2.strip())
+					# get just name of reaction rate coefficient
+					rrc_name.append((line2.split('=')[0]).strip())
+			
 		# --------------------------------------------------------------------------------
 		# peroxy radical part
 		# now start logging peroxy radicals
-		if (re.match(chem_scheme_markers[6], line1) != None):
+		if (re.match(chem_scheme_markers[1], line1) != None):
 			pr_flag = 1
-		if line1 == chem_scheme_markers[8]: # no longer log peroxy radicals
+		if RO2_count == float(chem_scheme_markers[5]): # no longer log peroxy radicals
 			pr_flag=0
 		if (pr_flag==1):
-			line2 = line1.split(chem_scheme_markers[7])
+			# get the elements in line separated by peroxy radical separator
+			line2 = line1.split(chem_scheme_markers[2])
+			RO2_count += 1 # count on number of lines considered in peroxy radical list
 			
 			for line3 in line2: # loop through elements in line
 				if len(line3.split('='))>1: # in case of RO2 = ...
 					line3 = (line3.split('='))[1]
 				if len(line3.split(';'))>1: # in case of RO2 list finishing with ...;
 					line3 = (line3.split(';'))[0]
-				if (line3.strip() == '' or line3.strip() == chem_scheme_markers[6]):
+				if len(line3.split('&'))>1: # in case of RO2 list finishing with &
+					line3 = (line3.split('&'))[0]
+				# don't include white space or ampersands
+				if (line3.strip() == '' or line3.strip() == '&'):
 					continue
-				else:
+				else: # if not these, then first strip surrounding marks
+					if line3[0:len(chem_scheme_markers[3])] == chem_scheme_markers[3]:
+						line3 = line3[len(chem_scheme_markers[3])::]
+					if line3[-len(chem_scheme_markers[4]):-1] == chem_scheme_markers[4]:
+						line3 = line3[0:-len(chem_scheme_markers[4])]
 					RO2_names.append(line3.strip())
 		# --------------------------------------------------------------------------------
 		# reaction equation part
-		if line1 == chem_scheme_markers[0]: # look out for start of equations
-			eqn_flag = 1 # ready to compile equations
-		if (eqn_flag==1 and re.match(chem_scheme_markers[1], line1) != None):
-			naked_list_eqn.append(line1) # begin storing reaction equations
-			
-		matchObj = re.match(chem_scheme_markers[2], line1) # look out for end of equations
-		if matchObj:
-			eqn_flag = 0 # stop appending reaction equations
+		if (re.match(chem_scheme_markers[0], line1) != None):
+			naked_list_eqn.append(line1) # store reaction equations
+
 			
 		# --------------------------------------------------------------------------------
 	

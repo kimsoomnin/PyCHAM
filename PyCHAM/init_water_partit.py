@@ -12,7 +12,7 @@ def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci,
 						accom_coeff, y_mw, surfT, R_gas, TEMP, NA, y_dens, 
 						N_perbin, DStar_org, RH, core_diss, Varr, Vbou, Vol0, tmax, MV,
 						therm_sp, Cw, total_pconc, kgwt, corei, act_coeff):
-						
+
 	# inputs: ------------------------------------------------------
 	# x - radius of particles per size bin (um)
 	# Psat - saturation vapour pressure of components (molecules/cc (air))
@@ -28,7 +28,7 @@ def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci,
 	if sum(total_pconc)>0.0: # if seed particles present
 		# new array of size bin radii (um)
 		print('equilibrating water in vapour with water in seed particles')
-# 		plt.semilogy(x, 'r')
+
 		for sbstep in range(len(x)): # loop through size bins
 			if N_perbin[sbstep]<1.0e-10: # no need to partition if no particle present
 				continue
@@ -132,19 +132,19 @@ def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci,
 			
 			sbstep += 1
 
-	# call on the moving centre method for redistributing particles that have grown 
-	# beyond their upper size bin boundary due to water condensation, note, only do this
-	# after the iteration per size bin when we know the new particle-phase concentration 
-	# of water
-
-	(N_perbin, Varr, y[num_speci:-num_speci], x, redt, blank, tnew) = movcen(N_perbin, Vbou, 
-	np.transpose(y[num_speci:-num_speci].reshape(num_sb-1, num_speci)), 
-	(np.squeeze(y_dens*1.0e-3)), num_sb-1, num_speci, y_mw, Vol0, 0.0,
-	0, MV)
+		# call on the moving centre method for redistributing particles that have grown 
+		# beyond their upper size bin boundary due to water condensation, note, only do this
+		# after the iteration per size bin when we know the new particle-phase concentration 
+		# of water
 	
-	if redt == 1: # check on whether exception raised by moving centre
-		print('Error whilst equilibrating seed particles with water vapour (inside init_water_partit module).  Please investigate, perhaps by checking rh and pconc inputs in model variables input file.  See README for guidance and how to report bugs.')
-		sys.exit()
+		(N_perbin, Varr, y[num_speci:-num_speci], x, redt, blank, tnew) = movcen(N_perbin, Vbou, 
+		np.transpose(y[num_speci:-num_speci].reshape(num_sb-1, num_speci)), 
+		(np.squeeze(y_dens*1.0e-3)), num_sb-1, num_speci, y_mw, Vol0, 0.0,
+		0, MV)
+	
+		if redt == 1: # check on whether exception raised by moving centre
+			print('Error whilst equilibrating seed particles with water vapour (inside init_water_partit module).  Please investigate, perhaps by checking rh and pconc inputs in model variables input file.  See README for guidance and how to report bugs.')
+			sys.exit()
 	
 
 	if kgwt>1.0e-10 and Cw>0.0:

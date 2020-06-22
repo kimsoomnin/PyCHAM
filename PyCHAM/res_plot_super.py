@@ -21,7 +21,6 @@ def run(testf):
 	# inputs:
 	# testf - flag for whether in test mode (=0 no test, =1 testing from test_PyCHAM.py,
 	#			=2 testing from test_res_plot_super.py)
-	
 	# --------------------------------------------------------------
 	if testf==1:
 		print('"Plot Results" button works fine')
@@ -62,7 +61,7 @@ def run(testf):
 				dlist.append(int(i))
 			if str(line.split(',')[0]) == 'number_of_components':
 				dlist.append(int(i))
-			if str(line.split(',')[0]) == 'molecular_weights_g/mol_corresponding_to_component_names' or  str(line.split(',')[0]) == 'molecular_volumes_cm3/mol':
+			if str(line.split(',')[0]) == 'molecular_weights_g/mol_corresponding_to_component_names' or  str(line.split(',')[0]) == 'molecular_volumes_cm3/mol'  or  str(line.split(',')[0]) == 'molar_volumes_cm3/mol':
 				i = i.strip('\n')
 				i = i.strip('[')
 				i = i.strip(']')
@@ -83,7 +82,7 @@ def run(testf):
 	num_sb = int((const['number_of_size_bins'])[0]) # number of size bins
 	num_speci = int((const['number_of_components'])[0]) # number of species
 	y_mw = const['molecular_weights_g/mol_corresponding_to_component_names']
-	y_MV = const['molecular_volumes_cm3/mol']
+	y_MV = const['molar_volumes_cm3/mol']
 	PyCHAM_names = const['component_names']
 	# conversion factor to change gas-phase concentrations from molecules/cc 
 	# (air) into ppb
@@ -123,6 +122,15 @@ def run(testf):
 			x = np.array(x.reshape(1, num_sb-1))
 		if num_sb==2: # just one particle size bin (wall included in num_sb)
 			x = np.array(x.reshape(len(t_array), num_sb-1))
+	
+		# check whether space mode is log or lin
+		if x.shape[1]>3:
+			if (x[0, 3]-x[0, 2]) == (x[0, 2]-x[0, 1]):
+				space_mode = str('lin')
+			else:
+				space_mode = str('log')
+		else:
+			space_mode = str('lin')
 	
 		# size bin radius bounds (um) (for the number size distribution contour plot)
 		fname = str(output_by_sim+'/size_bin_bounds')
@@ -231,6 +239,10 @@ def run(testf):
 		# contour plot with times along x axis and particle diameters along y axis
 		p1 = ax0.pcolormesh(t_array/3600.0, (sbb*2*1e3), z[:, :], cmap=cm, norm=norm1)
 	
+		# if logarithmic spacing of size bins specified, plot vertical axis 
+		# logarithmically
+		if space_mode == 'log':
+			ax0.set_yscale("log")
 		ax0.set_ylabel('Diameter (nm)', size=14)
 		ax0.xaxis.set_tick_params(labelsize=14)
 		ax0.yaxis.set_tick_params(labelsize=14)
@@ -284,7 +296,7 @@ def run(testf):
 		# particle concentration (pconc) exceeds zero, therefore particle-phase material 
 		# must be present at start of experiment (row 0 in y)
 		if final_i == 0 and y[0, num_speci:(num_speci*(num_sb+1))].sum()>1.0e-10: 
-			final_i = -1
+			final_i = 1
 		
 		for i in range(num_sb): # size bin loop, including wall
 	
@@ -295,14 +307,14 @@ def run(testf):
 				# low size bin resolution in the model, find the volume of particles, then
 				# assume a density of 1.0 g/cm3
 				SOAvst[0, :] += np.sum((y[:, ((i+1)*num_speci):((i+2)*num_speci-final_i)]/si.N_A*(y_MV[0:-final_i])*1.0e12), axis = 1)
-		
+				
 		# log10 of maximum in SOA
 		SOAmax = int(np.log10(max(SOAvst[0, :])))
 		# transform SOA so no standard notation required
 		SOAvst[0, :] = SOAvst[0, :]/(10**(SOAmax))
 		
 	
-		p5, = par2.plot(t_array/3600.0, SOAvst[0, :], 'xk', label = 'M (sim)')
+		p5, = par2.plot(t_array/3600.0, SOAvst[0, :], 'xk', label = '[SOA] (sim)')
 		par2.set_ylabel(str('[SOA]/ ' + str(10**(SOAmax)) + ' ($\mathrm{\mu g\, m^{-3}})$'), rotation=270, size=16, labelpad=25)
 		# set label, tick font and [SOA] vertical axis to red to match scatter plot presentation
 		par2.yaxis.label.set_color('black')

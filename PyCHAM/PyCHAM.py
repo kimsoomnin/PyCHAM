@@ -65,9 +65,10 @@ class PyCHAM(QWidget):
 	def on_click1(self):
 		
 		dirpath = os.getcwd() # get current path
+# 		fname = dirpath+ '/PyCHAM/output/GMD_paper/Results/AtChem2_apinene_scheme.txt'
 # 		fname = dirpath+'/PyCHAM/inputs/limonene_MCM_PRAM.txt' # hard-code chemical scheme input
-		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/tr_tests_chem.txt' # hard-code chemical scheme input
-# 		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
+# 		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/tr_tests_chem.txt' # hard-code chemical scheme input
+		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
 		with open(dirpath+'/fname.txt','w') as f:
 			f.write(fname)
 		f.close()
@@ -76,8 +77,8 @@ class PyCHAM(QWidget):
 	def on_click2(self):
 		
 		dirpath = os.getcwd() # get current path
-		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml' # hard-code xml input
-# 		xmlname = self.openFileNameDialog()
+# 		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml' # hard-code xml input
+		xmlname = self.openFileNameDialog()
 		with open(dirpath+'/xmlname.txt','w') as f:
 			f.write(xmlname)
 		f.close()
@@ -85,9 +86,10 @@ class PyCHAM(QWidget):
 	@pyqtSlot()
 	def on_click3(self):
 		dirpath = os.getcwd() # get current path
+# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/Photo_chem_inputs_hiNOx.txt' # hard-code model variables input
 # 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/limonene_inputs.txt' # hard-code model variables input
-		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/tr_tests_mvcen_inputs.txt' # hard-code model variables input
-# 		inname = self.openFileNameDialog() # name of model variables inputs file
+# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/tr_tests_mvcen_inputs.txt' # hard-code model variables input
+		inname = self.openFileNameDialog() # name of model variables inputs file
 		
 		# open the file
 		inputs = open(inname, mode='r')
@@ -97,7 +99,7 @@ class PyCHAM(QWidget):
 		inputs.close()
 		
 		# check on whether correct number of inputs supplied
-		input_len = 64
+		input_len = 65
 		if len(in_list) != input_len:
 			print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list)) + ', please see the README file for guidance'))
 			sys.exit()
@@ -233,6 +235,11 @@ class PyCHAM(QWidget):
 					ChamSA = float(0.0)
 				else:
 					ChamSA = float(value.strip())
+			if key == 'coag_on': # flag of whether or not to model coagulation
+				if (value.strip()).split(',')==['']:
+					coag_on = int(1)
+				else:
+					coag_on = int(value.strip())
 			if key == 'nucv1': # first parameter in the nucleation equation
 				if value.split(',')==['\n']:
 					nucv1 = float(0.0)
@@ -369,7 +376,6 @@ class PyCHAM(QWidget):
 					const_infl = np.array(([])) # empty numpy array
 				else:
 					const_infl = [str(i).strip() for i in (value.split(','))]
-					const_infl = np.squeeze(np.array(const_infl))
 					
 			if key == 'const_infl_t': # times of constant influxes (s)
 				if (value.strip()).split(',')==['']:
@@ -570,8 +576,8 @@ class PyCHAM(QWidget):
 						sys.exit()
 			if key == 'chem_scheme_markers': # formatting for chemical scheme
 				if (value.strip()).split(',')==['']:
-					# default to MCM FACSIMILE inputs
-					chem_scheme_markers = ['* Reaction definitions. ;', '%', '(.*) End (.*)', '* Generic Rate Coefficients ;', ';', '\*\*\*\*', 'RO2', '+', '*;']
+					# default to Kinetic Preprocessor (KPP) inputs
+					chem_scheme_markers = ['{', 'RO2', '+', 'C(ind_', ')', 20, '']
 				else:
 					chem_scheme_markers = [str(i).strip() for i in (value.split(','))]
 			if key == 'int_tol': # tolerances for integration
@@ -593,13 +599,13 @@ class PyCHAM(QWidget):
 		# cannot have operator-split step less than boundary condition step as the 
 		# operator split processes won't be called with sufficient frequency
 		if op_splt_step<tstep_len:
-			print('Note: inside the model variables input file the time interval for integrating over by the ode solver and updating boundary conditions (bc_time_step) is more than that for the opertaor split (op_spl_step) processes, therefore reducing to value of the operator-split.  Please see README for guidance.')
-			tstep_len -= (tstep_len-op_splt_step)
+			print('Note: inside the model variables input file the time interval for integrating over by the ode solver and updating boundary conditions (bc_time_step) is more than that for the opertaor split (op_spl_step) processes, therefore reducing to value of the boundary condition time step to equal the operator-split time step.  Please see README for guidance.')
+			tstep_len = op_splt_step
 		
 		# can't have a recording time step (s) less than the ode solver time step (s),
 		# so force to be equal and tell user
 		if save_step<tstep_len:
-			print('Recording time step (tstep_len) cannot be less than the ode solver time step, so increasing recording time step to be equal to ode solver time step (save_step), note both variables set in the model variables input file.  Please see README for guidance.')
+			print('Recording time step (recording_time_step in model variables file) cannot be less than the boundary condition time step (bc_time_step in model variables file), so increasing recording time step to be equal to boundary condition time step, note both variables set in the model variables input file.  Please see README for guidance.')
 			save_step = tstep_len
 		
 		# if initial particle concentration is an array, its elements must align with the
@@ -626,8 +632,8 @@ class PyCHAM(QWidget):
 				print('Error: the number of times given for constant influx by the const_infl_t variable inside the model variables input file does not match the number of times with constant influx concentrations provided by the Cinfl variable of that file, please see the README for guidance.')
 				sys.exit()
 				
-		if len(chem_scheme_markers)!=9:
-			print('Error: length of chem_scheme_markers (specified in model variables input file) is not 8 and should be, please see README for guidance')
+		if len(chem_scheme_markers)!=7:
+			print('Error: length of chem_scheme_markers (specified in model variables input file) is not 7 and should be, please see README for guidance')
 		# components with assigned vapour pressures
 		if len(vol_Comp)!=len(volP):
 			print('Error: the number of components with assigned vapour pressures does not equal the number of assigned vapour pressures (vol_Comp and volP variables, respectively, in the model variables input folder), please see the README for guidance')
@@ -689,7 +695,7 @@ class PyCHAM(QWidget):
 		kgwt, dydt_trak, space_mode, Ct, Compt, injectt, seed_name, const_comp,
 		const_infl, Cinfl, act_comp, act_user, seed_mw, umansysprop_update, seed_dens, 
 		p_char, e_field, const_infl_t, chem_scheme_markers, int_tol, photo_par_file, 
-		dil_fac, pconct, accom_coeff_ind, accom_coeff_user, op_splt_step, tempt]
+		dil_fac, pconct, accom_coeff_ind, accom_coeff_user, op_splt_step, tempt, coag_on]
 		
 		if os.path.isfile(dirpath+'/testf.txt'):
 			print('Model input buttons work successfully')

@@ -140,7 +140,7 @@ Unit tests for PyCHAM modules can be found in the PyCHAM/Unit_Testing folder in 
 
 Integration testing can be completed using the '.travis.yml' and 'PyCHAM_CI_test.py' files at the [Travis CI website](https://travis-ci.org).
 
-Example run output is saved in the GMD_paper/Results folder.  To reproduce this see the notes in the plotting scripts of the GMD_paper/Results folder.  Note that the example output may vary between releases so check correspondence.
+Example run output is saved in the PyCHAM/output/Example_Run folder.  To reproduce this, select from PyCHAM/inputs Example_Run for the chemical scheme, Example_Run_xml for the xml file and Example_Run_inputs for the model variables.  Note that the example output may vary between releases so check correspondence.
 
 ## Inputs
 
@@ -321,6 +321,9 @@ photo_par_file = Name of txt file stored in PyCHAM/photofiles containing the
 
 ChamSA = Chamber surface area (m2), used if the Rader and McMurry wall loss of particles
 		option (Rader_flag) is set to 1 (on) below
+
+coag_on = set to 1 (default if left empty) for coagulation to be modelled, or set to zero
+			to omit coagulation
 
 nucv1 = Nucleation parameterisation value 1
 
@@ -596,15 +599,21 @@ umansysprop_update = flag to update the UManSysProp module via internet connecti
 						an error.
 
 chem_scheme_markers = markers denoting various sections of the user's chemical scheme.  If
-					left empty defaults to MCM FACSIMILE formatting.  If filled, must have 
+					left empty defaults to Kinetic Pre-Processor (KPP) formatting.  
+					If filled, must have 
 					following elements separated with commas:
-					marker for chemical reactions starting, punctuation before each 
-					reaction, marker for chemical reactions ending, marker for generic 
-					rate coefficients starting, punctuation at the end of lines for 
-					generic rate coefficients, marker for end of generic rate 
-					coefficients, marker for start of peroxy radical pool description, 
-					marker for separating peroxy radical pool constituents,
-					marker for end of peroxy radical pool description.
+					marker for punctuation at start of reaction lines 
+					(just the first element),
+					marker for peroxy radical list starting,
+					punctuation between peroxy radical names,
+					prefix to peroxy radical name,
+					string after peroxy radical name, 
+					number of lines taken by peroxy radical list (including the line 
+					containing the marker for peroxy radical list starting,
+					punctuation at the end of lines for generic rate coefficients, 
+					
+					For example, for the MCM FACSIMILE format:
+					chem_scheme_markers = %, (.*) End (.*), * Generic Rate Coefficients ;, ;, \*\*\*\*, RO2, +, *;
 					
 int_tol = Integration tolerances, with absolute tolerance first followed by relative 
 		tolerance, if left empty defaults to the minimum required during testing for 

@@ -20,6 +20,8 @@ from pp_dursim import pp_dursim
 from water_calc import water_calc
 from volat_calc import volat_calc
 import matplotlib.pyplot as plt
+import sys
+import time
 
 def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi, 
 			TEMP, RO2_indices, num_sb, 
@@ -34,10 +36,9 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			corei, const_compi, const_comp, const_infli, Cinfl, act_coeff, p_char, 
 			e_field, const_infl_t, int_tol, photo_par_file, Jlen, dil_fac, pconct,
 			lowersize, uppersize, mean_rad, std, op_splt_step, Pybel_objects, tempt,
-			Cfactor):
+			Cfactor, coag_on):
 
-	# ----------------------------------------------------------
-	# inputs
+	# inputs:---------------------------------------------------
 	
 	# t - suggested time step length for updating boundary conditions (s)
 	# num_speci - number of components
@@ -108,6 +109,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	# tempt - times (s) at which chamber temperatures given in TEMP reached
 	# Cfactor - one billionth the number of molecules in a unit volume of chamber
 	#			at experiment start (molecules/cc)
+	# coag_on - flag to say whether coagulation to be modelled or not
 	# ------------------------------------------------------------------------------------
 	
 	# testing mode
@@ -135,7 +137,6 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	
 	step = 0 # ode time interval step number
 	t0 = t # remember original suggested time step (s)
-	# final +1 for ELVOC in newly nucleating particles
 	y0 = np.zeros((num_speci+num_sb*num_speci))	
 	y0[:] = y[:] # initial concentrations (molecules/cc (air))
 	y00 = np.zeros((num_speci+num_sb*num_speci))	
@@ -218,14 +219,17 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	# number of components with constant gas-phase concentration and with constant influx
 	num_const_compi = len(const_compi)
 	const_infli_len = len(const_infli)
+
 	# needs to be a numpy array to be used in integrator
 	const_compi = np.array(const_compi)
-	const_infli = np.array(const_infli)
+	
+	if len(const_infli)>0:
+		const_infli = np.array(int(const_infli)).reshape(len(const_infli))
 	
 	print('starting ode solver')
 	
 	while sumt < end_sim_time: # step through time intervals to do ode
-		
+		t10 = time.time()
 		# start of update for changed boundary conditions --------------------------------
 		
 		# ---------------------
@@ -404,13 +408,26 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		
 		# end of update for changed boundary conditions ----------------------------------
 		
+		# check whether time step needs reducing to ensure operator-split time step not
+		# overrun
+		if op_spl_count+tnew>op_splt_step:
+			print('temporarily reducing time step to enable operator-split processes at requested interval')
+			tnew = op_splt_step-op_spl_count
+			bc_red = 1
+		
+		# --------------------------------------------------------------------------------
+
+
 		# update integration time step
 		if (sumt+tnew)>end_sim_time: # ensure we finish at correct time
 			tnew = end_sim_time-sumt # integration time step (s)
 		t = tnew # reset maximum integration time (s)
 		
-		print('cumulative time through simulation (s) before int', sumt, tnew)
-		
+		print('cumulative time (s) through simulation : ', sumt)
+		a = (np.where(N_perbin>1.0e-10))[0]
+		if len(a)>0:
+			a = int(a[0])
+			
 		# update reaction rate coefficients
 		reac_coef = rate_valu_calc(RO2_indices, y[H2Oi], temp_now, lightm, y, 
 									daytime+sumt, 
@@ -428,12 +445,10 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			[kimt, kelv_fac] = kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw,   
 							surfT, R_gas, temp_now, NA, y_dens, N_perbin, DStar_org, 
 							x.reshape(1, -1)*1.0e-6, Psat, therm_sp, H2Oi, act_coeff)
-		
+							
 		# ensure no confusion that components are present due to low value fillers for  
 		# concentrations (molecules/cc (air))
 		y0[y0==1.0e-40] = 0.0
-		
-		
 		
 		# enter a while loop that continues to decrease the time step until particle
 		# size bins don't change by more than one size bin (given by moving centre)
@@ -441,7 +456,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		while redt == 1:
 			
 			# numba compiler to convert to machine code
-			@jit(f8[:](f8, f8[:]), nopython=True)
+			@jit(f8[:](f8, f8[:]), nopython=True, cache=False)
 			# ode solver -------------------------------------------------------------
 			def dydt(t, y):
 				
@@ -461,7 +476,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				# the constant gas-phase influx of components with this property
 				if const_infli_len>0:
 					for i in range(const_infli_len):
-						dydt[const_infli[i]] += Cinfl_now[i, 0]
+						dydt[const_infli[i]] = dydt[const_infli[i]]+Cinfl_now[i, 0]
 
 				if num_sb>1: # as num_sb includes 1 for wall
 					# gas-particle partitioning, based on eqs. 3 and 4 of Zaveri et al.
@@ -513,7 +528,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				# constant gas-phase concentration of components with this property
 				if num_const_compi>0:
 					dydt[const_compi[:]] = 0.0
-				
+
 				return(dydt)
 				
 			
@@ -526,9 +541,10 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			# vapour
 			mod_sim.rtol = int_tol[1]
 			mod_sim.discr = 'BDF' # the integration approach, default is 'Adams'
+			t13 = time.time() # computation time profiling
 			t_array, res = mod_sim.simulate(t)		
 			y = res[-1, :] # new concentrations (molecule/cc (air))
-			
+			t14 = time.time()
 			# low value filler for concentrations (molecules/cc (air)) to prevent 
 			# numerical errors
 			y0[y0==0.0] = 1.0e-40
@@ -541,21 +557,24 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				(N_perbin, Varr, y, x, redt, t, bc_red) = movcen(N_perbin, 
 				Vbou, num_sb, num_speci, y_mw, x, Vol0, t, 
 				t0, tinc_count, y0, MV, Psat[:, 0], bc_red, res, t_array)
-
+			else: # if no moving-centre needed, then allow model to continue
+				redt = 0
+			
 			if (redt == 0):
 				if t<t0 and tinc_count<=0:
 					tnew = t*2.0
 				if tnew>t0: # in case tnew exceeds user-defined maximum for time step
 					tnew = t0
+
 			# if time step needs reducing then reset concentrations to their
 			# values preceding the ode
 			if (redt == 1):
 				y[:] = y0[:]
-			
 			# check whether maximum integration time step can return to original
-			if (redt == 0) and (bc_red == 1) and tinc_count == 10:
+			if (redt == 0) and (bc_red == 1):
 				# return maximum integration time step (s) to original
 				tnew = t0
+				bc_red = 0
 			# start counter to determine number of integrations before next trying to 
 			# increasing time interval
 			if redt == 1:
@@ -576,10 +595,10 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			
 			if num_sb>1: 
 				if (N_perbin>1.0e-10).sum()>0:
+					
 					# coagulation
 					# y indices due to final element in y being number of ELVOC molecules
 					# contributing to newly nucleated particles
-					print('coag')
 					[N_perbin, y[num_speci:-(num_speci)], x, Gi, eta_ai, Varr] = coag(RH, 
 							temp_now, x*1.0e-6, (Varr*1.0e-18).reshape(1, -1), 
 							y_mw.reshape(-1, 1), x*1.0e-6, 
@@ -588,10 +607,10 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 							(Vbou*1.0e-18).reshape(1, -1), 
 							num_speci, 0, (np.squeeze(y_dens*1.0e-3)), rad0, Pnow, 0,
 							np.transpose(y[num_speci::].reshape(num_sb, num_speci)),
-							(N_perbin).reshape(1, -1), (Varr*1.0e-18).reshape(1, -1))
+							(N_perbin).reshape(1, -1), (Varr*1.0e-18).reshape(1, -1),
+							coag_on)
 					
 					if Rader > -1:
-						
 						# particle loss to walls
 						[N_perbin, 
 						y[num_speci:-(num_speci)]] = wallloss(N_perbin.reshape(-1, 1), 
@@ -622,9 +641,9 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		y -= y*(dil_fac*t) # dilution of gases (molecules/cc (air))
 		N_perbin -= N_perbin*(dil_fac*t) # dilution of particle phase (#/cc (air))
 
-			
+		
 		# save at every time step given by save_step (s) and at end of experiment
-		if sumt>=save_step*save_count or sumt == end_sim_time:
+		if (save_step*save_count-sumt)<1.0e-10 or (sumt-save_step*save_count)>=0.0 or sumt == end_sim_time:
 			
 			if num_sb>0:
 				
@@ -633,7 +652,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 										num_speci))
 			else:
 				yp = 0.0
-			
+
 			# record values at the end of this time step, note that these will correspond
 			# to sumt, which is the cumulative time (s) at the end of this time step.  
 			# This makes sense because the integration results are what is being saved 
@@ -649,7 +668,5 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				reac_coef, Cfactor, Cfactor_vst)
 				
 			save_count += int(1) # track number of times saved at
-		
-		print('cumulative time through simulation (s)', sumt, t)
 		
 	return(t_out, y_mat, Nresult_dry, Nresult_wet, x2, dydt_vst, Cfactor_vst)
