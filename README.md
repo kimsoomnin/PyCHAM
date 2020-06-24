@@ -221,88 +221,26 @@ note that if a variable is irrelevant for your simulation, it can be left empty
 | ---------- | ---------- |
 | res_file_name = | Name of folder to save results to |
 | total_model_time = | Total experiment time to be simulated (s) |
+| bc_time_step =  | Maximum time interval for ode solver and updating boundary conditions (s).  Must be at most the value of op_spl_step.  Default is 60 s |
+| op_spl_step =  | Time (s) interval for solving operator-split processes over, must be at least as long as bc_time_step.  Default to 60 s.  Can be set to more than the total_model_time variable above to prevent opertaor-split processes occuring. |
+| recording_time_step =  | Time interval for recording results (s).  Must be at least the value of bc_time_step.  Defaults to 60 s.|
+| number_size_bins = | Number of size bins (excluding wall); to turn off particle considerations set to 0 (which is also the default), likewise set pconc and seed_name variables below off.  Must be integer (e.g. 1) not float (e.g. 1.0) |
+| lower_part_size = | Radius of smallest size bin boundary (um) |
+| upper_part_size = | Radius of largest size bin boundary (um) |
+| space_mode = | lin for linear spacing of size bins in radius space, or log for logarithmic spacing of size bins in radius space, if empty defaults to linear spacing|
+| kgwt = | mass transfer coefficient of vapour-wall partitioning (/s), if left empty defaults to zero |
+| eff_abs_wall_massC = |effective absorbing wall mass concentration (g/m3 (air)), if left empty defaults to zero |
+| temperature = | Air temperature inside the chamber (K).  At least one value must be given for the experiment start (times corresponding to temperatures given in tempt variable below).  If multiple values, representing changes in temperature at different times, then separate by a comma.  For example, if the temperature at experiment start is 290.0 K and this increases to 300.0 K after 3600.0 s of the experiment, inputs are: temperature = 290.0, 300.0, tempt = 0.0, 3600.0 |
+|tempt = | Times since start of experiment (s) at which the temperature(s) set by the temperature variable above, are reached.  Defaults to 0.0 if left empty as at least the temperature at experiment start needs to be known.  If multiple values, representing changes in temperature at different times, then separate by a comma.  For example, if the temperature at experiment start is 290.0 K and this increases to 300.0 K after 3600.0 s of the experiment, inputs are: temperature = 290.0, 300.0; tempt = 0.0, 3600.0 |
+| p_init =  | Pressure of air inside the chamber (Pa) |
+| rh = | Relative Humidity (fraction, 0-1) |
+| lat = | latitude (degrees) for natural light intensity (if applicable, leave empty if not (if experiment is dark set light_status below to 0 for all times)) |
+| lon = | longitude (degrees) for natural light intensity (if applicable, leave empty if not (if experiment is dark set light_status below to 0 for all times)) |	
+| DayOfYear = | day of the year for natural light intensity (if applicable, leave empty if not (if experiment is dark set light_status below to 0 for all times)), must be integer between 1 and 365|
+| daytime_start = | Time of the day for natural light intensity (if applicable, leave empty if not (if experiment is dark set light_status below to 0 for all times)) (s since midnight) |
+| act_flux_file = | Name of csv file stored in PyCHAM/photofiles containing the actinic flux values; use only if artificial lights inside chamber are used during experiment.  The file should have a line for each wavelength, with the first number in each line representing the wavelength in nm, and the second number separated from the first by a comma stating the flux (Photons /cm2/nm/s) at that wavelength.  No headers should be present in this file.  Example of file given by /PyCHAM/photofiles/Example_act_flux and example of the act_flux_path variable is: act_flux_path = Example_act_flux.csv.  Note, please include the .csv in the variable name if this is part of the file name.  Defaults to null file |
 
 
-
-
-bc_time_step = Maximum time interval for ode solver and updating boundary conditions (s).
-				Must be at most the value of op_spl_step.  Default is 60 s.
-
-op_spl_step = Time (s) interval for solving operator-split processes over, must be at 
-				least as long as bc_time_step.  Default to 60 s.  Can be set to more than
-				the total_model_time variable above to prevent opertaor-split processes
-				occuring.
-
-recording_time_step = Time interval for recording results (s).  Must be at least the value
-					of bc_time_step.  Defaults to 60 s.
-
-number_size_bins = Number of size bins (excluding wall); to turn off particle
-					considerations set to 0 (which is also the default), likewise
-					set pconc and seed_name variables below off.  Must be integer (e.g. 1)
-					not float (e.g. 1.0)
-
-lower_part_size = Radius of smallest size bin boundary (um)
-
-upper_part_size = Radius of largest size bin boundary (um)
-
-space_mode = lin for linear spacing of size bins in radius space, or log for logarithmic
-			spacing of size bins in radius space, if empty defaults to linear spacing
-
-kgwt = mass transfer coefficient of vapour-wall partitioning (/s), if left empty defaults 
-		to zero
-
-eff_abs_wall_massC = effective absorbing wall mass concentration (g/m3 (air)), if left 
-		 empty defaults to zero
-
-temperature = Air temperature inside the chamber (K).  At least one value must be given
-				for the experiment start (times corresponding to temperatures given in 
-				tempt variable below).  If multiple values, representing changes in
-				temperature at different times, then separate by a comma.
-				For example, if the temperature at experiment start is 290.0 K and this
-				increases to 300.0 K after 3600.0 s of the experiment, inputs are:
-				temperature = 290.0, 300.0
-				tempt = 0.0, 3600.0
-				
-tempt = Times since start of experiment (s) at which the temperature(s) set by the
-		temperature variable above, are reached.  Defaults to 0.0 if left empty as at 
-		least the temperature at experiment start needs to be known.
-		If multiple values, representing changes in
-		temperature at different times, then separate by a comma.
-		For example, if the temperature at experiment start is 290.0 K and this
-		increases to 300.0 K after 3600.0 s of the experiment, inputs are:
-		temperature = 290.0, 300.0
-		tempt = 0.0, 3600.0
-		
-
-p_init = Pressure of air inside the chamber (Pa).
-
-rh = Relative Humidity (fraction, 0-1).
-
-lat = latitude (degrees) for natural light intensity (if applicable, leave empty if not (if experiment is dark set light_status below to 0 for all times))
-
-lon = longitude (degrees) for natural light intensity (if applicable, leave empty if not (if experiment is dark set light_status below to 0 for all times))
-
-DayOfYear = day of the year for natural light intensity (if applicable, leave empty if not
-			 (if experiment is dark set light_status below to 0 for all times)), must be 
-			 integer between 1 and 365
-
-daytime_start = Time of the day for natural light intensity (if applicable, leave empty if
-				 not (if experiment is dark set light_status below to 0 for all times)) (s
-				  since midnight)
-
-act_flux_file = Name of csv file stored in PyCHAM/photofiles containing the actinic flux 
-				values; use only if artificial lights
-				inside chamber are used during experiment.  The file should have a line 
-				for each wavelength, with the first number in each line representing
-				the wavelength in nm, and the second number separated from the first by
-				a comma stating the flux (Photons /cm2/nm/s) at that wavelength.  No 
-				headers should be present in this file.
-				Example of file given by /PyCHAM/photofiles/Example_act_flux and example
-				of the act_flux_path variable is:
-				act_flux_path = Example_act_flux.csv
-				Note, please include the .csv in the variable name if this is part of the
-				file name.
-				Defaults to null file
 
 photo_par_file = Name of txt file stored in PyCHAM/photofiles containing the 
 				wavelength-dependent absorption cross-sections and quantum yields for

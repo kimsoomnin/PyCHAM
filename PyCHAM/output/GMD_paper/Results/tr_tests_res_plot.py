@@ -48,7 +48,7 @@ import scipy.constants as si
 fig, ((ax0, ax1, ax2, ax3), (ax4, ax5, ax6, ax7)) = plt.subplots(2, 4, figsize=(14, 7), sharey=True)
 
 # ensure sufficient spacing between subplots
-fig.subplots_adjust(top=0.99, bottom = 0.01, hspace=3.0, wspace=0.4)
+fig.subplots_adjust(top=0.90, bottom = 0.10, hspace=0.5, wspace=0.2)
 
 # 128 size bin, polydisperse -------------------------------------------------------------
 
@@ -1012,6 +1012,7 @@ p16, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='
 # ax2.set_xlabel('operator-split time step (s)', size=16) # vertical axis label
 # ax1.set_yticklabels([]) # turn off labels for number size distribution
 ax2.xaxis.set_tick_params(labelsize=16)
+ax2.text(x=1.0e0, y=2.0e2, s='c)', size=14)
 # par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
 # par2.yaxis.set_tick_params(labelsize=16)
 # par2.yaxis.label.set_color('blue')
@@ -1424,7 +1425,7 @@ p21, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='
 ax4.set_ylabel('$|\%\, \Delta|$', size=18) # vertical axis label
 ax4.xaxis.set_tick_params(labelsize=16)
 ax4.yaxis.set_tick_params(labelsize=16)
-
+ax4.text(x=1.0e0, y=2.0e2, s='d)', size=14)
 
 
 # add contour plot to show computer processing time --------------------------------------
@@ -1821,7 +1822,7 @@ p25, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='
 p26, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 
 ax5.xaxis.set_tick_params(labelsize=16)
-
+ax5.text(x=1.0e0, y=2.0e2, s='e)', size=14)
 
 
 
@@ -2216,7 +2217,7 @@ p25, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='
 p26, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 
 ax6.xaxis.set_tick_params(labelsize=16)
-
+ax6.text(x=1.0e0, y=2.0e2, s='f)', size=14)
 
 
 
