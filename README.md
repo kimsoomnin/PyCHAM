@@ -239,21 +239,7 @@ note that if a variable is irrelevant for your simulation, it can be left empty
 | DayOfYear = | day of the year for natural light intensity (if applicable, leave empty if not (if experiment is dark set light_status below to 0 for all times)), must be integer between 1 and 365|
 | daytime_start = | Time of the day for natural light intensity (if applicable, leave empty if not (if experiment is dark set light_status below to 0 for all times)) (s since midnight) |
 | act_flux_file = | Name of csv file stored in PyCHAM/photofiles containing the actinic flux values; use only if artificial lights inside chamber are used during experiment.  The file should have a line for each wavelength, with the first number in each line representing the wavelength in nm, and the second number separated from the first by a comma stating the flux (Photons /cm2/nm/s) at that wavelength.  No headers should be present in this file.  Example of file given by /PyCHAM/photofiles/Example_act_flux and example of the act_flux_path variable is: act_flux_path = Example_act_flux.csv.  Note, please include the .csv in the variable name if this is part of the file name.  Defaults to null file |
-| photo_par_file = | Name of txt file stored in PyCHAM/photofiles containing the 
-				wavelength-dependent absorption cross-sections and quantum yields for
-				photochemistry.  If left empty defaults to MCMv3.2, and is only used
-				if act_flux_path variable above is stated.  File must be of .txt format with the formatting:
-				J_n_axs
-				wv_m, axs_m
-				J_n_qy
-				wv_M, qy_m
-				J_end
-				where n is the photochemical reaction number, axs represents the 
-				absorption cross-section (cm2/molecule), wv is wavelength (nm), _m is the 
-				wavelength number, and qy represents quantum yield (fraction).  J_end 
-				marks the end of the photolysis file.  An example
-				is provided in PyCHAM/photofiles/example_inputs.txt.  Note, please include
-				the .txt in the file name. |
+| photo_par_file = | Name of txt file stored in PyCHAM/photofiles containing the wavelength-dependent absorption cross-sections and quantum yields for photochemistry.  If left empty defaults to MCMv3.2, and is only used if act_flux_path variable above is stated.  File must be of .txt format with the formatting: \n J_n_axs \n wv_m, axs_m \n J_n_qy \n wv_M, qy_m \n J_end \n where n is the photochemical reaction number, axs represents the absorption cross-section (cm2/molecule), wv is wavelength (nm), _m is the wavelength number, and qy represents quantum yield (fraction).  J_end marks the end of the photolysis file.  An example is provided in PyCHAM/photofiles/example_inputs.txt.  Note, please include the .txt in the file name. |
 |||
 |||
 |||
