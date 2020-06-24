@@ -1,4 +1,4 @@
-\begin{thebibliography}{64}
+\begin{thebibliography}{65}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{{\tt #1}}
 \providecommand{\urlprefix}{URL }
@@ -39,6 +39,15 @@ Chen, B.~T., Yeh, H.~C., and Cheng, Y.~S.: Evaluation of an Environmental
 Crump, J.~G. and Seinfeld, J.~H.: Turbulent deposition and gravitational
   sedimentation of an aerosol in a vessel of arbitrary shape, J. Aerosol Sci.,
   12, 405--415, \doi{10.1016/0021-8502(81)90036-7}, 1981.
+
+\bibitem[{Dada et~al.(2020)Dada, Lehtipalo, Kontkanen, Nieminen, Baalbaki,
+  Ahonen, Duplissy, Yan, Chu, Pet{\"a}j{\"a}, Lehtinen, Kerminen, Kulmala, and
+  Kangasluoma}]{Dada2020}
+Dada, L., Lehtipalo, K., Kontkanen, J., Nieminen, T., Baalbaki, R., Ahonen, L.,
+  Duplissy, J., Yan, C., Chu, B., Pet{\"a}j{\"a}, T., Lehtinen, K., Kerminen,
+  V.-M., Kulmala, M., and Kangasluoma, J.: Formation and growth of sub-3-nm
+  aerosol particles in experimental chambers, Nature protocols., 15,
+  1013--1040, \doi{10.1038/s41596-019-0274-z}, 2020.
 
 \bibitem[{Day et~al.(2017)Day, Ziemann, Jimenez, Krechmer, Day, Ziemann, and
   Jimenez}]{Day2017}
@@ -86,13 +95,6 @@ Girolami, G.~S.: A Simple "Back of the Envelope" Method for Estimating the
   Densities and Molecular Volumes of Liquids and Solids, Journal of chemical
   education., 71, 962--964, \doi{10.1021/ed071p962}, 1994.
 
-\bibitem[{Griffin et~al.(1956)Griffin, Kantzes, Ludford, and
-  Pelczar}]{Griffin1956}
-Griffin, C.~W., Kantzes, H.~L., Ludford, P.~M., and Pelczar, M.~J.: Studies of
-  Aerosols with a Simple Cloud-Chamber Technic, Applied and Environmental
-  Microbiology, 4, 17--20, \doi{10.1128/AEM.4.1.17-20.1956},
-  \urlprefix\url{https://aem.asm.org/content/4/1/17}, 1956.
-
 \bibitem[{Hayman(1997)}]{Hayman1997}
 Hayman, G.: Effects of pollution control on UV Exposure, AEA Technology Final
   Report (Reference AEA/RCEC/22522001/R/002 ISSUE1) prepared for the Department
@@ -128,6 +130,13 @@ Jaoui, M., Lewandowski, M., Docherty, K., Offenberg, J.~H., and Kleindienst,
 Jenkin, M., Saunders, S., and Pilling, M.: The tropospheric degradation of
   volatile organic compounds: A protocol for mechanism development, Atmos.
   Env., 31, 81--104, \doi{10.1016/S1352-2310(96)00105-7}, 1997.
+
+\bibitem[{Jiang et~al.(2011)Jiang, Zhao, Chen, Eisele, Scheckman, Williams, C,
+  and H}]{Jiang2011}
+Jiang, J., Zhao, J., Chen, M., Eisele, F.~L., Scheckman, J., Williams, B.~J.,
+  C, K., and H, M.~P.: First measurements of neutral atmospheric cluster and
+  1-2 nm particle number size distributions during nucleation events, Aerosol
+  science and technology., 45, \doi{10.1080/02786826.2010.546817}, 2011.
 
 \bibitem[{Johnson et~al.(2018)Johnson, Regayre, Yoshioka, Pringle, Lee, Sexton,
   Rostron, Booth, and Carslaw}]{Johnson2018}

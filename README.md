@@ -217,9 +217,13 @@ return (so one line per variable, an error message will show if a variable is mi
 note that if a variable is irrelevant for your simulation, it can be left empty 
 (e.g. vol_Comp = ):
 
-res_file_name = Name of folder to save results to.
+| Input Name | Description|
+| ---------- | ---------- |
+| res_file_name = | Name of folder to save results to |
+| total_model_time = | Total experiment time to be simulated (s) |
 
-total_model_time = Total experiment time to be simulated (s).
+
+
 
 bc_time_step = Maximum time interval for ode solver and updating boundary conditions (s).
 				Must be at most the value of op_spl_step.  Default is 60 s.

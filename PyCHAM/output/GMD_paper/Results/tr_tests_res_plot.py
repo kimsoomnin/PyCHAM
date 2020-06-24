@@ -46,8 +46,9 @@ import scipy.constants as si
 
 # set up plots ---------------------------------------------------------
 fig, ((ax0, ax1, ax2, ax3), (ax4, ax5, ax6, ax7)) = plt.subplots(2, 4, figsize=(14, 7), sharey=True)
-# par1 = ax0.twinx() # first parasite axis
-# par2 = ax1.twinx() # second parasite axis
+
+# ensure sufficient spacing between subplots
+fig.subplots_adjust(top=0.99, bottom = 0.01, hspace=3.0, wspace=0.4)
 
 # 128 size bin, polydisperse -------------------------------------------------------------
 
@@ -239,1000 +240,1000 @@ pc1 = ax0.pcolormesh(cont_x, cont_y, np.log10(speed[:, :]), cmap=cm, norm=norm1)
 # end of contour plot section ------------------------------------------------------------
 
 # particle coagulation and loss to wall, no partitioning ---------------------------------
-# num_sb_dict = {}
-# num_speci_dict = {}
-# Cfac_dict = {}
-# y_dict = {}
-# N_dict = {}
-# sbb_dict = {}
-# x_dict = {}
-# thr_dict = {}
-# 
-# (num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], _, _, _, _, _, spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_43200s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], _, _, _, _, _, spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_15360s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], _, _, _, _, _, spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_7680s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], _, _, _, _, _, spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_3840s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb4'], num_speci_dict['num_speci4'], Cfac_dict['Cfac4'], y_dict['y4'], N_dict['N4'], sbb_dict['sbb4'], x_dict['x4'], thr_dict['thr4'], _, _, _, _, _, spd_dict['spd4']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_1920s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb5'], num_speci_dict['num_speci5'], Cfac_dict['Cfac5'], y_dict['y5'], N_dict['N5'], sbb_dict['sbb5'], x_dict['x5'], thr_dict['thr5'], _, _, _, _, _, spd_dict['spd5']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_960s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb6'], num_speci_dict['num_speci6'], Cfac_dict['Cfac6'], y_dict['y6'], N_dict['N6'], sbb_dict['sbb6'], x_dict['x6'], thr_dict['thr6'], _, _, _, _, _, spd_dict['spd6']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_480s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb7'], num_speci_dict['num_speci7'], Cfac_dict['Cfac7'], y_dict['y7'], N_dict['N7'], sbb_dict['sbb7'], x_dict['x7'], thr_dict['thr7'], _, _, _, _, _, spd_dict['spd7']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_240s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb8'], num_speci_dict['num_speci8'], Cfac_dict['Cfac8'], y_dict['y8'], N_dict['N8'], sbb_dict['sbb8'], x_dict['x8'], thr_dict['thr8'], _, _, _, _, _, spd_dict['spd8']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_120s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb9'], num_speci_dict['num_speci9'], Cfac_dict['Cfac9'], y_dict['y9'], N_dict['N9'], sbb_dict['sbb9'], x_dict['x9'], thr_dict['thr9'], _, _, _, _, _, spd_dict['spd9']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_60s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb10'], num_speci_dict['num_speci10'], Cfac_dict['Cfac10'], y_dict['y10'], N_dict['N10'], sbb_dict['sbb10'], x_dict['x10'], thr_dict['thr10'], _, _, _, _, _, spd_dict['spd10']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_48s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb11'], num_speci_dict['num_speci11'], Cfac_dict['Cfac11'], y_dict['y11'], N_dict['N11'], sbb_dict['sbb11'], x_dict['x11'], thr_dict['thr11'], _, _, _, _, _, spd_dict['spd11']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_24s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb12'], num_speci_dict['num_speci12'], Cfac_dict['Cfac12'], y_dict['y12'], N_dict['N12'], sbb_dict['sbb12'], x_dict['x12'], thr_dict['thr12'], _, _, _, _, _, spd_dict['spd12']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_12s_opspltwlcoag_128sb_tempconst_seeded'))
-# (num_sb_dict['num_sb13'], num_speci_dict['num_speci13'], Cfac_dict['Cfac13'], y_dict['y13'], N_dict['N13'], sbb_dict['sbb13'], x_dict['x13'], thr_dict['thr13'], _, _, _, _, _, spd_dict['spd13']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6s_opspltwlcoag_128sb_tempconst_seeded'))
-# per_err = np.zeros((len(num_sb_dict), 3)) # empty store for percentage error results
-# per_err[:, 0] = (43200, 15360, 7680, 3840, 1920, 960, 480, 240, 120, 60, 48, 24, 12, 6)
-# 
-# for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
-# 	resi = int(resi)# ensure integer not float
-# 	
-# 	N = N_dict[str('N' + str(resi))] # particle number concentration
-# 	sbb = sbb_dict[str('sbb' + str(resi))] # size bin bounds
-# 	num_sb = num_sb_dict[str('num_sb' + str(resi))]-1 # number of size bins
-# 	x = x_dict[str('x' + str(resi))] # radii at size bin centre
-# 	t_array = thr_dict[str('thr' + str(resi))]*3600.0 # times results saved at (s)
-# 	t_step = t_array[1]-t_array[0] # operator-split time step
-# 	if resi == len(num_sb_dict)-1:
-# 		t_array_bench = t_array # times to interpolate to (s)
-# 		t_step_bench = t_step
-# 		t_bench_len = int(len(t_array_bench)) # number of times for reference
-# 	
-# 	# empty matrix for holding interpolated values
-# 	Nint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
-# 	t_count = 0 # initial count on rows of matrix containing interpolation results
-# 
-# 
-# 
-# 	for ti in range(int(len(t_array)-1)): # loop through operator-split time steps
-# 		
-# 		# start and finish times for interpolation (hours)
-# 		t_interp = np.zeros((2))
-# 		t_interp[0] = t_array[ti]
-# 		t_interp[1] = t_array[ti+1]
-# 		# points to interpolate
-# 		N2int = np.zeros((2, N.shape[1]))
-# 		N2int[0, :] = N[ti, :]
-# 		N2int[1, :] = N[ti+1, :]
-# 		
-# 		# index of reference time array
-# 		ref_indx = (np.where((t_interp[1]-t_array_bench)>=0))[0][-1]
-# 		# number of reference time points covered
-# 		num_ref_points = int(ref_indx-t_count)
-# 		
-# 		for ti2 in range(num_ref_points): # loop through times to interpolate to
-# 
-# 			# loop through size bins
-# 			for sbi in range(num_sb):
-# 				Nint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, N2int[:, sbi]) 
-# 			t_count += 1
-# 	
-# 
-# 	
-# 	# new array for holding number concentrations		
-# 	N = np.zeros((Nint.shape[0], Nint.shape[1]))
-# 	N[:, :] = Nint[:, :]
-# 	# new array for holding dN/dlog10(Dp)
-# 	dN = np.zeros((N.shape[0], N.shape[1]))
-# 	# loop through times to normalise number concentrations by size bin width
-# 	for ti in range(N.shape[0]):
-# 		dN[ti, :] = N[ti, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
-# 
-# 	dN_av = np.zeros((dN.shape[0], num_sb-(np_mvav-1))) # dN/dlog10(Dp) moving average
-# 	
-# 	for i in range(np_mvav): # loop through number concentration points to get average
-# 	
-# 		# moving average number concentration, times in rows, size bins in columns
-# 		dN_av[:, :] += (dN[:, i:(num_sb)-(np_mvav-(i+1))])/np_mvav
-# 
-# 	
-# 	if resi == len(num_sb_dict)-1:
-# 		# remember benchmark values
-# 		dN_av_bench = np.zeros((dN_av.shape[0], dN_av.shape[1]))
-# 		dN_av_bench[:, :] = dN_av[:, :]
-# 		dN_av_bench[dN_av_bench==0.0] = 1.0e-40
-# 		N_bench = N.sum(axis=1)
-# 		N_bench[N_bench==0.0] = 1.0e-40 # set zeros to very low number
-# 		continue # no need to plot root-mean square deviation of benchmark against itself
-# 
-# 	# get total number concentration per time step (# particles/cc (air))
-# 	N = N.sum(axis=1)
-# 	N[N==0.0] = 1.0e-40 # set zeros to very low number	
-# 	dN_av[dN_av==0.0] = 1.0e-40 # set zeros to very low number
-# 	
-# 	# loop through time steps of the low temporal resolution case to calculate divergence
-# 	# prepare denominator matrices for divergence estimation
-# 	den_matrdN = np.zeros((dN_av.shape[1]))
-# 	den_matrN = np.zeros((1))
-# 
-# 	num_times = 0 # number of times to average over
-# 
-# 	for ti in range(t_bench_len): # loop through time steps
-# 		if ti == 0:
-# 			continue # skip results at simulation start
-# 
-# 		# denominator matrices to limit error to 100 %
-# 		den_matrdN = np.zeros((dN_av_bench.shape[1]))
-# 		den_matrdN[:] = dN_av_bench[ti, :]
-# 		den_matrN = np.zeros((1))
-# 		den_matrN[0] = N_bench[ti]
-# 
-# 		# index of size bins where reference value is below comparator value
-# 		lt_indx = dN_av_bench[ti, :]<dN_av[ti, :]
-# 		den_matrdN[lt_indx] = dN_av[ti, lt_indx]
-# 		if N_bench[ti]<N[ti]:
-# 			den_matrN[0] = N[ti]
-# 		
-# 		# index of size bins where both reference and test cases have particles present
-# 		sb_indx = (dN_av_bench[ti, :]>1.0e-10)+(dN_av[ti, :]>1.0e-10)
-# 		# absolute percentage error in number size distribution
-# 		per_error_nsd_ti = ((np.abs(dN_av_bench[ti, sb_indx]-dN_av[ti, sb_indx]))/den_matrdN[sb_indx])*100.0
-# 		
-# 		# absolute percentage error in total particle number concentration
-# 		per_error_N_ti = ((np.abs(N_bench[ti]-N[ti]))/den_matrN)*100.0
-# 
-# 		
-# 		if sum(sb_indx) > 0:
-# 			num_times += 1 # count on number of times to average over
-# 			# for number size distribution sum with previous time steps average across size bins
-# 			per_err[resi, 1] += (sum(per_error_nsd_ti)/(sum(sb_indx)))
-# 			# for total number average sum with previous time steps
-# 			per_err[resi, 2] += (per_error_N_ti)
-# 	
-# 	# average over time steps
-# 	per_err[resi, 1] = per_err[resi, 1]/num_times
-# 	per_err[resi, 2] = per_err[resi, 2]/num_times
-# 	
-# # plot of absolute percentage error, summed across size and times
-# p5, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
-# p6, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag. & wall')
-# 
-# ax0.text(x=0.0, y=1.0e6, s='a)', size=14) # plot label
-# lines = [p1, p2, p5, p6]
-# ax0.legend(lines, [l.get_label() for l in lines])
-# # ax0.set_ylim(4.5e-2, 1.05e2)
-# 
-# # ax0.set_xlabel('operator-split time step (s)', size=16) # vertical axis label
-# ax0.set_ylabel('$|\%\, \Delta|$', size=18) # vertical axis label
-# ax0.set_xlim(2.0e0, 5.0e4)
-# ax1.set_ylim(1.5e-2, 1.1e2)
-# ax0.xaxis.set_tick_params(labelsize=16)
-# ax0.yaxis.set_tick_params(labelsize=16)
-# 
-# 
-# 
-# # end of no partitioning plot, onto partitioning for coagulation and wall loss effects ---
-# 
-# # coagulation only with partitioning -----------------------------------------------------
-# num_sb_dict = {}
-# num_speci_dict = {}
-# Cfac_dict = {}
-# y_dict = {}
-# N_dict = {}
-# sbb_dict = {}
-# x_dict = {}
-# thr_dict = {}
-# MV_dict = {}
-# spd_dict = {}
-# 
-# (num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], _, _, _, _, MV_dict['MV0'], spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_43200s_opspltcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], _, _, _, _, MV_dict['MV1'], spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_18000s_opspltcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], _, _, _, _, MV_dict['MV2'], spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6000s_opspltcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], _, _, _, _, MV_dict['MV3'], spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_1800s_opspltcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb4'], num_speci_dict['num_speci4'], Cfac_dict['Cfac4'], y_dict['y4'], N_dict['N4'], sbb_dict['sbb4'], x_dict['x4'], thr_dict['thr4'], _, _, _, _, MV_dict['MV4'], spd_dict['spd4']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_600s_opspltcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb5'], num_speci_dict['num_speci5'], Cfac_dict['Cfac5'], y_dict['y5'], N_dict['N5'], sbb_dict['sbb5'], x_dict['x5'], thr_dict['thr5'], _, _, _, _, MV_dict['MV5'], spd_dict['spd5']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_180s_opspltcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb6'], num_speci_dict['num_speci6'], Cfac_dict['Cfac6'], y_dict['y6'], N_dict['N6'], sbb_dict['sbb6'], x_dict['x6'], thr_dict['thr6'], _, _, _, _, MV_dict['MV6'], spd_dict['spd6']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_60s_opspltCOAG_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb7'], num_speci_dict['num_speci7'], Cfac_dict['Cfac7'], y_dict['y7'], N_dict['N7'], sbb_dict['sbb7'], x_dict['x7'], thr_dict['thr7'], _, _, _, _, MV_dict['MV7'], spd_dict['spd7']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_30s_opspltcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb8'], num_speci_dict['num_speci8'], Cfac_dict['Cfac8'], y_dict['y8'], N_dict['N8'], sbb_dict['sbb8'], x_dict['x8'], thr_dict['thr8'], _, _, _, _, MV_dict['MV8'], spd_dict['spd8']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_12s_opspltcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb9'], num_speci_dict['num_speci9'], Cfac_dict['Cfac9'], y_dict['y9'], N_dict['N9'], sbb_dict['sbb9'], x_dict['x9'], thr_dict['thr9'], _, _, _, _, MV_dict['MV9'], spd_dict['spd9']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6s_opspltcoag_128sb_tempconst_seeded_sv'))
-# 
-# per_err = np.zeros((len(num_sb_dict), 4)) # empty store for percentage error results
-# per_err[:, 0] = (43200.0, 18000.0, 6000.0, 1800.0, 600.0, 180.0, 60.0, 30.0, 12.0, 6.0)
-# 
-# for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
-# 	resi = int(resi)# ensure integer not float
-# 	
-# 	num_sb = num_sb_dict[str('num_sb' + str(resi))]-1 # number of size bins
-# 	ncomp = num_speci_dict[str('num_speci' + str(resi))] # number of components
-# 	N = N_dict[str('N' + str(resi))] # particle number concentration
-# 	y = y_dict[str('y' + str(resi))] # component molecular concentrations (molecules/cm3)
-# 	MV = MV_dict[str('MV' + str(resi))] # molar volume (cm3/mol)
-# 	MV = np.array((MV))
-# 	# prepare for multiplying with molar concentrations
-# 	MV = (MV.reshape(1,-1).repeat(num_sb, axis=1)).repeat(y.shape[0], axis=0)
-# 	# particle mass concentrations (ug/m3), note, indexing of y means only particle-phase
-# 	# is considered, then multiply by 1.0e6 to convert from molecules/cm3 to molecules/m3,
-# 	# then divide by Avogadro's constant to get mol/m3, then multiply by molar volume to
-# 	# get cm3/m3, then assume a density of 1.0e6 ug/cm3 and multiply by this to get ug/m3,
-# 	# this is for each component per size bin (columns) per time step (rows)
-# 	y = y[:, ncomp:-ncomp]*1.0e6/si.N_A*MV*1.0e6
-# 	# obtain just the mass concentration of the semi-volatile
-# 	y = y[:, 2::3]
-# 	sbb = sbb_dict[str('sbb' + str(resi))] # size bin bounds
-# 	
-# 	x = x_dict[str('x' + str(resi))] # radii at size bin centre
-# 	t_array = thr_dict[str('thr' + str(resi))]*3600.0 # times results saved at (s)
-# 	t_step = t_array[1]-t_array[0] # operator-split time step
-# 	if resi == len(num_sb_dict)-1:
-# 		t_array_bench = t_array # times to interpolate to (s)
-# 		t_step_bench = t_step
-# 		t_bench_len = int(len(t_array_bench)) # number of times for reference
-# 	
-# 	# empty matrix for holding interpolated values of number concentration
-# 	Nint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
-# 	# empty matrix for holding interpolated values of SOA mass concentration
-# 	SOAint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
-# 	t_count = 0 # initial count on rows of matrix containing interpolation results
-# 
-# 	for ti in range(int(len(t_array)-1)): # loop through operator-split time steps
-# 		
-# 		# start and finish times for interpolation (hours)
-# 		t_interp = np.zeros((2))
-# 		t_interp[0] = t_array[ti]
-# 		t_interp[1] = t_array[ti+1]
-# 		# points to interpolate
-# 		N2int = np.zeros((2, N.shape[1]))
-# 		N2int[0, :] = N[ti, :]
-# 		N2int[1, :] = N[ti+1, :]
-# 		SOA2int = np.zeros((2, N.shape[1]))
-# 		SOA2int[0, :] = y[ti, :]
-# 		SOA2int[1, :] = y[ti+1, :]
-# 		
-# 		# index of reference time array
-# 		ref_indx = (np.where((t_interp[1]-t_array_bench)>=0))[0][-1]
-# 		# number of reference time points covered
-# 		num_ref_points = int(ref_indx-t_count)
-# 		
-# 		for ti2 in range(num_ref_points): # loop through times to interpolate to
-# 
-# 			# loop through size bins
-# 			for sbi in range(num_sb):
-# 				Nint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, N2int[:, sbi])
-# 				SOAint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, SOA2int[:, sbi])
-# 			t_count += 1
-# 	
-# 
-# 	
-# 	# new array for holding number concentrations		
-# 	N = np.zeros((Nint.shape[0], Nint.shape[1]))
-# 	N[:, :] = Nint[:, :]
-# 	# new array for holding dN/dlog10(Dp)
-# 	dN = np.zeros((N.shape[0], N.shape[1]))
-# 	# new array for holding SOA mass concentration per size bin (columns) against time
-# 	# (rows)
-# 	SOA = np.zeros((SOAint.shape[0], SOAint.shape[1]))
-# 	SOA[:, :] = SOAint[:, :]
-# 	
-# 	# loop through times to normalise number concentrations by size bin width
-# 	for ti in range(N.shape[0]):
-# 		dN[ti, :] = N[ti, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
-# 
-# 	dN_av = np.zeros((dN.shape[0], num_sb-(np_mvav-1))) # dN/dlog10(Dp) moving average
-# 	
-# 	for i in range(np_mvav): # loop through number concentration points to get average
-# 	
-# 		# moving average number concentration, times in rows, size bins in columns
-# 		dN_av[:, :] += (dN[:, i:(num_sb)-(np_mvav-(i+1))])/np_mvav
-# 
-# 	
-# 	if resi == len(num_sb_dict)-1:
-# 		# remember benchmark values
-# 		dN_av_bench = np.zeros((dN_av.shape[0], dN_av.shape[1]))
-# 		dN_av_bench[:, :] = dN_av[:, :]
-# 		dN_av_bench[dN_av_bench==0.0] = 1.0e-40
-# 		N_bench = N.sum(axis=1)
-# 		N_bench[N_bench==0.0] = 1.0e-40 # set zeros to very low number
-# 		SOA_bench = np.zeros((SOA.shape[0], 1))
-# 		SOA_bench[:, 0] = SOA.sum(axis=1)
-# 		continue # no need to plot root-mean square deviation of benchmark against itself
-# 
-# 	# get total number concentration per time step (# particles/cc (air))
-# 	N = N.sum(axis=1)
-# 	# get total SOA mass concentration per time step (ug/m3 (air))
-# 	SOA = SOA.sum(axis=1)
-# 	N[N==0.0] = 1.0e-40 # set zeros to very low number	
-# 	dN_av[dN_av==0.0] = 1.0e-40 # set zeros to very low number
-# 	SOA[SOA==0.0] = 1.0e-40 # set zeros to very low number
-# 	
-# 	# loop through time steps of the low temporal resolution case to calculate divergence
-# 	# prepare denominator matrices for divergence estimation
-# 	den_matrdN = np.zeros((dN_av.shape[1]))
-# 	den_matrN = np.zeros((1))
-# 
-# 	num_times = 0 # number of times to average over
-# 
-# 	for ti in range(t_bench_len): # loop through time steps
-# 		if ti == 0:
-# 			continue # skip results at simulation start
-# 
-# 		# denominator matrices to limit error to 100 %
-# 		den_matrdN = np.zeros((dN_av_bench.shape[1]))
-# 		den_matrdN[:] = dN_av_bench[ti, :]
-# 		den_matrN = np.zeros((1))
-# 		den_matrN[0] = N_bench[ti]
-# 		den_matrSOA = np.zeros((1))
-# 		den_matrSOA[0] = SOA_bench[ti]
-# 		# index of size bins where reference value is below comparator value
-# 		lt_indx = dN_av_bench[ti, :]<dN_av[ti, :]
-# 		den_matrdN[lt_indx] = dN_av[ti, lt_indx]
-# 		if N_bench[ti]<N[ti]:
-# 			den_matrN[0] = N[ti]
-# 		if SOA_bench[ti]<SOA[ti]:
-# 			den_matrSOA[0] = SOA[ti]
-# 		
-# 		# index of size bins where both reference and test cases have particles present
-# 		sb_indx = (dN_av_bench[ti, :]>1.0e-10)+(dN_av[ti, :]>1.0e-10)
-# 		# absolute percentage error in number size distribution
-# 		per_error_nsd_ti = ((np.abs(dN_av_bench[ti, sb_indx]-dN_av[ti, sb_indx]))/den_matrdN[sb_indx])*100.0
-# 		
-# 		# absolute percentage error in total particle number concentration
-# 		per_error_N_ti = ((np.abs(N_bench[ti]-N[ti]))/den_matrN)*100.0
-# 		# absolute percentage error in SOA
-# 		per_error_SOA_ti = ((np.abs(SOA_bench[ti]-SOA[ti]))/den_matrSOA)*100.0
-# 		
-# 		if sum(sb_indx) > 0:
-# 			num_times += 1 # count on number of times to average over
-# 			# for number size distribution sum with previous time steps average across size bins
-# 			per_err[resi, 1] += (sum(per_error_nsd_ti)/(sum(sb_indx)))
-# 			# for total number average sum with previous time steps
-# 			per_err[resi, 2] += (per_error_N_ti)
-# 			# for SOA average across times and store
-# 			per_err[resi, 3] += (per_error_SOA_ti)
-# 	
-# 	# average over time steps
-# 	per_err[resi, 1] = per_err[resi, 1]/num_times
-# 	per_err[resi, 2] = per_err[resi, 2]/num_times
-# 	per_err[resi, 3] = per_err[resi, 3]/num_times
-# 	
-# # plot of absolute percentage error, summed across size and times
-# p7, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
-# p8, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
-# p9, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
-# 
-# 
-# 
-# 
-# # coagulation & wall loss with partitioning ----------------------------------------------
-# num_sb_dict = {}
-# num_speci_dict = {}
-# Cfac_dict = {}
-# y_dict = {}
-# N_dict = {}
-# sbb_dict = {}
-# x_dict = {}
-# thr_dict = {}
-# 
-# (num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], _, _, _, _, _, spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_43200s_opspltwlcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], _, _, _, _, _, spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_21600s_opspltwlcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], _, _, _, _, _, spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_10800s_opspltwlcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], _, _, _, _, _, spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_3000s_opspltwlcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb4'], num_speci_dict['num_speci4'], Cfac_dict['Cfac4'], y_dict['y4'], N_dict['N4'], sbb_dict['sbb4'], x_dict['x4'], thr_dict['thr4'], _, _, _, _, _, spd_dict['spd4']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_1200s_opspltwlcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb5'], num_speci_dict['num_speci5'], Cfac_dict['Cfac5'], y_dict['y5'], N_dict['N5'], sbb_dict['sbb5'], x_dict['x5'], thr_dict['thr5'], _, _, _, _, _, spd_dict['spd5']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_600s_opspltwlcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb6'], num_speci_dict['num_speci6'], Cfac_dict['Cfac6'], y_dict['y6'], N_dict['N6'], sbb_dict['sbb6'], x_dict['x6'], thr_dict['thr6'], _, _, _, _, _, spd_dict['spd6']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_480s_opspltwlcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb7'], num_speci_dict['num_speci7'], Cfac_dict['Cfac7'], y_dict['y7'], N_dict['N7'], sbb_dict['sbb7'], x_dict['x7'], thr_dict['thr7'], _, _, _, _, _, spd_dict['spd7']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_180s_opspltwlcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb8'], num_speci_dict['num_speci8'], Cfac_dict['Cfac8'], y_dict['y8'], N_dict['N8'], sbb_dict['sbb8'], x_dict['x8'], thr_dict['thr8'], _, _, _, _, _, spd_dict['spd8']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_20s_opspltwlcoag_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb9'], num_speci_dict['num_speci9'], Cfac_dict['Cfac9'], y_dict['y9'], N_dict['N9'], sbb_dict['sbb9'], x_dict['x9'], thr_dict['thr9'], _, _, _, _, _, spd_dict['spd9']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6s_opspltwlcoag_128sb_tempconst_seeded_sv'))
-# 
-# per_err = np.zeros((len(num_sb_dict), 4)) # empty store for percentage error results
-# per_err[:, 0] = (43200.0, 21600, 10800.0, 3000.0, 1200.0, 600.0, 480.0, 180.0, 18.0, 6.0)
-# speed = np.zeros((1, len(num_sb_dict))) # empty array for simulation times (s)
-# 	
-# 	
-# for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
-# 	resi = int(resi)# ensure integer not float
-# 	
-# 	speed[0, resi] = spd_dict[str('spd' + str(resi))] # simulation times (s)
-# 	num_sb = num_sb_dict[str('num_sb' + str(resi))]-1 # number of size bins
-# 	ncomp = num_speci_dict[str('num_speci' + str(resi))] # number of components
-# 	N = N_dict[str('N' + str(resi))] # particle number concentration
-# 	y = y_dict[str('y' + str(resi))] # component molecular concentrations (molecules/cm3)
-# 	MV = MV_dict[str('MV' + str(resi))] # molar volume (cm3/mol)
-# 	MV = np.array((MV))
-# 	# prepare for multiplying with molar concentrations
-# 	MV = (MV.reshape(1,-1).repeat(num_sb, axis=1)).repeat(y.shape[0], axis=0)
-# 	# particle mass concentrations (ug/m3), note, indexing of y means only particle-phase
-# 	# is considered, then multiply by 1.0e6 to convert from molecules/cm3 to molecules/m3,
-# 	# then divide by Avogadro's constant to get mol/m3, then multiply by molar volume to
-# 	# get cm3/m3, then assume a density of 1.0e6 ug/cm3 and multiply by this to get ug/m3,
-# 	# this is for each component per size bin (columns) per time step (rows)
-# 	y = y[:, ncomp:-ncomp]*1.0e6/si.N_A*MV*1.0e6
-# 	# obtain just the mass concentration of the semi-volatile
-# 	y = y[:, 2::3]
-# 	sbb = sbb_dict[str('sbb' + str(resi))] # size bin bounds
-# 	
-# 	x = x_dict[str('x' + str(resi))] # radii at size bin centre
-# 	t_array = thr_dict[str('thr' + str(resi))]*3600.0 # times results saved at (s)
-# 	t_step = t_array[1]-t_array[0] # operator-split time step
-# 	if resi == len(num_sb_dict)-1:
-# 		t_array_bench = t_array # times to interpolate to (s)
-# 		t_step_bench = t_step
-# 		t_bench_len = int(len(t_array_bench)) # number of times for reference
-# 	
-# 	# empty matrix for holding interpolated values of number concentration
-# 	Nint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
-# 	# empty matrix for holding interpolated values of SOA mass concentration
-# 	SOAint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
-# 	t_count = 0 # initial count on rows of matrix containing interpolation results
-# 
-# 	for ti in range(int(len(t_array)-1)): # loop through operator-split time steps
-# 		
-# 		# start and finish times for interpolation (hours)
-# 		t_interp = np.zeros((2))
-# 		t_interp[0] = t_array[ti]
-# 		t_interp[1] = t_array[ti+1]
-# 		# points to interpolate
-# 		N2int = np.zeros((2, N.shape[1]))
-# 		N2int[0, :] = N[ti, :]
-# 		N2int[1, :] = N[ti+1, :]
-# 		SOA2int = np.zeros((2, N.shape[1]))
-# 		SOA2int[0, :] = y[ti, :]
-# 		SOA2int[1, :] = y[ti+1, :]
-# 		
-# 		# index of reference time array
-# 		ref_indx = (np.where((t_interp[1]-t_array_bench)>=0))[0][-1]
-# 		# number of reference time points covered
-# 		num_ref_points = int(ref_indx-t_count)
-# 		
-# 		for ti2 in range(num_ref_points): # loop through times to interpolate to
-# 
-# 			# loop through size bins
-# 			for sbi in range(num_sb):
-# 				Nint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, N2int[:, sbi])
-# 				SOAint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, SOA2int[:, sbi])
-# 			t_count += 1
-# 	
-# 
-# 	
-# 	# new array for holding number concentrations		
-# 	N = np.zeros((Nint.shape[0], Nint.shape[1]))
-# 	N[:, :] = Nint[:, :]
-# 	# new array for holding dN/dlog10(Dp)
-# 	dN = np.zeros((N.shape[0], N.shape[1]))
-# 	# new array for holding SOA mass concentration per size bin (columns) against time
-# 	# (rows)
-# 	SOA = np.zeros((SOAint.shape[0], SOAint.shape[1]))
-# 	SOA[:, :] = SOAint[:, :]
-# 	
-# 	# loop through times to normalise number concentrations by size bin width
-# 	for ti in range(N.shape[0]):
-# 		dN[ti, :] = N[ti, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
-# 
-# 	dN_av = np.zeros((dN.shape[0], num_sb-(np_mvav-1))) # dN/dlog10(Dp) moving average
-# 	
-# 	for i in range(np_mvav): # loop through number concentration points to get average
-# 	
-# 		# moving average number concentration, times in rows, size bins in columns
-# 		dN_av[:, :] += (dN[:, i:(num_sb)-(np_mvav-(i+1))])/np_mvav
-# 
-# 	
-# 	if resi == len(num_sb_dict)-1:
-# 		# remember benchmark values
-# 		dN_av_bench = np.zeros((dN_av.shape[0], dN_av.shape[1]))
-# 		dN_av_bench[:, :] = dN_av[:, :]
-# 		dN_av_bench[dN_av_bench==0.0] = 1.0e-40
-# 		N_bench = N.sum(axis=1)
-# 		N_bench[N_bench==0.0] = 1.0e-40 # set zeros to very low number
-# 		SOA_bench = np.zeros((SOA.shape[0], 1))
-# 		SOA_bench[:, 0] = SOA.sum(axis=1)
-# 		continue # no need to plot root-mean square deviation of benchmark against itself
-# 
-# 	# get total number concentration per time step (# particles/cc (air))
-# 	N = N.sum(axis=1)
-# 	# get total SOA mass concentration per time step (ug/m3 (air))
-# 	SOA = SOA.sum(axis=1)
-# 	N[N==0.0] = 1.0e-40 # set zeros to very low number	
-# 	dN_av[dN_av==0.0] = 1.0e-40 # set zeros to very low number
-# 	SOA[SOA==0.0] = 1.0e-40 # set zeros to very low number
-# 	
-# 	# loop through time steps of the low temporal resolution case to calculate divergence
-# 	# prepare denominator matrices for divergence estimation
-# 	den_matrdN = np.zeros((dN_av.shape[1]))
-# 	den_matrN = np.zeros((1))
-# 
-# 	num_times = 0 # number of times to average over
-# 
-# 	for ti in range(t_bench_len): # loop through time steps
-# 		if ti == 0:
-# 			continue # skip results at simulation start
-# 
-# 		# denominator matrices to limit error to 100 %
-# 		den_matrdN = np.zeros((dN_av_bench.shape[1]))
-# 		den_matrdN[:] = dN_av_bench[ti, :]
-# 		den_matrN = np.zeros((1))
-# 		den_matrN[0] = N_bench[ti]
-# 		den_matrSOA = np.zeros((1))
-# 		den_matrSOA[0] = SOA_bench[ti]
-# 		# index of size bins where reference value is below comparator value
-# 		lt_indx = dN_av_bench[ti, :]<dN_av[ti, :]
-# 		den_matrdN[lt_indx] = dN_av[ti, lt_indx]
-# 		if N_bench[ti]<N[ti]:
-# 			den_matrN[0] = N[ti]
-# 		if SOA_bench[ti]<SOA[ti]:
-# 			den_matrSOA[0] = SOA[ti]
-# 		
-# 		# index of size bins where both reference and test cases have particles present
-# 		sb_indx = (dN_av_bench[ti, :]>1.0e-10)+(dN_av[ti, :]>1.0e-10)
-# 		# absolute percentage error in number size distribution
-# 		per_error_nsd_ti = ((np.abs(dN_av_bench[ti, sb_indx]-dN_av[ti, sb_indx]))/den_matrdN[sb_indx])*100.0
-# 		
-# 		# absolute percentage error in total particle number concentration
-# 		per_error_N_ti = ((np.abs(N_bench[ti]-N[ti]))/den_matrN)*100.0
-# 		# absolute percentage error in SOA
-# 		per_error_SOA_ti = ((np.abs(SOA_bench[ti]-SOA[ti]))/den_matrSOA)*100.0
-# 		
-# 		if sum(sb_indx) > 0:
-# 			num_times += 1 # count on number of times to average over
-# 			# for number size distribution sum with previous time steps average across size bins
-# 			per_err[resi, 1] += (sum(per_error_nsd_ti)/(sum(sb_indx)))
-# 			# for total number average sum with previous time steps
-# 			per_err[resi, 2] += (per_error_N_ti)
-# 			# for SOA average across times and store
-# 			per_err[resi, 3] += (per_error_SOA_ti)
-# 	
-# 	# average over time steps
-# 	per_err[resi, 1] = per_err[resi, 1]/num_times
-# 	per_err[resi, 2] = per_err[resi, 2]/num_times
-# 	per_err[resi, 3] = per_err[resi, 3]/num_times
-# 	
-# # plot of absolute percentage error, summed across size and times
-# p11, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
-# p12, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag. & wall')
-# p13, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag. & wall')
-# 
-# 
-# ax1.set_xlabel('operator-split time step (s)', size=18) # vertical axis label
-# # ax1.set_yticklabels([]) # turn off labels for number size distribution
-# ax1.xaxis.set_tick_params(labelsize=16)
-# # par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
-# # par2.yaxis.set_tick_params(labelsize=16)
-# # par2.yaxis.label.set_color('blue')
-# # par2.tick_params(axis='y', colors='blue')
-# # par2.spines['right'].set_color('blue')
-# 
-# # par2.set_ylim(1.0e-2, 1.05e2)
-# ax1.set_xlim(2.0e0, 5.0e4)
-# 
-# lines = [p7, p8, p9, p11, p12, p13]
-# ax1.legend(lines, [l.get_label() for l in lines])
-# # ax1.set_ylim(4.5e-2, 1.05e2)
-# # add contour plot to show computer processing time --------------------------------------
-# cont_y = np.array((1.5e-2, 1.1e2))
-# cont_x = np.append(per_err[:, 0], 2.0)
-# cont_x[0] = 5.0e4
-# 
-# # customised colormap (https://www.rapidtables.com/web/color/RGB_Color.html)
-# n_bin = 100  # Discretizes the colormap interpolation into bins
-# cmap_name = 'my_list'
-# # Create the colormap
-# cm = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bin)
-# # set contour levels
-# levels = (MaxNLocator(nbins = n_bin).tick_values(0.85, 4.65))
-# # associate colours and contour levels
-# norm1 = BoundaryNorm(levels, ncolors = cm.N, clip=True)
-# # contour plot with times along x axis and particle diameters along y axis
-# pc1 = ax1.pcolormesh(cont_x, cont_y, np.log10(speed[:, :]), cmap=cm, norm=norm1)
-# 
-# 
-# 
-# # end of contour plot section ------------------------------------------------------------
-# 
-# # partitioning with nucleation section ---------------------------------------------------
-# 
-# num_sb_dict = {}
-# num_speci_dict = {}
-# Cfac_dict = {}
-# y_dict = {}
-# N_dict = {}
-# sbb_dict = {}
-# x_dict = {}
-# thr_dict = {}
-# MV_dict = {}
-# spd_dict = {}
-# 
-# (num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], _, _, _, _, MV_dict['MV0'], spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_43200s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], _, _, _, _, MV_dict['MV1'], spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_21600s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], _, _, _, _, MV_dict['MV2'], spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_10800s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], _, _, _, _, MV_dict['MV3'], spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_3600s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb4'], num_speci_dict['num_speci4'], Cfac_dict['Cfac4'], y_dict['y4'], N_dict['N4'], sbb_dict['sbb4'], x_dict['x4'], thr_dict['thr4'], _, _, _, _, MV_dict['MV4'], spd_dict['spd4']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_900s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb5'], num_speci_dict['num_speci5'], Cfac_dict['Cfac5'], y_dict['y5'], N_dict['N5'], sbb_dict['sbb5'], x_dict['x5'], thr_dict['thr5'], _, _, _, _, MV_dict['MV5'], spd_dict['spd5']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_360s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb6'], num_speci_dict['num_speci6'], Cfac_dict['Cfac6'], y_dict['y6'], N_dict['N6'], sbb_dict['sbb6'], x_dict['x6'], thr_dict['thr6'], _, _, _, _, MV_dict['MV6'], spd_dict['spd6']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_60s_opspltcoagnuc_128sb_tempconst_sv'))
-# (num_sb_dict['num_sb7'], num_speci_dict['num_speci7'], Cfac_dict['Cfac7'], y_dict['y7'], N_dict['N7'], sbb_dict['sbb7'], x_dict['x7'], thr_dict['thr7'], _, _, _, _, MV_dict['MV7'], spd_dict['spd7']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_20s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb8'], num_speci_dict['num_speci8'], Cfac_dict['Cfac8'], y_dict['y8'], N_dict['N8'], sbb_dict['sbb8'], x_dict['x8'], thr_dict['thr8'], _, _, _, _, MV_dict['MV8'], spd_dict['spd8']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
-# 
-# per_err = np.zeros((len(num_sb_dict), 4)) # empty store for percentage error results
-# per_err[:, 0] = (43200, 21600, 10800, 3600, 900, 360, 60, 20, 6)
-# speed = np.zeros((1, len(num_sb_dict))) # empty array for simulation times (s)
-# 	
-# 	
-# for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
-# 	resi = int(resi)# ensure integer not float
-# 	
-# 	speed[0, resi] = spd_dict[str('spd' + str(resi))] # simulation times (s)
-# 	num_sb = num_sb_dict[str('num_sb' + str(resi))]-1 # number of size bins
-# 	ncomp = num_speci_dict[str('num_speci' + str(resi))] # number of components
-# 	N = N_dict[str('N' + str(resi))] # particle number concentration
-# 	y = y_dict[str('y' + str(resi))] # component molecular concentrations (molecules/cm3)
-# 	MV = MV_dict[str('MV' + str(resi))] # molar volume (cm3/mol)
-# 	MV = np.array((MV))
-# 	# prepare for multiplying with molar concentrations
-# 	MV = (MV.reshape(1,-1).repeat(num_sb, axis=1)).repeat(y.shape[0], axis=0)
-# 	# particle mass concentrations (ug/m3), note, indexing of y means only particle-phase
-# 	# is considered, then multiply by 1.0e6 to convert from molecules/cm3 to molecules/m3,
-# 	# then divide by Avogadro's constant to get mol/m3, then multiply by molar volume to
-# 	# get cm3/m3, then assume a density of 1.0e6 ug/cm3 and multiply by this to get ug/m3,
-# 	# this is for each component per size bin (columns) per time step (rows)
-# 	y = y[:, ncomp:-ncomp]*1.0e6/si.N_A*MV*1.0e6
-# 	# obtain just the mass concentration of the semi-volatile
-# 	y = y[:, 2::3]
-# 	sbb = sbb_dict[str('sbb' + str(resi))] # size bin bounds
-# 	
-# 	x = x_dict[str('x' + str(resi))] # radii at size bin centre
-# 	t_array = thr_dict[str('thr' + str(resi))]*3600.0 # times results saved at (s)
-# 	t_step = t_array[1]-t_array[0] # operator-split time step
-# 	if resi == len(num_sb_dict)-1:
-# 		t_array_bench = t_array # times to interpolate to (s)
-# 		t_step_bench = 60.0
-# 		t_bench_len = int(len(t_array_bench)) # number of times for reference
-# 	
-# 	# empty matrix for holding interpolated values of number concentration
-# 	Nint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
-# 	# empty matrix for holding interpolated values of SOA mass concentration
-# 	SOAint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
-# 	t_count = 0 # initial count on rows of matrix containing interpolation results
-# 
-# 	for ti in range(int(len(t_array)-1)): # loop through operator-split time steps
-# 		
-# 		# start and finish times for interpolation (hours)
-# 		t_interp = np.zeros((2))
-# 		t_interp[0] = t_array[ti]
-# 		t_interp[1] = t_array[ti+1]
-# 		# points to interpolate
-# 		N2int = np.zeros((2, N.shape[1]))
-# 		N2int[0, :] = N[ti, :]
-# 		N2int[1, :] = N[ti+1, :]
-# 		SOA2int = np.zeros((2, N.shape[1]))
-# 		SOA2int[0, :] = y[ti, :]
-# 		SOA2int[1, :] = y[ti+1, :]
-# 		
-# 		# index of reference time array
-# 		ref_indx = (np.where((t_interp[1]-t_array_bench)>=0))[0][-1]
-# 		# number of reference time points covered
-# 		num_ref_points = int(ref_indx-t_count)
-# 		
-# 		for ti2 in range(num_ref_points): # loop through times to interpolate to
-# 
-# 			# loop through size bins
-# 			for sbi in range(num_sb):
-# 				Nint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, N2int[:, sbi])
-# 				SOAint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, SOA2int[:, sbi])
-# 			t_count += 1
-# 	
-# 
-# 	
-# 	# new array for holding number concentrations		
-# 	N = np.zeros((Nint.shape[0], Nint.shape[1]))
-# 	N[:, :] = Nint[:, :]
-# 	# new array for holding dN/dlog10(Dp)
-# 	dN = np.zeros((N.shape[0], N.shape[1]))
-# 	# new array for holding SOA mass concentration per size bin (columns) against time
-# 	# (rows)
-# 	SOA = np.zeros((SOAint.shape[0], SOAint.shape[1]))
-# 	SOA[:, :] = SOAint[:, :]
-# 	
-# 	# loop through times to normalise number concentrations by size bin width
-# 	for ti in range(N.shape[0]):
-# 		dN[ti, :] = N[ti, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
-# 
-# 	dN_av = np.zeros((dN.shape[0], num_sb-(np_mvav-1))) # dN/dlog10(Dp) moving average
-# 	
-# 	for i in range(np_mvav): # loop through number concentration points to get average
-# 	
-# 		# moving average number concentration, times in rows, size bins in columns
-# 		dN_av[:, :] += (dN[:, i:(num_sb)-(np_mvav-(i+1))])/np_mvav
-# 
-# 	
-# 	if resi == len(num_sb_dict)-1:
-# 		# remember benchmark values
-# 		dN_av_bench = np.zeros((dN_av.shape[0], dN_av.shape[1]))
-# 		dN_av_bench[:, :] = dN_av[:, :]
-# 		dN_av_bench[dN_av_bench==0.0] = 1.0e-40
-# 		N_bench = N.sum(axis=1)
-# 		N_bench[N_bench==0.0] = 1.0e-40 # set zeros to very low number
-# 		SOA_bench = np.zeros((SOA.shape[0], 1))
-# 		SOA_bench[:, 0] = SOA.sum(axis=1)
-# 		continue # no need to plot root-mean square deviation of benchmark against itself
-# 
-# 	# get total number concentration per time step (# particles/cc (air))
-# 	N = N.sum(axis=1)
-# 	# get total SOA mass concentration per time step (ug/m3 (air))
-# 	SOA = SOA.sum(axis=1)
-# 	N[N==0.0] = 1.0e-40 # set zeros to very low number	
-# 	dN_av[dN_av==0.0] = 1.0e-40 # set zeros to very low number
-# 	SOA[SOA==0.0] = 1.0e-40 # set zeros to very low number
-# 	
-# 	# loop through time steps of the low temporal resolution case to calculate divergence
-# 	# prepare denominator matrices for divergence estimation
-# 	den_matrdN = np.zeros((dN_av.shape[1]))
-# 	den_matrN = np.zeros((1))
-# 	num_times = 0 # number of times to average over
-# 
-# 	for ti in range(t_bench_len): # loop through time steps
-# 		if ti == 0:
-# 			continue # skip results at simulation start
-# 
-# 		# denominator matrices to limit error to 100 %
-# 		den_matrdN = np.zeros((dN_av_bench.shape[1]))
-# 		den_matrdN[:] = dN_av_bench[ti, :]
-# 		den_matrN = np.zeros((1))
-# 		den_matrN[0] = N_bench[ti]
-# 		den_matrSOA = np.zeros((1))
-# 		den_matrSOA[0] = SOA_bench[ti]
-# 		# index of size bins where reference value is below comparator value
-# 		lt_indx = dN_av_bench[ti, :]<dN_av[ti, :]
-# 		den_matrdN[lt_indx] = dN_av[ti, lt_indx]
-# 		if N_bench[ti]<N[ti]:
-# 			den_matrN[0] = N[ti]
-# 		if SOA_bench[ti]<SOA[ti]:
-# 			den_matrSOA[0] = SOA[ti]
-# 		
-# 		# index of size bins where both reference and test cases have particles present
-# 		sb_indx = (dN_av_bench[ti, :]>1.0e-10)+(dN_av[ti, :]>1.0e-10)
-# 		# absolute percentage error in number size distribution
-# 		per_error_nsd_ti = ((np.abs(dN_av_bench[ti, sb_indx]-dN_av[ti, sb_indx]))/den_matrdN[sb_indx])*100.0
-# 		
-# 		# absolute percentage error in total particle number concentration
-# 		per_error_N_ti = ((np.abs(N_bench[ti]-N[ti]))/den_matrN)*100.0
-# 		# absolute percentage error in SOA
-# 		per_error_SOA_ti = ((np.abs(SOA_bench[ti]-SOA[ti]))/den_matrSOA)*100.0
-# 		
-# 		if sum(sb_indx) > 0:
-# 			num_times += 1 # count on number of times to average over
-# 			# for number size distribution sum with previous time steps average across size bins
-# 			per_err[resi, 1] += (sum(per_error_nsd_ti)/(sum(sb_indx)))
-# 			# for total number average sum with previous time steps
-# 			per_err[resi, 2] += (per_error_N_ti)
-# 			# for SOA average across times and store
-# 			per_err[resi, 3] += (per_error_SOA_ti)
-# 	
-# 	# average over time steps
-# 	per_err[resi, 1] = per_err[resi, 1]/num_times
-# 	per_err[resi, 2] = per_err[resi, 2]/num_times
-# 	per_err[resi, 3] = per_err[resi, 3]/num_times
-# 	
-# # plot of absolute percentage error, summed across size and times
-# p14, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag. & nuc.')
-# p15, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag. & nuc.')
-# p16, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag. & nuc.')
-# 
-# 
-# # ax2.set_xlabel('operator-split time step (s)', size=16) # vertical axis label
-# # ax1.set_yticklabels([]) # turn off labels for number size distribution
-# ax2.xaxis.set_tick_params(labelsize=16)
-# # par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
-# # par2.yaxis.set_tick_params(labelsize=16)
-# # par2.yaxis.label.set_color('blue')
-# # par2.tick_params(axis='y', colors='blue')
-# # par2.spines['right'].set_color('blue')
-# 
-# 
-# # add contour plot to show computer processing time --------------------------------------
-# cont_y = np.array((1.5e-2, 1.1e2))
-# cont_x = np.append(per_err[:, 0], 2.0)
-# cont_x[0] = 5.0e4
-# 
-# # customised colormap (https://www.rapidtables.com/web/color/RGB_Color.html)
-# n_bin = 100  # Discretizes the colormap interpolation into bins
-# cmap_name = 'my_list'
-# # Create the colormap
-# cm = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bin)
-# # set contour levels
-# levels = (MaxNLocator(nbins = n_bin).tick_values(0.85, 4.65))
-# # associate colours and contour levels
-# norm1 = BoundaryNorm(levels, ncolors = cm.N, clip=True)
-# # contour plot with times along x axis and particle diameters along y axis
-# pc1 = ax2.pcolormesh(cont_x, cont_y, np.log10(speed[:, :]), cmap=cm, norm=norm1)
-# 
-# # end of contour plot section ------------------------------------------------------------
-# 
-# # partitioning with nucleation, coagulation and wall loss section ------------------------
-# 
-# num_sb_dict = {}
-# num_speci_dict = {}
-# Cfac_dict = {}
-# y_dict = {}
-# N_dict = {}
-# sbb_dict = {}
-# x_dict = {}
-# thr_dict = {}
-# MV_dict = {}
-# spd_dict = {}
-# 
-# (num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], _, _, _, _, MV_dict['MV0'], spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_43200s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], _, _, _, _, MV_dict['MV1'], spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_21600s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], _, _, _, _, MV_dict['MV2'], spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_10800s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], _, _, _, _, MV_dict['MV3'], spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_3600s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb4'], num_speci_dict['num_speci4'], Cfac_dict['Cfac4'], y_dict['y4'], N_dict['N4'], sbb_dict['sbb4'], x_dict['x4'], thr_dict['thr4'], _, _, _, _, MV_dict['MV4'], spd_dict['spd4']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_900s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb5'], num_speci_dict['num_speci5'], Cfac_dict['Cfac5'], y_dict['y5'], N_dict['N5'], sbb_dict['sbb5'], x_dict['x5'], thr_dict['thr5'], _, _, _, _, MV_dict['MV5'], spd_dict['spd5']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_360s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb6'], num_speci_dict['num_speci6'], Cfac_dict['Cfac6'], y_dict['y6'], N_dict['N6'], sbb_dict['sbb6'], x_dict['x6'], thr_dict['thr6'], _, _, _, _, MV_dict['MV6'], spd_dict['spd6']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_60s_opspltcoagnucwl_128sb_tempconst_sv'))
-# (num_sb_dict['num_sb7'], num_speci_dict['num_speci7'], Cfac_dict['Cfac7'], y_dict['y7'], N_dict['N7'], sbb_dict['sbb7'], x_dict['x7'], thr_dict['thr7'], _, _, _, _, MV_dict['MV7'], spd_dict['spd7']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_20s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
-# (num_sb_dict['num_sb8'], num_speci_dict['num_speci8'], Cfac_dict['Cfac8'], y_dict['y8'], N_dict['N8'], sbb_dict['sbb8'], x_dict['x8'], thr_dict['thr8'], _, _, _, _, MV_dict['MV8'], spd_dict['spd8']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
-# 
-# per_err = np.zeros((len(num_sb_dict), 4)) # empty store for percentage error results
-# per_err[:, 0] = (43200, 21600, 10800, 3600, 900, 360, 60, 20, 6)
-# speed = np.zeros((1, len(num_sb_dict))) # empty array for simulation times (s)
-# 	
-# 	
-# for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
-# 	resi = int(resi)# ensure integer not float
-# 	
-# 	speed[0, resi] = spd_dict[str('spd' + str(resi))] # simulation times (s)
-# 	num_sb = num_sb_dict[str('num_sb' + str(resi))]-1 # number of size bins
-# 	ncomp = num_speci_dict[str('num_speci' + str(resi))] # number of components
-# 	N = N_dict[str('N' + str(resi))] # particle number concentration
-# 	y = y_dict[str('y' + str(resi))] # component molecular concentrations (molecules/cm3)
-# 	MV = MV_dict[str('MV' + str(resi))] # molar volume (cm3/mol)
-# 	MV = np.array((MV))
-# 	# prepare for multiplying with molar concentrations
-# 	MV = (MV.reshape(1,-1).repeat(num_sb, axis=1)).repeat(y.shape[0], axis=0)
-# 	# particle mass concentrations (ug/m3), note, indexing of y means only particle-phase
-# 	# is considered, then multiply by 1.0e6 to convert from molecules/cm3 to molecules/m3,
-# 	# then divide by Avogadro's constant to get mol/m3, then multiply by molar volume to
-# 	# get cm3/m3, then assume a density of 1.0e6 ug/cm3 and multiply by this to get ug/m3,
-# 	# this is for each component per size bin (columns) per time step (rows)
-# 	y = y[:, ncomp:-ncomp]*1.0e6/si.N_A*MV*1.0e6
-# 	# obtain just the mass concentration of the semi-volatile
-# 	y = y[:, 2::3]
-# 	sbb = sbb_dict[str('sbb' + str(resi))] # size bin bounds
-# 	
-# 	x = x_dict[str('x' + str(resi))] # radii at size bin centre
-# 	t_array = thr_dict[str('thr' + str(resi))]*3600.0 # times results saved at (s)
-# 	t_step = t_array[1]-t_array[0] # operator-split time step
-# 	if resi == len(num_sb_dict)-1:
-# 		t_array_bench = t_array # times to interpolate to (s)
-# 		t_step_bench = 60.0
-# 		t_bench_len = int(len(t_array_bench)) # number of times for reference
-# 	
-# 	# empty matrix for holding interpolated values of number concentration
-# 	Nint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
-# 	# empty matrix for holding interpolated values of SOA mass concentration
-# 	SOAint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
-# 	t_count = 0 # initial count on rows of matrix containing interpolation results
-# 
-# 	for ti in range(int(len(t_array)-1)): # loop through operator-split time steps
-# 		
-# 		# start and finish times for interpolation (hours)
-# 		t_interp = np.zeros((2))
-# 		t_interp[0] = t_array[ti]
-# 		t_interp[1] = t_array[ti+1]
-# 		# points to interpolate
-# 		N2int = np.zeros((2, N.shape[1]))
-# 		N2int[0, :] = N[ti, :]
-# 		N2int[1, :] = N[ti+1, :]
-# 		SOA2int = np.zeros((2, N.shape[1]))
-# 		SOA2int[0, :] = y[ti, :]
-# 		SOA2int[1, :] = y[ti+1, :]
-# 		
-# 		# index of reference time array
-# 		ref_indx = (np.where((t_interp[1]-t_array_bench)>=0))[0][-1]
-# 		# number of reference time points covered
-# 		num_ref_points = int(ref_indx-t_count)
-# 		
-# 		for ti2 in range(num_ref_points): # loop through times to interpolate to
-# 
-# 			# loop through size bins
-# 			for sbi in range(num_sb):
-# 				Nint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, N2int[:, sbi])
-# 				SOAint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, SOA2int[:, sbi])
-# 			t_count += 1
-# 	
-# 
-# 	
-# 	# new array for holding number concentrations		
-# 	N = np.zeros((Nint.shape[0], Nint.shape[1]))
-# 	N[:, :] = Nint[:, :]
-# 	# new array for holding dN/dlog10(Dp)
-# 	dN = np.zeros((N.shape[0], N.shape[1]))
-# 	# new array for holding SOA mass concentration per size bin (columns) against time
-# 	# (rows)
-# 	SOA = np.zeros((SOAint.shape[0], SOAint.shape[1]))
-# 	SOA[:, :] = SOAint[:, :]
-# 	
-# 	# loop through times to normalise number concentrations by size bin width
-# 	for ti in range(N.shape[0]):
-# 		dN[ti, :] = N[ti, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
-# 
-# 	dN_av = np.zeros((dN.shape[0], num_sb-(np_mvav-1))) # dN/dlog10(Dp) moving average
-# 	
-# 	for i in range(np_mvav): # loop through number concentration points to get average
-# 	
-# 		# moving average number concentration, times in rows, size bins in columns
-# 		dN_av[:, :] += (dN[:, i:(num_sb)-(np_mvav-(i+1))])/np_mvav
-# 
-# 	
-# 	if resi == len(num_sb_dict)-1:
-# 		# remember benchmark values
-# 		dN_av_bench = np.zeros((dN_av.shape[0], dN_av.shape[1]))
-# 		dN_av_bench[:, :] = dN_av[:, :]
-# 		dN_av_bench[dN_av_bench==0.0] = 1.0e-40
-# 		N_bench = N.sum(axis=1)
-# 		N_bench[N_bench==0.0] = 1.0e-40 # set zeros to very low number
-# 		SOA_bench = np.zeros((SOA.shape[0], 1))
-# 		SOA_bench[:, 0] = SOA.sum(axis=1)
-# 		continue # no need to plot root-mean square deviation of benchmark against itself
-# 
-# 	# get total number concentration per time step (# particles/cc (air))
-# 	N = N.sum(axis=1)
-# 	# get total SOA mass concentration per time step (ug/m3 (air))
-# 	SOA = SOA.sum(axis=1)
-# 	N[N==0.0] = 1.0e-40 # set zeros to very low number	
-# 	dN_av[dN_av==0.0] = 1.0e-40 # set zeros to very low number
-# 	SOA[SOA==0.0] = 1.0e-40 # set zeros to very low number
-# 	
-# 	# loop through time steps of the low temporal resolution case to calculate divergence
-# 	# prepare denominator matrices for divergence estimation
-# 	den_matrdN = np.zeros((dN_av.shape[1]))
-# 	den_matrN = np.zeros((1))
-# 	num_times = 0 # number of times to average over
-# 
-# 	for ti in range(t_bench_len): # loop through time steps
-# 		if ti == 0:
-# 			continue # skip results at simulation start
-# 
-# 		# denominator matrices to limit error to 100 %
-# 		den_matrdN = np.zeros((dN_av_bench.shape[1]))
-# 		den_matrdN[:] = dN_av_bench[ti, :]
-# 		den_matrN = np.zeros((1))
-# 		den_matrN[0] = N_bench[ti]
-# 		den_matrSOA = np.zeros((1))
-# 		den_matrSOA[0] = SOA_bench[ti]
-# 		# index of size bins where reference value is below comparator value
-# 		lt_indx = dN_av_bench[ti, :]<dN_av[ti, :]
-# 		den_matrdN[lt_indx] = dN_av[ti, lt_indx]
-# 		if N_bench[ti]<N[ti]:
-# 			den_matrN[0] = N[ti]
-# 		if SOA_bench[ti]<SOA[ti]:
-# 			den_matrSOA[0] = SOA[ti]
-# 		
-# 		# index of size bins where both reference and test cases have particles present
-# 		sb_indx = (dN_av_bench[ti, :]>1.0e-10)+(dN_av[ti, :]>1.0e-10)
-# 		# absolute percentage error in number size distribution
-# 		per_error_nsd_ti = ((np.abs(dN_av_bench[ti, sb_indx]-dN_av[ti, sb_indx]))/den_matrdN[sb_indx])*100.0
-# 		
-# 		# absolute percentage error in total particle number concentration
-# 		per_error_N_ti = ((np.abs(N_bench[ti]-N[ti]))/den_matrN)*100.0
-# 		# absolute percentage error in SOA
-# 		per_error_SOA_ti = ((np.abs(SOA_bench[ti]-SOA[ti]))/den_matrSOA)*100.0
-# 		
-# 		if sum(sb_indx) > 0:
-# 			num_times += 1 # count on number of times to average over
-# 			# for number size distribution sum with previous time steps average across size bins
-# 			per_err[resi, 1] += (sum(per_error_nsd_ti)/(sum(sb_indx)))
-# 			# for total number average sum with previous time steps
-# 			per_err[resi, 2] += (per_error_N_ti)
-# 			# for SOA average across times and store
-# 			per_err[resi, 3] += (per_error_SOA_ti)
-# 	
-# 	# average over time steps
-# 	per_err[resi, 1] = per_err[resi, 1]/num_times
-# 	per_err[resi, 2] = per_err[resi, 2]/num_times
-# 	per_err[resi, 3] = per_err[resi, 3]/num_times
-# 	
-# # plot of absolute percentage error, summed across size and times
-# p17, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag., wall & nuc.')
-# p18, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag., wall & nuc.')
-# p19, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag., wall & nuc.')
-# 
-# 
-# # par2.set_ylim(1.0e-2, 1.05e2)
-# ax2.set_xlim(2.0e0, 5.0e4)
-# 
-# lines = [p14, p15, p16, p17, p18, p19]
-# ax2.legend(lines, [l.get_label() for l in lines])
+num_sb_dict = {}
+num_speci_dict = {}
+Cfac_dict = {}
+y_dict = {}
+N_dict = {}
+sbb_dict = {}
+x_dict = {}
+thr_dict = {}
+
+(num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], _, _, _, _, _, spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_43200s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], _, _, _, _, _, spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_15360s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], _, _, _, _, _, spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_7680s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], _, _, _, _, _, spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_3840s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb4'], num_speci_dict['num_speci4'], Cfac_dict['Cfac4'], y_dict['y4'], N_dict['N4'], sbb_dict['sbb4'], x_dict['x4'], thr_dict['thr4'], _, _, _, _, _, spd_dict['spd4']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_1920s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb5'], num_speci_dict['num_speci5'], Cfac_dict['Cfac5'], y_dict['y5'], N_dict['N5'], sbb_dict['sbb5'], x_dict['x5'], thr_dict['thr5'], _, _, _, _, _, spd_dict['spd5']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_960s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb6'], num_speci_dict['num_speci6'], Cfac_dict['Cfac6'], y_dict['y6'], N_dict['N6'], sbb_dict['sbb6'], x_dict['x6'], thr_dict['thr6'], _, _, _, _, _, spd_dict['spd6']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_480s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb7'], num_speci_dict['num_speci7'], Cfac_dict['Cfac7'], y_dict['y7'], N_dict['N7'], sbb_dict['sbb7'], x_dict['x7'], thr_dict['thr7'], _, _, _, _, _, spd_dict['spd7']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_240s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb8'], num_speci_dict['num_speci8'], Cfac_dict['Cfac8'], y_dict['y8'], N_dict['N8'], sbb_dict['sbb8'], x_dict['x8'], thr_dict['thr8'], _, _, _, _, _, spd_dict['spd8']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_120s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb9'], num_speci_dict['num_speci9'], Cfac_dict['Cfac9'], y_dict['y9'], N_dict['N9'], sbb_dict['sbb9'], x_dict['x9'], thr_dict['thr9'], _, _, _, _, _, spd_dict['spd9']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_60s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb10'], num_speci_dict['num_speci10'], Cfac_dict['Cfac10'], y_dict['y10'], N_dict['N10'], sbb_dict['sbb10'], x_dict['x10'], thr_dict['thr10'], _, _, _, _, _, spd_dict['spd10']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_48s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb11'], num_speci_dict['num_speci11'], Cfac_dict['Cfac11'], y_dict['y11'], N_dict['N11'], sbb_dict['sbb11'], x_dict['x11'], thr_dict['thr11'], _, _, _, _, _, spd_dict['spd11']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_24s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb12'], num_speci_dict['num_speci12'], Cfac_dict['Cfac12'], y_dict['y12'], N_dict['N12'], sbb_dict['sbb12'], x_dict['x12'], thr_dict['thr12'], _, _, _, _, _, spd_dict['spd12']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_12s_opspltwlcoag_128sb_tempconst_seeded'))
+(num_sb_dict['num_sb13'], num_speci_dict['num_speci13'], Cfac_dict['Cfac13'], y_dict['y13'], N_dict['N13'], sbb_dict['sbb13'], x_dict['x13'], thr_dict['thr13'], _, _, _, _, _, spd_dict['spd13']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6s_opspltwlcoag_128sb_tempconst_seeded'))
+per_err = np.zeros((len(num_sb_dict), 3)) # empty store for percentage error results
+per_err[:, 0] = (43200, 15360, 7680, 3840, 1920, 960, 480, 240, 120, 60, 48, 24, 12, 6)
+
+for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
+	resi = int(resi)# ensure integer not float
+	
+	N = N_dict[str('N' + str(resi))] # particle number concentration
+	sbb = sbb_dict[str('sbb' + str(resi))] # size bin bounds
+	num_sb = num_sb_dict[str('num_sb' + str(resi))]-1 # number of size bins
+	x = x_dict[str('x' + str(resi))] # radii at size bin centre
+	t_array = thr_dict[str('thr' + str(resi))]*3600.0 # times results saved at (s)
+	t_step = t_array[1]-t_array[0] # operator-split time step
+	if resi == len(num_sb_dict)-1:
+		t_array_bench = t_array # times to interpolate to (s)
+		t_step_bench = t_step
+		t_bench_len = int(len(t_array_bench)) # number of times for reference
+	
+	# empty matrix for holding interpolated values
+	Nint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
+	t_count = 0 # initial count on rows of matrix containing interpolation results
+
+
+
+	for ti in range(int(len(t_array)-1)): # loop through operator-split time steps
+		
+		# start and finish times for interpolation (hours)
+		t_interp = np.zeros((2))
+		t_interp[0] = t_array[ti]
+		t_interp[1] = t_array[ti+1]
+		# points to interpolate
+		N2int = np.zeros((2, N.shape[1]))
+		N2int[0, :] = N[ti, :]
+		N2int[1, :] = N[ti+1, :]
+		
+		# index of reference time array
+		ref_indx = (np.where((t_interp[1]-t_array_bench)>=0))[0][-1]
+		# number of reference time points covered
+		num_ref_points = int(ref_indx-t_count)
+		
+		for ti2 in range(num_ref_points): # loop through times to interpolate to
+
+			# loop through size bins
+			for sbi in range(num_sb):
+				Nint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, N2int[:, sbi]) 
+			t_count += 1
+	
+
+	
+	# new array for holding number concentrations		
+	N = np.zeros((Nint.shape[0], Nint.shape[1]))
+	N[:, :] = Nint[:, :]
+	# new array for holding dN/dlog10(Dp)
+	dN = np.zeros((N.shape[0], N.shape[1]))
+	# loop through times to normalise number concentrations by size bin width
+	for ti in range(N.shape[0]):
+		dN[ti, :] = N[ti, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
+
+	dN_av = np.zeros((dN.shape[0], num_sb-(np_mvav-1))) # dN/dlog10(Dp) moving average
+	
+	for i in range(np_mvav): # loop through number concentration points to get average
+	
+		# moving average number concentration, times in rows, size bins in columns
+		dN_av[:, :] += (dN[:, i:(num_sb)-(np_mvav-(i+1))])/np_mvav
+
+	
+	if resi == len(num_sb_dict)-1:
+		# remember benchmark values
+		dN_av_bench = np.zeros((dN_av.shape[0], dN_av.shape[1]))
+		dN_av_bench[:, :] = dN_av[:, :]
+		dN_av_bench[dN_av_bench==0.0] = 1.0e-40
+		N_bench = N.sum(axis=1)
+		N_bench[N_bench==0.0] = 1.0e-40 # set zeros to very low number
+		continue # no need to plot root-mean square deviation of benchmark against itself
+
+	# get total number concentration per time step (# particles/cc (air))
+	N = N.sum(axis=1)
+	N[N==0.0] = 1.0e-40 # set zeros to very low number	
+	dN_av[dN_av==0.0] = 1.0e-40 # set zeros to very low number
+	
+	# loop through time steps of the low temporal resolution case to calculate divergence
+	# prepare denominator matrices for divergence estimation
+	den_matrdN = np.zeros((dN_av.shape[1]))
+	den_matrN = np.zeros((1))
+
+	num_times = 0 # number of times to average over
+
+	for ti in range(t_bench_len): # loop through time steps
+		if ti == 0:
+			continue # skip results at simulation start
+
+		# denominator matrices to limit error to 100 %
+		den_matrdN = np.zeros((dN_av_bench.shape[1]))
+		den_matrdN[:] = dN_av_bench[ti, :]
+		den_matrN = np.zeros((1))
+		den_matrN[0] = N_bench[ti]
+
+		# index of size bins where reference value is below comparator value
+		lt_indx = dN_av_bench[ti, :]<dN_av[ti, :]
+		den_matrdN[lt_indx] = dN_av[ti, lt_indx]
+		if N_bench[ti]<N[ti]:
+			den_matrN[0] = N[ti]
+		
+		# index of size bins where both reference and test cases have particles present
+		sb_indx = (dN_av_bench[ti, :]>1.0e-10)+(dN_av[ti, :]>1.0e-10)
+		# absolute percentage error in number size distribution
+		per_error_nsd_ti = ((np.abs(dN_av_bench[ti, sb_indx]-dN_av[ti, sb_indx]))/den_matrdN[sb_indx])*100.0
+		
+		# absolute percentage error in total particle number concentration
+		per_error_N_ti = ((np.abs(N_bench[ti]-N[ti]))/den_matrN)*100.0
+
+		
+		if sum(sb_indx) > 0:
+			num_times += 1 # count on number of times to average over
+			# for number size distribution sum with previous time steps average across size bins
+			per_err[resi, 1] += (sum(per_error_nsd_ti)/(sum(sb_indx)))
+			# for total number average sum with previous time steps
+			per_err[resi, 2] += (per_error_N_ti)
+	
+	# average over time steps
+	per_err[resi, 1] = per_err[resi, 1]/num_times
+	per_err[resi, 2] = per_err[resi, 2]/num_times
+	
+# plot of absolute percentage error, summed across size and times
+p5, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
+p6, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag. & wall')
+
+ax0.text(x=0.0, y=1.0e6, s='a)', size=14) # plot label
+lines = [p1, p2, p5, p6]
+## ax0.legend(lines, [l.get_label() for l in lines])
+# ax0.set_ylim(4.5e-2, 1.05e2)
+
+# ax0.set_xlabel('operator-split time step (s)', size=16) # vertical axis label
+ax0.set_ylabel('$|\%\, \Delta|$', size=18) # vertical axis label
+ax0.set_xlim(2.0e0, 5.0e4)
+ax0.set_ylim(1.5e-2, 1.1e2)
+ax0.xaxis.set_tick_params(labelsize=16)
+ax0.yaxis.set_tick_params(labelsize=16)
+ax0.text(x=1.0e0, y=2.0e2, s='a)', size=14)
+		
+
+
+# end of no partitioning plot, onto partitioning for coagulation and wall loss effects ---
+
+# coagulation only with partitioning -----------------------------------------------------
+num_sb_dict = {}
+num_speci_dict = {}
+Cfac_dict = {}
+y_dict = {}
+N_dict = {}
+sbb_dict = {}
+x_dict = {}
+thr_dict = {}
+MV_dict = {}
+spd_dict = {}
+
+(num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], _, _, _, _, MV_dict['MV0'], spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_43200s_opspltcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], _, _, _, _, MV_dict['MV1'], spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_18000s_opspltcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], _, _, _, _, MV_dict['MV2'], spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6000s_opspltcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], _, _, _, _, MV_dict['MV3'], spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_1800s_opspltcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb4'], num_speci_dict['num_speci4'], Cfac_dict['Cfac4'], y_dict['y4'], N_dict['N4'], sbb_dict['sbb4'], x_dict['x4'], thr_dict['thr4'], _, _, _, _, MV_dict['MV4'], spd_dict['spd4']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_600s_opspltcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb5'], num_speci_dict['num_speci5'], Cfac_dict['Cfac5'], y_dict['y5'], N_dict['N5'], sbb_dict['sbb5'], x_dict['x5'], thr_dict['thr5'], _, _, _, _, MV_dict['MV5'], spd_dict['spd5']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_180s_opspltcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb6'], num_speci_dict['num_speci6'], Cfac_dict['Cfac6'], y_dict['y6'], N_dict['N6'], sbb_dict['sbb6'], x_dict['x6'], thr_dict['thr6'], _, _, _, _, MV_dict['MV6'], spd_dict['spd6']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_60s_opspltCOAG_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb7'], num_speci_dict['num_speci7'], Cfac_dict['Cfac7'], y_dict['y7'], N_dict['N7'], sbb_dict['sbb7'], x_dict['x7'], thr_dict['thr7'], _, _, _, _, MV_dict['MV7'], spd_dict['spd7']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_30s_opspltcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb8'], num_speci_dict['num_speci8'], Cfac_dict['Cfac8'], y_dict['y8'], N_dict['N8'], sbb_dict['sbb8'], x_dict['x8'], thr_dict['thr8'], _, _, _, _, MV_dict['MV8'], spd_dict['spd8']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_12s_opspltcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb9'], num_speci_dict['num_speci9'], Cfac_dict['Cfac9'], y_dict['y9'], N_dict['N9'], sbb_dict['sbb9'], x_dict['x9'], thr_dict['thr9'], _, _, _, _, MV_dict['MV9'], spd_dict['spd9']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6s_opspltcoag_128sb_tempconst_seeded_sv'))
+
+per_err = np.zeros((len(num_sb_dict), 4)) # empty store for percentage error results
+per_err[:, 0] = (43200.0, 18000.0, 6000.0, 1800.0, 600.0, 180.0, 60.0, 30.0, 12.0, 6.0)
+
+for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
+	resi = int(resi)# ensure integer not float
+	
+	num_sb = num_sb_dict[str('num_sb' + str(resi))]-1 # number of size bins
+	ncomp = num_speci_dict[str('num_speci' + str(resi))] # number of components
+	N = N_dict[str('N' + str(resi))] # particle number concentration
+	y = y_dict[str('y' + str(resi))] # component molecular concentrations (molecules/cm3)
+	MV = MV_dict[str('MV' + str(resi))] # molar volume (cm3/mol)
+	MV = np.array((MV))
+	# prepare for multiplying with molar concentrations
+	MV = (MV.reshape(1,-1).repeat(num_sb, axis=1)).repeat(y.shape[0], axis=0)
+	# particle mass concentrations (ug/m3), note, indexing of y means only particle-phase
+	# is considered, then multiply by 1.0e6 to convert from molecules/cm3 to molecules/m3,
+	# then divide by Avogadro's constant to get mol/m3, then multiply by molar volume to
+	# get cm3/m3, then assume a density of 1.0e6 ug/cm3 and multiply by this to get ug/m3,
+	# this is for each component per size bin (columns) per time step (rows)
+	y = y[:, ncomp:-ncomp]*1.0e6/si.N_A*MV*1.0e6
+	# obtain just the mass concentration of the semi-volatile
+	y = y[:, 2::3]
+	sbb = sbb_dict[str('sbb' + str(resi))] # size bin bounds
+	
+	x = x_dict[str('x' + str(resi))] # radii at size bin centre
+	t_array = thr_dict[str('thr' + str(resi))]*3600.0 # times results saved at (s)
+	t_step = t_array[1]-t_array[0] # operator-split time step
+	if resi == len(num_sb_dict)-1:
+		t_array_bench = t_array # times to interpolate to (s)
+		t_step_bench = t_step
+		t_bench_len = int(len(t_array_bench)) # number of times for reference
+	
+	# empty matrix for holding interpolated values of number concentration
+	Nint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
+	# empty matrix for holding interpolated values of SOA mass concentration
+	SOAint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
+	t_count = 0 # initial count on rows of matrix containing interpolation results
+
+	for ti in range(int(len(t_array)-1)): # loop through operator-split time steps
+		
+		# start and finish times for interpolation (hours)
+		t_interp = np.zeros((2))
+		t_interp[0] = t_array[ti]
+		t_interp[1] = t_array[ti+1]
+		# points to interpolate
+		N2int = np.zeros((2, N.shape[1]))
+		N2int[0, :] = N[ti, :]
+		N2int[1, :] = N[ti+1, :]
+		SOA2int = np.zeros((2, N.shape[1]))
+		SOA2int[0, :] = y[ti, :]
+		SOA2int[1, :] = y[ti+1, :]
+		
+		# index of reference time array
+		ref_indx = (np.where((t_interp[1]-t_array_bench)>=0))[0][-1]
+		# number of reference time points covered
+		num_ref_points = int(ref_indx-t_count)
+		
+		for ti2 in range(num_ref_points): # loop through times to interpolate to
+
+			# loop through size bins
+			for sbi in range(num_sb):
+				Nint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, N2int[:, sbi])
+				SOAint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, SOA2int[:, sbi])
+			t_count += 1
+	
+
+	
+	# new array for holding number concentrations		
+	N = np.zeros((Nint.shape[0], Nint.shape[1]))
+	N[:, :] = Nint[:, :]
+	# new array for holding dN/dlog10(Dp)
+	dN = np.zeros((N.shape[0], N.shape[1]))
+	# new array for holding SOA mass concentration per size bin (columns) against time
+	# (rows)
+	SOA = np.zeros((SOAint.shape[0], SOAint.shape[1]))
+	SOA[:, :] = SOAint[:, :]
+	
+	# loop through times to normalise number concentrations by size bin width
+	for ti in range(N.shape[0]):
+		dN[ti, :] = N[ti, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
+
+	dN_av = np.zeros((dN.shape[0], num_sb-(np_mvav-1))) # dN/dlog10(Dp) moving average
+	
+	for i in range(np_mvav): # loop through number concentration points to get average
+	
+		# moving average number concentration, times in rows, size bins in columns
+		dN_av[:, :] += (dN[:, i:(num_sb)-(np_mvav-(i+1))])/np_mvav
+
+	
+	if resi == len(num_sb_dict)-1:
+		# remember benchmark values
+		dN_av_bench = np.zeros((dN_av.shape[0], dN_av.shape[1]))
+		dN_av_bench[:, :] = dN_av[:, :]
+		dN_av_bench[dN_av_bench==0.0] = 1.0e-40
+		N_bench = N.sum(axis=1)
+		N_bench[N_bench==0.0] = 1.0e-40 # set zeros to very low number
+		SOA_bench = np.zeros((SOA.shape[0], 1))
+		SOA_bench[:, 0] = SOA.sum(axis=1)
+		continue # no need to plot root-mean square deviation of benchmark against itself
+
+	# get total number concentration per time step (# particles/cc (air))
+	N = N.sum(axis=1)
+	# get total SOA mass concentration per time step (ug/m3 (air))
+	SOA = SOA.sum(axis=1)
+	N[N==0.0] = 1.0e-40 # set zeros to very low number	
+	dN_av[dN_av==0.0] = 1.0e-40 # set zeros to very low number
+	SOA[SOA==0.0] = 1.0e-40 # set zeros to very low number
+	
+	# loop through time steps of the low temporal resolution case to calculate divergence
+	# prepare denominator matrices for divergence estimation
+	den_matrdN = np.zeros((dN_av.shape[1]))
+	den_matrN = np.zeros((1))
+
+	num_times = 0 # number of times to average over
+
+	for ti in range(t_bench_len): # loop through time steps
+		if ti == 0:
+			continue # skip results at simulation start
+
+		# denominator matrices to limit error to 100 %
+		den_matrdN = np.zeros((dN_av_bench.shape[1]))
+		den_matrdN[:] = dN_av_bench[ti, :]
+		den_matrN = np.zeros((1))
+		den_matrN[0] = N_bench[ti]
+		den_matrSOA = np.zeros((1))
+		den_matrSOA[0] = SOA_bench[ti]
+		# index of size bins where reference value is below comparator value
+		lt_indx = dN_av_bench[ti, :]<dN_av[ti, :]
+		den_matrdN[lt_indx] = dN_av[ti, lt_indx]
+		if N_bench[ti]<N[ti]:
+			den_matrN[0] = N[ti]
+		if SOA_bench[ti]<SOA[ti]:
+			den_matrSOA[0] = SOA[ti]
+		
+		# index of size bins where both reference and test cases have particles present
+		sb_indx = (dN_av_bench[ti, :]>1.0e-10)+(dN_av[ti, :]>1.0e-10)
+		# absolute percentage error in number size distribution
+		per_error_nsd_ti = ((np.abs(dN_av_bench[ti, sb_indx]-dN_av[ti, sb_indx]))/den_matrdN[sb_indx])*100.0
+		
+		# absolute percentage error in total particle number concentration
+		per_error_N_ti = ((np.abs(N_bench[ti]-N[ti]))/den_matrN)*100.0
+		# absolute percentage error in SOA
+		per_error_SOA_ti = ((np.abs(SOA_bench[ti]-SOA[ti]))/den_matrSOA)*100.0
+		
+		if sum(sb_indx) > 0:
+			num_times += 1 # count on number of times to average over
+			# for number size distribution sum with previous time steps average across size bins
+			per_err[resi, 1] += (sum(per_error_nsd_ti)/(sum(sb_indx)))
+			# for total number average sum with previous time steps
+			per_err[resi, 2] += (per_error_N_ti)
+			# for SOA average across times and store
+			per_err[resi, 3] += (per_error_SOA_ti)
+	
+	# average over time steps
+	per_err[resi, 1] = per_err[resi, 1]/num_times
+	per_err[resi, 2] = per_err[resi, 2]/num_times
+	per_err[resi, 3] = per_err[resi, 3]/num_times
+	
+# plot of absolute percentage error, summed across size and times
+p7, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
+p8, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+p9, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
+
+
+
+
+# coagulation & wall loss with partitioning ----------------------------------------------
+num_sb_dict = {}
+num_speci_dict = {}
+Cfac_dict = {}
+y_dict = {}
+N_dict = {}
+sbb_dict = {}
+x_dict = {}
+thr_dict = {}
+
+(num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], _, _, _, _, _, spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_43200s_opspltwlcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], _, _, _, _, _, spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_21600s_opspltwlcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], _, _, _, _, _, spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_10800s_opspltwlcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], _, _, _, _, _, spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_3000s_opspltwlcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb4'], num_speci_dict['num_speci4'], Cfac_dict['Cfac4'], y_dict['y4'], N_dict['N4'], sbb_dict['sbb4'], x_dict['x4'], thr_dict['thr4'], _, _, _, _, _, spd_dict['spd4']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_1200s_opspltwlcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb5'], num_speci_dict['num_speci5'], Cfac_dict['Cfac5'], y_dict['y5'], N_dict['N5'], sbb_dict['sbb5'], x_dict['x5'], thr_dict['thr5'], _, _, _, _, _, spd_dict['spd5']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_600s_opspltwlcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb6'], num_speci_dict['num_speci6'], Cfac_dict['Cfac6'], y_dict['y6'], N_dict['N6'], sbb_dict['sbb6'], x_dict['x6'], thr_dict['thr6'], _, _, _, _, _, spd_dict['spd6']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_480s_opspltwlcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb7'], num_speci_dict['num_speci7'], Cfac_dict['Cfac7'], y_dict['y7'], N_dict['N7'], sbb_dict['sbb7'], x_dict['x7'], thr_dict['thr7'], _, _, _, _, _, spd_dict['spd7']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_180s_opspltwlcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb8'], num_speci_dict['num_speci8'], Cfac_dict['Cfac8'], y_dict['y8'], N_dict['N8'], sbb_dict['sbb8'], x_dict['x8'], thr_dict['thr8'], _, _, _, _, _, spd_dict['spd8']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_20s_opspltwlcoag_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb9'], num_speci_dict['num_speci9'], Cfac_dict['Cfac9'], y_dict['y9'], N_dict['N9'], sbb_dict['sbb9'], x_dict['x9'], thr_dict['thr9'], _, _, _, _, _, spd_dict['spd9']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6s_opspltwlcoag_128sb_tempconst_seeded_sv'))
+
+per_err = np.zeros((len(num_sb_dict), 4)) # empty store for percentage error results
+per_err[:, 0] = (43200.0, 21600, 10800.0, 3000.0, 1200.0, 600.0, 480.0, 180.0, 18.0, 6.0)
+speed = np.zeros((1, len(num_sb_dict))) # empty array for simulation times (s)
+	
+	
+for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
+	resi = int(resi)# ensure integer not float
+	
+	speed[0, resi] = spd_dict[str('spd' + str(resi))] # simulation times (s)
+	num_sb = num_sb_dict[str('num_sb' + str(resi))]-1 # number of size bins
+	ncomp = num_speci_dict[str('num_speci' + str(resi))] # number of components
+	N = N_dict[str('N' + str(resi))] # particle number concentration
+	y = y_dict[str('y' + str(resi))] # component molecular concentrations (molecules/cm3)
+	MV = MV_dict[str('MV' + str(resi))] # molar volume (cm3/mol)
+	MV = np.array((MV))
+	# prepare for multiplying with molar concentrations
+	MV = (MV.reshape(1,-1).repeat(num_sb, axis=1)).repeat(y.shape[0], axis=0)
+	# particle mass concentrations (ug/m3), note, indexing of y means only particle-phase
+	# is considered, then multiply by 1.0e6 to convert from molecules/cm3 to molecules/m3,
+	# then divide by Avogadro's constant to get mol/m3, then multiply by molar volume to
+	# get cm3/m3, then assume a density of 1.0e6 ug/cm3 and multiply by this to get ug/m3,
+	# this is for each component per size bin (columns) per time step (rows)
+	y = y[:, ncomp:-ncomp]*1.0e6/si.N_A*MV*1.0e6
+	# obtain just the mass concentration of the semi-volatile
+	y = y[:, 2::3]
+	sbb = sbb_dict[str('sbb' + str(resi))] # size bin bounds
+	
+	x = x_dict[str('x' + str(resi))] # radii at size bin centre
+	t_array = thr_dict[str('thr' + str(resi))]*3600.0 # times results saved at (s)
+	t_step = t_array[1]-t_array[0] # operator-split time step
+	if resi == len(num_sb_dict)-1:
+		t_array_bench = t_array # times to interpolate to (s)
+		t_step_bench = t_step
+		t_bench_len = int(len(t_array_bench)) # number of times for reference
+	
+	# empty matrix for holding interpolated values of number concentration
+	Nint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
+	# empty matrix for holding interpolated values of SOA mass concentration
+	SOAint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
+	t_count = 0 # initial count on rows of matrix containing interpolation results
+
+	for ti in range(int(len(t_array)-1)): # loop through operator-split time steps
+		
+		# start and finish times for interpolation (hours)
+		t_interp = np.zeros((2))
+		t_interp[0] = t_array[ti]
+		t_interp[1] = t_array[ti+1]
+		# points to interpolate
+		N2int = np.zeros((2, N.shape[1]))
+		N2int[0, :] = N[ti, :]
+		N2int[1, :] = N[ti+1, :]
+		SOA2int = np.zeros((2, N.shape[1]))
+		SOA2int[0, :] = y[ti, :]
+		SOA2int[1, :] = y[ti+1, :]
+		
+		# index of reference time array
+		ref_indx = (np.where((t_interp[1]-t_array_bench)>=0))[0][-1]
+		# number of reference time points covered
+		num_ref_points = int(ref_indx-t_count)
+		
+		for ti2 in range(num_ref_points): # loop through times to interpolate to
+
+			# loop through size bins
+			for sbi in range(num_sb):
+				Nint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, N2int[:, sbi])
+				SOAint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, SOA2int[:, sbi])
+			t_count += 1
+	
+
+	
+	# new array for holding number concentrations		
+	N = np.zeros((Nint.shape[0], Nint.shape[1]))
+	N[:, :] = Nint[:, :]
+	# new array for holding dN/dlog10(Dp)
+	dN = np.zeros((N.shape[0], N.shape[1]))
+	# new array for holding SOA mass concentration per size bin (columns) against time
+	# (rows)
+	SOA = np.zeros((SOAint.shape[0], SOAint.shape[1]))
+	SOA[:, :] = SOAint[:, :]
+	
+	# loop through times to normalise number concentrations by size bin width
+	for ti in range(N.shape[0]):
+		dN[ti, :] = N[ti, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
+
+	dN_av = np.zeros((dN.shape[0], num_sb-(np_mvav-1))) # dN/dlog10(Dp) moving average
+	
+	for i in range(np_mvav): # loop through number concentration points to get average
+	
+		# moving average number concentration, times in rows, size bins in columns
+		dN_av[:, :] += (dN[:, i:(num_sb)-(np_mvav-(i+1))])/np_mvav
+
+	
+	if resi == len(num_sb_dict)-1:
+		# remember benchmark values
+		dN_av_bench = np.zeros((dN_av.shape[0], dN_av.shape[1]))
+		dN_av_bench[:, :] = dN_av[:, :]
+		dN_av_bench[dN_av_bench==0.0] = 1.0e-40
+		N_bench = N.sum(axis=1)
+		N_bench[N_bench==0.0] = 1.0e-40 # set zeros to very low number
+		SOA_bench = np.zeros((SOA.shape[0], 1))
+		SOA_bench[:, 0] = SOA.sum(axis=1)
+		continue # no need to plot root-mean square deviation of benchmark against itself
+
+	# get total number concentration per time step (# particles/cc (air))
+	N = N.sum(axis=1)
+	# get total SOA mass concentration per time step (ug/m3 (air))
+	SOA = SOA.sum(axis=1)
+	N[N==0.0] = 1.0e-40 # set zeros to very low number	
+	dN_av[dN_av==0.0] = 1.0e-40 # set zeros to very low number
+	SOA[SOA==0.0] = 1.0e-40 # set zeros to very low number
+	
+	# loop through time steps of the low temporal resolution case to calculate divergence
+	# prepare denominator matrices for divergence estimation
+	den_matrdN = np.zeros((dN_av.shape[1]))
+	den_matrN = np.zeros((1))
+
+	num_times = 0 # number of times to average over
+
+	for ti in range(t_bench_len): # loop through time steps
+		if ti == 0:
+			continue # skip results at simulation start
+
+		# denominator matrices to limit error to 100 %
+		den_matrdN = np.zeros((dN_av_bench.shape[1]))
+		den_matrdN[:] = dN_av_bench[ti, :]
+		den_matrN = np.zeros((1))
+		den_matrN[0] = N_bench[ti]
+		den_matrSOA = np.zeros((1))
+		den_matrSOA[0] = SOA_bench[ti]
+		# index of size bins where reference value is below comparator value
+		lt_indx = dN_av_bench[ti, :]<dN_av[ti, :]
+		den_matrdN[lt_indx] = dN_av[ti, lt_indx]
+		if N_bench[ti]<N[ti]:
+			den_matrN[0] = N[ti]
+		if SOA_bench[ti]<SOA[ti]:
+			den_matrSOA[0] = SOA[ti]
+		
+		# index of size bins where both reference and test cases have particles present
+		sb_indx = (dN_av_bench[ti, :]>1.0e-10)+(dN_av[ti, :]>1.0e-10)
+		# absolute percentage error in number size distribution
+		per_error_nsd_ti = ((np.abs(dN_av_bench[ti, sb_indx]-dN_av[ti, sb_indx]))/den_matrdN[sb_indx])*100.0
+		
+		# absolute percentage error in total particle number concentration
+		per_error_N_ti = ((np.abs(N_bench[ti]-N[ti]))/den_matrN)*100.0
+		# absolute percentage error in SOA
+		per_error_SOA_ti = ((np.abs(SOA_bench[ti]-SOA[ti]))/den_matrSOA)*100.0
+		
+		if sum(sb_indx) > 0:
+			num_times += 1 # count on number of times to average over
+			# for number size distribution sum with previous time steps average across size bins
+			per_err[resi, 1] += (sum(per_error_nsd_ti)/(sum(sb_indx)))
+			# for total number average sum with previous time steps
+			per_err[resi, 2] += (per_error_N_ti)
+			# for SOA average across times and store
+			per_err[resi, 3] += (per_error_SOA_ti)
+	
+	# average over time steps
+	per_err[resi, 1] = per_err[resi, 1]/num_times
+	per_err[resi, 2] = per_err[resi, 2]/num_times
+	per_err[resi, 3] = per_err[resi, 3]/num_times
+	
+# plot of absolute percentage error, summed across size and times
+p11, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
+p12, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag. & wall')
+p13, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag. & wall')
+
+
+ax1.set_xlabel('operator-split time step (s)', size=18) # horizontal axis label
+# ax1.set_yticklabels([]) # turn off labels for number size distribution
+ax1.xaxis.set_tick_params(labelsize=16)
+# par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
+# par2.yaxis.set_tick_params(labelsize=16)
+# par2.yaxis.label.set_color('blue')
+# par2.tick_params(axis='y', colors='blue')
+# par2.spines['right'].set_color('blue')
+
+ax1.set_ylim(1.5e-2, 1.1e2)
+ax1.set_xlim(2.0e0, 5.0e4)
+ax1.text(x=1.0e0, y=2.0e2, s='b)', size=14)
+
+lines = [p7, p8, p9, p11, p12, p13]
+## ax1.legend(lines, [l.get_label() for l in lines])
+# ax1.set_ylim(4.5e-2, 1.05e2)
+# add contour plot to show computer processing time --------------------------------------
+cont_y = np.array((1.5e-2, 1.1e2))
+cont_x = np.append(per_err[:, 0], 2.0)
+cont_x[0] = 5.0e4
+
+# customised colormap (https://www.rapidtables.com/web/color/RGB_Color.html)
+n_bin = 100  # Discretizes the colormap interpolation into bins
+cmap_name = 'my_list'
+# Create the colormap
+cm = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bin)
+# set contour levels
+levels = (MaxNLocator(nbins = n_bin).tick_values(0.85, 4.65))
+# associate colours and contour levels
+norm1 = BoundaryNorm(levels, ncolors = cm.N, clip=True)
+# contour plot with times along x axis and particle diameters along y axis
+pc1 = ax1.pcolormesh(cont_x, cont_y, np.log10(speed[:, :]), cmap=cm, norm=norm1)
+
+
+
+# end of contour plot section ------------------------------------------------------------
+
+# partitioning with nucleation section ---------------------------------------------------
+
+num_sb_dict = {}
+num_speci_dict = {}
+Cfac_dict = {}
+y_dict = {}
+N_dict = {}
+sbb_dict = {}
+x_dict = {}
+thr_dict = {}
+MV_dict = {}
+spd_dict = {}
+
+(num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], _, _, _, _, MV_dict['MV0'], spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_43200s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], _, _, _, _, MV_dict['MV1'], spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_21600s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], _, _, _, _, MV_dict['MV2'], spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_10800s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], _, _, _, _, MV_dict['MV3'], spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_3600s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb4'], num_speci_dict['num_speci4'], Cfac_dict['Cfac4'], y_dict['y4'], N_dict['N4'], sbb_dict['sbb4'], x_dict['x4'], thr_dict['thr4'], _, _, _, _, MV_dict['MV4'], spd_dict['spd4']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_900s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb5'], num_speci_dict['num_speci5'], Cfac_dict['Cfac5'], y_dict['y5'], N_dict['N5'], sbb_dict['sbb5'], x_dict['x5'], thr_dict['thr5'], _, _, _, _, MV_dict['MV5'], spd_dict['spd5']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_360s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb6'], num_speci_dict['num_speci6'], Cfac_dict['Cfac6'], y_dict['y6'], N_dict['N6'], sbb_dict['sbb6'], x_dict['x6'], thr_dict['thr6'], _, _, _, _, MV_dict['MV6'], spd_dict['spd6']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_60s_opspltcoagnuc_128sb_tempconst_sv'))
+(num_sb_dict['num_sb7'], num_speci_dict['num_speci7'], Cfac_dict['Cfac7'], y_dict['y7'], N_dict['N7'], sbb_dict['sbb7'], x_dict['x7'], thr_dict['thr7'], _, _, _, _, MV_dict['MV7'], spd_dict['spd7']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_20s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb8'], num_speci_dict['num_speci8'], Cfac_dict['Cfac8'], y_dict['y8'], N_dict['N8'], sbb_dict['sbb8'], x_dict['x8'], thr_dict['thr8'], _, _, _, _, MV_dict['MV8'], spd_dict['spd8']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6s_opspltcoagnuc_128sb_tempconst_seeded_sv'))
+
+per_err = np.zeros((len(num_sb_dict), 4)) # empty store for percentage error results
+per_err[:, 0] = (43200, 21600, 10800, 3600, 900, 360, 60, 20, 6)
+speed = np.zeros((1, len(num_sb_dict))) # empty array for simulation times (s)
+	
+	
+for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
+	resi = int(resi)# ensure integer not float
+	
+	speed[0, resi] = spd_dict[str('spd' + str(resi))] # simulation times (s)
+	num_sb = num_sb_dict[str('num_sb' + str(resi))]-1 # number of size bins
+	ncomp = num_speci_dict[str('num_speci' + str(resi))] # number of components
+	N = N_dict[str('N' + str(resi))] # particle number concentration
+	y = y_dict[str('y' + str(resi))] # component molecular concentrations (molecules/cm3)
+	MV = MV_dict[str('MV' + str(resi))] # molar volume (cm3/mol)
+	MV = np.array((MV))
+	# prepare for multiplying with molar concentrations
+	MV = (MV.reshape(1,-1).repeat(num_sb, axis=1)).repeat(y.shape[0], axis=0)
+	# particle mass concentrations (ug/m3), note, indexing of y means only particle-phase
+	# is considered, then multiply by 1.0e6 to convert from molecules/cm3 to molecules/m3,
+	# then divide by Avogadro's constant to get mol/m3, then multiply by molar volume to
+	# get cm3/m3, then assume a density of 1.0e6 ug/cm3 and multiply by this to get ug/m3,
+	# this is for each component per size bin (columns) per time step (rows)
+	y = y[:, ncomp:-ncomp]*1.0e6/si.N_A*MV*1.0e6
+	# obtain just the mass concentration of the semi-volatile
+	y = y[:, 2::3]
+	sbb = sbb_dict[str('sbb' + str(resi))] # size bin bounds
+	
+	x = x_dict[str('x' + str(resi))] # radii at size bin centre
+	t_array = thr_dict[str('thr' + str(resi))]*3600.0 # times results saved at (s)
+	t_step = t_array[1]-t_array[0] # operator-split time step
+	if resi == len(num_sb_dict)-1:
+		t_array_bench = t_array # times to interpolate to (s)
+		t_step_bench = 60.0
+		t_bench_len = int(len(t_array_bench)) # number of times for reference
+	
+	# empty matrix for holding interpolated values of number concentration
+	Nint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
+	# empty matrix for holding interpolated values of SOA mass concentration
+	SOAint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
+	t_count = 0 # initial count on rows of matrix containing interpolation results
+
+	for ti in range(int(len(t_array)-1)): # loop through operator-split time steps
+		
+		# start and finish times for interpolation (hours)
+		t_interp = np.zeros((2))
+		t_interp[0] = t_array[ti]
+		t_interp[1] = t_array[ti+1]
+		# points to interpolate
+		N2int = np.zeros((2, N.shape[1]))
+		N2int[0, :] = N[ti, :]
+		N2int[1, :] = N[ti+1, :]
+		SOA2int = np.zeros((2, N.shape[1]))
+		SOA2int[0, :] = y[ti, :]
+		SOA2int[1, :] = y[ti+1, :]
+		
+		# index of reference time array
+		ref_indx = (np.where((t_interp[1]-t_array_bench)>=0))[0][-1]
+		# number of reference time points covered
+		num_ref_points = int(ref_indx-t_count)
+		
+		for ti2 in range(num_ref_points): # loop through times to interpolate to
+
+			# loop through size bins
+			for sbi in range(num_sb):
+				Nint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, N2int[:, sbi])
+				SOAint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, SOA2int[:, sbi])
+			t_count += 1
+	
+
+	
+	# new array for holding number concentrations		
+	N = np.zeros((Nint.shape[0], Nint.shape[1]))
+	N[:, :] = Nint[:, :]
+	# new array for holding dN/dlog10(Dp)
+	dN = np.zeros((N.shape[0], N.shape[1]))
+	# new array for holding SOA mass concentration per size bin (columns) against time
+	# (rows)
+	SOA = np.zeros((SOAint.shape[0], SOAint.shape[1]))
+	SOA[:, :] = SOAint[:, :]
+	
+	# loop through times to normalise number concentrations by size bin width
+	for ti in range(N.shape[0]):
+		dN[ti, :] = N[ti, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
+
+	dN_av = np.zeros((dN.shape[0], num_sb-(np_mvav-1))) # dN/dlog10(Dp) moving average
+	
+	for i in range(np_mvav): # loop through number concentration points to get average
+	
+		# moving average number concentration, times in rows, size bins in columns
+		dN_av[:, :] += (dN[:, i:(num_sb)-(np_mvav-(i+1))])/np_mvav
+
+	
+	if resi == len(num_sb_dict)-1:
+		# remember benchmark values
+		dN_av_bench = np.zeros((dN_av.shape[0], dN_av.shape[1]))
+		dN_av_bench[:, :] = dN_av[:, :]
+		dN_av_bench[dN_av_bench==0.0] = 1.0e-40
+		N_bench = N.sum(axis=1)
+		N_bench[N_bench==0.0] = 1.0e-40 # set zeros to very low number
+		SOA_bench = np.zeros((SOA.shape[0], 1))
+		SOA_bench[:, 0] = SOA.sum(axis=1)
+		continue # no need to plot root-mean square deviation of benchmark against itself
+
+	# get total number concentration per time step (# particles/cc (air))
+	N = N.sum(axis=1)
+	# get total SOA mass concentration per time step (ug/m3 (air))
+	SOA = SOA.sum(axis=1)
+	N[N==0.0] = 1.0e-40 # set zeros to very low number	
+	dN_av[dN_av==0.0] = 1.0e-40 # set zeros to very low number
+	SOA[SOA==0.0] = 1.0e-40 # set zeros to very low number
+	
+	# loop through time steps of the low temporal resolution case to calculate divergence
+	# prepare denominator matrices for divergence estimation
+	den_matrdN = np.zeros((dN_av.shape[1]))
+	den_matrN = np.zeros((1))
+	num_times = 0 # number of times to average over
+
+	for ti in range(t_bench_len): # loop through time steps
+		if ti == 0:
+			continue # skip results at simulation start
+
+		# denominator matrices to limit error to 100 %
+		den_matrdN = np.zeros((dN_av_bench.shape[1]))
+		den_matrdN[:] = dN_av_bench[ti, :]
+		den_matrN = np.zeros((1))
+		den_matrN[0] = N_bench[ti]
+		den_matrSOA = np.zeros((1))
+		den_matrSOA[0] = SOA_bench[ti]
+		# index of size bins where reference value is below comparator value
+		lt_indx = dN_av_bench[ti, :]<dN_av[ti, :]
+		den_matrdN[lt_indx] = dN_av[ti, lt_indx]
+		if N_bench[ti]<N[ti]:
+			den_matrN[0] = N[ti]
+		if SOA_bench[ti]<SOA[ti]:
+			den_matrSOA[0] = SOA[ti]
+		
+		# index of size bins where both reference and test cases have particles present
+		sb_indx = (dN_av_bench[ti, :]>1.0e-10)+(dN_av[ti, :]>1.0e-10)
+		# absolute percentage error in number size distribution
+		per_error_nsd_ti = ((np.abs(dN_av_bench[ti, sb_indx]-dN_av[ti, sb_indx]))/den_matrdN[sb_indx])*100.0
+		
+		# absolute percentage error in total particle number concentration
+		per_error_N_ti = ((np.abs(N_bench[ti]-N[ti]))/den_matrN)*100.0
+		# absolute percentage error in SOA
+		per_error_SOA_ti = ((np.abs(SOA_bench[ti]-SOA[ti]))/den_matrSOA)*100.0
+		
+		if sum(sb_indx) > 0:
+			num_times += 1 # count on number of times to average over
+			# for number size distribution sum with previous time steps average across size bins
+			per_err[resi, 1] += (sum(per_error_nsd_ti)/(sum(sb_indx)))
+			# for total number average sum with previous time steps
+			per_err[resi, 2] += (per_error_N_ti)
+			# for SOA average across times and store
+			per_err[resi, 3] += (per_error_SOA_ti)
+	
+	# average over time steps
+	per_err[resi, 1] = per_err[resi, 1]/num_times
+	per_err[resi, 2] = per_err[resi, 2]/num_times
+	per_err[resi, 3] = per_err[resi, 3]/num_times
+	
+# plot of absolute percentage error, summed across size and times
+p14, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag. & nuc.')
+p15, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag. & nuc.')
+p16, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag. & nuc.')
+
+
+# ax2.set_xlabel('operator-split time step (s)', size=16) # vertical axis label
+# ax1.set_yticklabels([]) # turn off labels for number size distribution
+ax2.xaxis.set_tick_params(labelsize=16)
+# par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
+# par2.yaxis.set_tick_params(labelsize=16)
+# par2.yaxis.label.set_color('blue')
+# par2.tick_params(axis='y', colors='blue')
+# par2.spines['right'].set_color('blue')
+
+
+# add contour plot to show computer processing time --------------------------------------
+cont_y = np.array((1.5e-2, 1.1e2))
+cont_x = np.append(per_err[:, 0], 2.0)
+cont_x[0] = 5.0e4
+
+# customised colormap (https://www.rapidtables.com/web/color/RGB_Color.html)
+n_bin = 100  # Discretizes the colormap interpolation into bins
+cmap_name = 'my_list'
+# Create the colormap
+cm = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bin)
+# set contour levels
+levels = (MaxNLocator(nbins = n_bin).tick_values(0.85, 4.65))
+# associate colours and contour levels
+norm1 = BoundaryNorm(levels, ncolors = cm.N, clip=True)
+# contour plot with times along x axis and particle diameters along y axis
+pc1 = ax2.pcolormesh(cont_x, cont_y, np.log10(speed[:, :]), cmap=cm, norm=norm1)
+
+# end of contour plot section ------------------------------------------------------------
+
+# partitioning with nucleation, coagulation and wall loss section ------------------------
+
+num_sb_dict = {}
+num_speci_dict = {}
+Cfac_dict = {}
+y_dict = {}
+N_dict = {}
+sbb_dict = {}
+x_dict = {}
+thr_dict = {}
+MV_dict = {}
+spd_dict = {}
+
+(num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], _, _, _, _, MV_dict['MV0'], spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_43200s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], _, _, _, _, MV_dict['MV1'], spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_21600s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], _, _, _, _, MV_dict['MV2'], spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_10800s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], _, _, _, _, MV_dict['MV3'], spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_3600s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb4'], num_speci_dict['num_speci4'], Cfac_dict['Cfac4'], y_dict['y4'], N_dict['N4'], sbb_dict['sbb4'], x_dict['x4'], thr_dict['thr4'], _, _, _, _, MV_dict['MV4'], spd_dict['spd4']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_900s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb5'], num_speci_dict['num_speci5'], Cfac_dict['Cfac5'], y_dict['y5'], N_dict['N5'], sbb_dict['sbb5'], x_dict['x5'], thr_dict['thr5'], _, _, _, _, MV_dict['MV5'], spd_dict['spd5']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_360s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb6'], num_speci_dict['num_speci6'], Cfac_dict['Cfac6'], y_dict['y6'], N_dict['N6'], sbb_dict['sbb6'], x_dict['x6'], thr_dict['thr6'], _, _, _, _, MV_dict['MV6'], spd_dict['spd6']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_60s_opspltcoagnucwl_128sb_tempconst_sv'))
+(num_sb_dict['num_sb7'], num_speci_dict['num_speci7'], Cfac_dict['Cfac7'], y_dict['y7'], N_dict['N7'], sbb_dict['sbb7'], x_dict['x7'], thr_dict['thr7'], _, _, _, _, MV_dict['MV7'], spd_dict['spd7']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_20s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
+(num_sb_dict['num_sb8'], num_speci_dict['num_speci8'], Cfac_dict['Cfac8'], y_dict['y8'], N_dict['N8'], sbb_dict['sbb8'], x_dict['x8'], thr_dict['thr8'], _, _, _, _, MV_dict['MV8'], spd_dict['spd8']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_6s_opspltcoagnucwl_128sb_tempconst_seeded_sv'))
+
+per_err = np.zeros((len(num_sb_dict), 4)) # empty store for percentage error results
+per_err[:, 0] = (43200, 21600, 10800, 3600, 900, 360, 60, 20, 6)
+speed = np.zeros((1, len(num_sb_dict))) # empty array for simulation times (s)
+	
+	
+for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
+	resi = int(resi)# ensure integer not float
+	
+	speed[0, resi] = spd_dict[str('spd' + str(resi))] # simulation times (s)
+	num_sb = num_sb_dict[str('num_sb' + str(resi))]-1 # number of size bins
+	ncomp = num_speci_dict[str('num_speci' + str(resi))] # number of components
+	N = N_dict[str('N' + str(resi))] # particle number concentration
+	y = y_dict[str('y' + str(resi))] # component molecular concentrations (molecules/cm3)
+	MV = MV_dict[str('MV' + str(resi))] # molar volume (cm3/mol)
+	MV = np.array((MV))
+	# prepare for multiplying with molar concentrations
+	MV = (MV.reshape(1,-1).repeat(num_sb, axis=1)).repeat(y.shape[0], axis=0)
+	# particle mass concentrations (ug/m3), note, indexing of y means only particle-phase
+	# is considered, then multiply by 1.0e6 to convert from molecules/cm3 to molecules/m3,
+	# then divide by Avogadro's constant to get mol/m3, then multiply by molar volume to
+	# get cm3/m3, then assume a density of 1.0e6 ug/cm3 and multiply by this to get ug/m3,
+	# this is for each component per size bin (columns) per time step (rows)
+	y = y[:, ncomp:-ncomp]*1.0e6/si.N_A*MV*1.0e6
+	# obtain just the mass concentration of the semi-volatile
+	y = y[:, 2::3]
+	sbb = sbb_dict[str('sbb' + str(resi))] # size bin bounds
+	
+	x = x_dict[str('x' + str(resi))] # radii at size bin centre
+	t_array = thr_dict[str('thr' + str(resi))]*3600.0 # times results saved at (s)
+	t_step = t_array[1]-t_array[0] # operator-split time step
+	if resi == len(num_sb_dict)-1:
+		t_array_bench = t_array # times to interpolate to (s)
+		t_step_bench = 60.0
+		t_bench_len = int(len(t_array_bench)) # number of times for reference
+	
+	# empty matrix for holding interpolated values of number concentration
+	Nint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
+	# empty matrix for holding interpolated values of SOA mass concentration
+	SOAint = np.zeros((int(86400.0/t_step_bench+1), num_sb))
+	t_count = 0 # initial count on rows of matrix containing interpolation results
+
+	for ti in range(int(len(t_array)-1)): # loop through operator-split time steps
+		
+		# start and finish times for interpolation (hours)
+		t_interp = np.zeros((2))
+		t_interp[0] = t_array[ti]
+		t_interp[1] = t_array[ti+1]
+		# points to interpolate
+		N2int = np.zeros((2, N.shape[1]))
+		N2int[0, :] = N[ti, :]
+		N2int[1, :] = N[ti+1, :]
+		SOA2int = np.zeros((2, N.shape[1]))
+		SOA2int[0, :] = y[ti, :]
+		SOA2int[1, :] = y[ti+1, :]
+		
+		# index of reference time array
+		ref_indx = (np.where((t_interp[1]-t_array_bench)>=0))[0][-1]
+		# number of reference time points covered
+		num_ref_points = int(ref_indx-t_count)
+		
+		for ti2 in range(num_ref_points): # loop through times to interpolate to
+
+			# loop through size bins
+			for sbi in range(num_sb):
+				Nint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, N2int[:, sbi])
+				SOAint[t_count, sbi] = np.interp(t_array_bench[t_count], t_interp, SOA2int[:, sbi])
+			t_count += 1
+	
+
+	
+	# new array for holding number concentrations		
+	N = np.zeros((Nint.shape[0], Nint.shape[1]))
+	N[:, :] = Nint[:, :]
+	# new array for holding dN/dlog10(Dp)
+	dN = np.zeros((N.shape[0], N.shape[1]))
+	# new array for holding SOA mass concentration per size bin (columns) against time
+	# (rows)
+	SOA = np.zeros((SOAint.shape[0], SOAint.shape[1]))
+	SOA[:, :] = SOAint[:, :]
+	
+	# loop through times to normalise number concentrations by size bin width
+	for ti in range(N.shape[0]):
+		dN[ti, :] = N[ti, :]/(np.log10(sbb[1::]*2.0)-np.log10(sbb[0:-1]*2.0))
+
+	dN_av = np.zeros((dN.shape[0], num_sb-(np_mvav-1))) # dN/dlog10(Dp) moving average
+	
+	for i in range(np_mvav): # loop through number concentration points to get average
+	
+		# moving average number concentration, times in rows, size bins in columns
+		dN_av[:, :] += (dN[:, i:(num_sb)-(np_mvav-(i+1))])/np_mvav
+
+	
+	if resi == len(num_sb_dict)-1:
+		# remember benchmark values
+		dN_av_bench = np.zeros((dN_av.shape[0], dN_av.shape[1]))
+		dN_av_bench[:, :] = dN_av[:, :]
+		dN_av_bench[dN_av_bench==0.0] = 1.0e-40
+		N_bench = N.sum(axis=1)
+		N_bench[N_bench==0.0] = 1.0e-40 # set zeros to very low number
+		SOA_bench = np.zeros((SOA.shape[0], 1))
+		SOA_bench[:, 0] = SOA.sum(axis=1)
+		continue # no need to plot root-mean square deviation of benchmark against itself
+
+	# get total number concentration per time step (# particles/cc (air))
+	N = N.sum(axis=1)
+	# get total SOA mass concentration per time step (ug/m3 (air))
+	SOA = SOA.sum(axis=1)
+	N[N==0.0] = 1.0e-40 # set zeros to very low number	
+	dN_av[dN_av==0.0] = 1.0e-40 # set zeros to very low number
+	SOA[SOA==0.0] = 1.0e-40 # set zeros to very low number
+	
+	# loop through time steps of the low temporal resolution case to calculate divergence
+	# prepare denominator matrices for divergence estimation
+	den_matrdN = np.zeros((dN_av.shape[1]))
+	den_matrN = np.zeros((1))
+	num_times = 0 # number of times to average over
+
+	for ti in range(t_bench_len): # loop through time steps
+		if ti == 0:
+			continue # skip results at simulation start
+
+		# denominator matrices to limit error to 100 %
+		den_matrdN = np.zeros((dN_av_bench.shape[1]))
+		den_matrdN[:] = dN_av_bench[ti, :]
+		den_matrN = np.zeros((1))
+		den_matrN[0] = N_bench[ti]
+		den_matrSOA = np.zeros((1))
+		den_matrSOA[0] = SOA_bench[ti]
+		# index of size bins where reference value is below comparator value
+		lt_indx = dN_av_bench[ti, :]<dN_av[ti, :]
+		den_matrdN[lt_indx] = dN_av[ti, lt_indx]
+		if N_bench[ti]<N[ti]:
+			den_matrN[0] = N[ti]
+		if SOA_bench[ti]<SOA[ti]:
+			den_matrSOA[0] = SOA[ti]
+		
+		# index of size bins where both reference and test cases have particles present
+		sb_indx = (dN_av_bench[ti, :]>1.0e-10)+(dN_av[ti, :]>1.0e-10)
+		# absolute percentage error in number size distribution
+		per_error_nsd_ti = ((np.abs(dN_av_bench[ti, sb_indx]-dN_av[ti, sb_indx]))/den_matrdN[sb_indx])*100.0
+		
+		# absolute percentage error in total particle number concentration
+		per_error_N_ti = ((np.abs(N_bench[ti]-N[ti]))/den_matrN)*100.0
+		# absolute percentage error in SOA
+		per_error_SOA_ti = ((np.abs(SOA_bench[ti]-SOA[ti]))/den_matrSOA)*100.0
+		
+		if sum(sb_indx) > 0:
+			num_times += 1 # count on number of times to average over
+			# for number size distribution sum with previous time steps average across size bins
+			per_err[resi, 1] += (sum(per_error_nsd_ti)/(sum(sb_indx)))
+			# for total number average sum with previous time steps
+			per_err[resi, 2] += (per_error_N_ti)
+			# for SOA average across times and store
+			per_err[resi, 3] += (per_error_SOA_ti)
+	
+	# average over time steps
+	per_err[resi, 1] = per_err[resi, 1]/num_times
+	per_err[resi, 2] = per_err[resi, 2]/num_times
+	per_err[resi, 3] = per_err[resi, 3]/num_times
+	
+# plot of absolute percentage error, summed across size and times
+p17, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag., wall & nuc.')
+p18, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag., wall & nuc.')
+p19, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag., wall & nuc.')
+
+
+# par2.set_ylim(1.0e-2, 1.05e2)
+ax2.set_xlim(2.0e0, 5.0e4)
+# 
+lines = [p14, p15, p16, p17, p18, p19]
+ax2.legend(lines, [l.get_label() for l in lines])
 
 # set fourth plot to be invisible
-# ax3.set_yticklabels([])
-# ax3.set_xticklabels([])
 ax3.set_visible(False)
 
 
@@ -1417,8 +1418,8 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
-p20, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-xk', label='NSD, coag.')
-p21, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-xb', label='[N], coag.')
+p20, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
+p21, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
 
 ax4.set_ylabel('$|\%\, \Delta|$', size=18) # vertical axis label
 ax4.xaxis.set_tick_params(labelsize=16)
@@ -1631,11 +1632,11 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
-p22, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.xk', label='NSD, coag. & wall')
-p23, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.xb', label='[N], coag.  & wall')
+p22, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
+p23, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag.  & wall')
 
-lines = [p20, p21, p22, p23]
-ax4.legend(lines, [l.get_label() for l in lines])
+# lines = [p20, p21, p22, p23]
+# ax4.legend(lines, [l.get_label() for l in lines])
 # ----------------------------------------------------------------------------------------
 
 
@@ -1815,9 +1816,9 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
-p24, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', label='NSD, coag.')
-p25, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', label='[N], coag.')
-p26, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', label='[SOA], coag.')
+p24, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
+p25, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+p26, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 
 ax5.xaxis.set_tick_params(labelsize=16)
 
@@ -2022,16 +2023,18 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
-p27, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', label='NSD, coag. & wall')
-p28, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', label='[N], coag.  & wall')
-p29, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', label='[SOA], coag.  & wall')
+p27, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
+p28, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag.  & wall')
+p29, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag.  & wall')
 
+# lines = [p24, p25, p26, p27, p28, p29]
+# ax5.legend(lines, [l.get_label() for l in lines])
+ax5.set_xlabel('number of size bins', size=18) # horizontal axis label
 
 # ----------------------------------------------------------------------------------------
 
 
-lines = [p24, p25, p26, p27, p28, p29]
-ax5.legend(lines, [l.get_label() for l in lines])
+
 
 # sensitivity to spatial resolution, coagulation only with partitioning and nucleation ---
 num_sb_dict = {}
@@ -2047,8 +2050,8 @@ spd_dict = {}
 nam_dict = {}
 
 (num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], nam_dict['nam0'], _, _, _, MV_dict['MV0'], spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/sens2sr_60s_opspltcoagnuc_8sb_sv'))
-(num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], nam_dict['nam1'], _, _, _, MV_dict['MV1'], spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/sens2sr_60s_opspltcoagnuc_32sb_sv'))
-(num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], nam_dict['nam2'], _, _, _, MV_dict['MV2'], spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/sens2sr_60s_opspltcoagnuc_64sb_sv'))
+(num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], nam_dict['nam1'], _, _, _, MV_dict['MV1'], spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/sens2tr_60s_opspltcoagnuc_32sb_sv'))
+(num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], nam_dict['nam2'], _, _, _, MV_dict['MV2'], spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/sens2tr_60s_opspltcoagnuc_64sb_sv'))
 (num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], nam_dict['nam3'], _, _, _, MV_dict['MV3'], spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_60s_opspltcoagnuc_128sb_tempconst_sv'))
 
 
@@ -2208,9 +2211,9 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
-p24, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', label='NSD, coag.')
-p25, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', label='[N], coag.')
-p26, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', label='[SOA], coag.')
+p24, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
+p25, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+p26, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 
 ax6.xaxis.set_tick_params(labelsize=16)
 
@@ -2254,8 +2257,8 @@ spd_dict = {}
 nam_dict = {}
 
 (num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], nam_dict['nam0'], _, _, _, MV_dict['MV0'], spd_dict['spd0']) = retr(str(cwd + '/tr_tests_data/sens2sr_60s_opspltcoagwlnuc_8sb_sv'))
-(num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], nam_dict['nam1'], _, _, _, MV_dict['MV1'], spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/sens2sr_60s_opspltcoagwlnuc_32sb_sv'))
-(num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], nam_dict['nam2'], _, _, _, MV_dict['MV2'], spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/sens2sr_60s_opspltcoagwlnuc_64sb_sv'))
+(num_sb_dict['num_sb1'], num_speci_dict['num_speci1'], Cfac_dict['Cfac1'], y_dict['y1'], N_dict['N1'], sbb_dict['sbb1'], x_dict['x1'], thr_dict['thr1'], nam_dict['nam1'], _, _, _, MV_dict['MV1'], spd_dict['spd1']) = retr(str(cwd + '/tr_tests_data/sens2tr_60s_opspltcoagwlnuc_32sb_sv'))
+(num_sb_dict['num_sb2'], num_speci_dict['num_speci2'], Cfac_dict['Cfac2'], y_dict['y2'], N_dict['N2'], sbb_dict['sbb2'], x_dict['x2'], thr_dict['thr2'], nam_dict['nam2'], _, _, _, MV_dict['MV2'], spd_dict['spd2']) = retr(str(cwd + '/tr_tests_data/sens2tr_60s_opspltcoagwlnuc_64sb_sv'))
 (num_sb_dict['num_sb3'], num_speci_dict['num_speci3'], Cfac_dict['Cfac3'], y_dict['y3'], N_dict['N3'], sbb_dict['sbb3'], x_dict['x3'], thr_dict['thr3'], nam_dict['nam3'], _, _, _, MV_dict['MV3'], spd_dict['spd3']) = retr(str(cwd + '/tr_tests_data/mov_cen_sens2tr_60s_opspltcoagnucwl_128sb_tempconst_sv'))
 
 
@@ -2424,9 +2427,10 @@ p29, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', label='[SOA], coag.
 # ----------------------------------------------------------------------------------------
 
 
-lines = [p24, p25, p26, p27, p28, p29]
-ax6.legend(lines, [l.get_label() for l in lines])
+# lines = [p24, p25, p26, p27, p28, p29]
+# ax6.legend(lines, [l.get_label() for l in lines])
 
 ax7.set_visible(False)
+
 plt.savefig('tr_tests_plot.png', transparent=True)
 plt.show()

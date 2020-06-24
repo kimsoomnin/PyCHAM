@@ -67,8 +67,8 @@ class PyCHAM(QWidget):
 		dirpath = os.getcwd() # get current path
 # 		fname = dirpath+ '/PyCHAM/output/GMD_paper/Results/AtChem2_apinene_scheme.txt'
 # 		fname = dirpath+'/PyCHAM/inputs/limonene_MCM_PRAM.txt' # hard-code chemical scheme input
-# 		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/tr_tests_chem.txt' # hard-code chemical scheme input
-		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
+		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/tr_tests_chem.txt' # hard-code chemical scheme input
+# 		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
 		with open(dirpath+'/fname.txt','w') as f:
 			f.write(fname)
 		f.close()
@@ -77,8 +77,8 @@ class PyCHAM(QWidget):
 	def on_click2(self):
 		
 		dirpath = os.getcwd() # get current path
-# 		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml' # hard-code xml input
-		xmlname = self.openFileNameDialog()
+		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml' # hard-code xml input
+# 		xmlname = self.openFileNameDialog()
 		with open(dirpath+'/xmlname.txt','w') as f:
 			f.write(xmlname)
 		f.close()
@@ -88,8 +88,8 @@ class PyCHAM(QWidget):
 		dirpath = os.getcwd() # get current path
 # 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/Photo_chem_inputs_hiNOx.txt' # hard-code model variables input
 # 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/limonene_inputs.txt' # hard-code model variables input
-# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/tr_tests_mvcen_inputs.txt' # hard-code model variables input
-		inname = self.openFileNameDialog() # name of model variables inputs file
+		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/tr_tests_mvcen_inputs.txt' # hard-code model variables input
+# 		inname = self.openFileNameDialog() # name of model variables inputs file
 		
 		# open the file
 		inputs = open(inname, mode='r')
