@@ -498,9 +498,6 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 							
 						# particle surface gas-phase concentration (molecules/cc (air))
 						Csit = (Csit/conc_sum)*Psat[:, 0]*kelv_fac[ibin]*act_coeff[:, 0]
-# 						if ibin == 36:
-# 							print(y[1], Csit[1], y[num_speci*(ibin+1):num_speci*(ibin+2)][1])
-# 							ipdb.set_trace()
 							
 						# partitioning rate (molecules/cc.s)
 						dydt_all = kimt[:, ibin]*(y[0:num_speci]-Csit)

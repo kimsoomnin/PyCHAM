@@ -46,7 +46,6 @@ import scipy.constants as si
 
 # set up plots ---------------------------------------------------------
 fig, ((ax0, ax1, ax2, ax3), (ax4, ax5, ax6, ax7)) = plt.subplots(2, 4, figsize=(14, 7), sharey=True)
-
 # ensure sufficient spacing between subplots
 fig.subplots_adjust(top=0.90, bottom = 0.10, hspace=0.5, wspace=0.2)
 
@@ -217,6 +216,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 # (highest temporal resolution) case
 p1, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
 p2, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+ax0.set_title('Seeded, no partitioning', size = 12)
 
 # add contour plot to show computer processing time --------------------------------------
 cont_y = np.array((1.5e-2, 1.1e2))
@@ -389,18 +389,17 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 p5, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
 p6, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag. & wall')
 
-ax0.text(x=0.0, y=1.0e6, s='a)', size=14) # plot label
 lines = [p1, p2, p5, p6]
 ## ax0.legend(lines, [l.get_label() for l in lines])
 # ax0.set_ylim(4.5e-2, 1.05e2)
 
 # ax0.set_xlabel('operator-split time step (s)', size=16) # vertical axis label
-ax0.set_ylabel('$|\%\, \Delta|$', size=18) # vertical axis label
+ax0.set_ylabel('$\sigma$ (temporal resolution)', size=18) # vertical axis label
 ax0.set_xlim(2.0e0, 5.0e4)
 ax0.set_ylim(1.5e-2, 1.1e2)
 ax0.xaxis.set_tick_params(labelsize=16)
 ax0.yaxis.set_tick_params(labelsize=16)
-ax0.text(x=1.0e0, y=2.0e2, s='a)', size=14)
+ax0.text(x=1.0e0, y=3.0e2, s='a)', size=14) # plot label
 		
 
 
@@ -591,7 +590,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 p7, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
 p8, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
 p9, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
-
+ax1.set_title('Seeded, with partitioning', size=12)
 
 
 
@@ -783,7 +782,7 @@ p12, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label=
 p13, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag. & wall')
 
 
-ax1.set_xlabel('operator-split time step (s)', size=18) # horizontal axis label
+ax1.set_xlabel('operator-split time step (s)', size=16) # horizontal axis label
 # ax1.set_yticklabels([]) # turn off labels for number size distribution
 ax1.xaxis.set_tick_params(labelsize=16)
 # par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
@@ -794,7 +793,7 @@ ax1.xaxis.set_tick_params(labelsize=16)
 
 ax1.set_ylim(1.5e-2, 1.1e2)
 ax1.set_xlim(2.0e0, 5.0e4)
-ax1.text(x=1.0e0, y=2.0e2, s='b)', size=14)
+ax1.text(x=1.0e0, y=3.0e2, s='b)', size=14)
 
 lines = [p7, p8, p9, p11, p12, p13]
 ## ax1.legend(lines, [l.get_label() for l in lines])
@@ -1004,15 +1003,16 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	per_err[resi, 3] = per_err[resi, 3]/num_times
 	
 # plot of absolute percentage error, summed across size and times
-p14, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag. & nuc.')
-p15, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag. & nuc.')
-p16, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag. & nuc.')
+p14, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
+p15, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+p16, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 
 
 # ax2.set_xlabel('operator-split time step (s)', size=16) # vertical axis label
 # ax1.set_yticklabels([]) # turn off labels for number size distribution
 ax2.xaxis.set_tick_params(labelsize=16)
-ax2.text(x=1.0e0, y=2.0e2, s='c)', size=14)
+ax2.text(x=1.0e0, y=3.0e2, s='c)', size=14)
+ax2.set_title('Nucleation, with partitioning', size=12)
 # par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
 # par2.yaxis.set_tick_params(labelsize=16)
 # par2.yaxis.label.set_color('blue')
@@ -1223,16 +1223,17 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	per_err[resi, 3] = per_err[resi, 3]/num_times
 	
 # plot of absolute percentage error, summed across size and times
-p17, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag., wall & nuc.')
-p18, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag., wall & nuc.')
-p19, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag., wall & nuc.')
+p17, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
+p18, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag. & wall')
+p19, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag. & wall')
 
 
 # par2.set_ylim(1.0e-2, 1.05e2)
 ax2.set_xlim(2.0e0, 5.0e4)
 # 
 lines = [p14, p15, p16, p17, p18, p19]
-ax2.legend(lines, [l.get_label() for l in lines])
+# ax2.legend(lines, [l.get_label() for l in lines])
+ax2.legend(fontsize=12, loc = [1.55, 0.4])
 
 # set fourth plot to be invisible
 ax3.set_visible(False)
@@ -1422,7 +1423,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 p20, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
 p21, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
 
-ax4.set_ylabel('$|\%\, \Delta|$', size=18) # vertical axis label
+ax4.set_ylabel('$\sigma$ (spatial resolution)', size=18) # vertical axis label
 ax4.xaxis.set_tick_params(labelsize=16)
 ax4.yaxis.set_tick_params(labelsize=16)
 ax4.text(x=1.0e0, y=2.0e2, s='d)', size=14)
@@ -2220,28 +2221,6 @@ ax6.xaxis.set_tick_params(labelsize=16)
 ax6.text(x=1.0e0, y=2.0e2, s='f)', size=14)
 
 
-
-# add contour plot to show computer processing time --------------------------------------
-cont_y = np.array((1.5e-2, 1.1e2))
-cont_x = np.append(2.0, per_err[:, 0])
-
-# customised colormap (https://www.rapidtables.com/web/color/RGB_Color.html)
-n_bin = 100  # Discretizes the colormap interpolation into bins
-cmap_name = 'my_list'
-# Create the colormap
-cm = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bin)
-# set contour levels
-levels = (MaxNLocator(nbins = n_bin).tick_values(0.85, 4.65))
-# associate colours and contour levels
-norm1 = BoundaryNorm(levels, ncolors = cm.N, clip=True)
-# contour plot with times along x axis and particle diameters along y axis
-pc1 = ax6.pcolormesh(cont_x, cont_y, np.log10(speed[:, :]), cmap=cm, norm=norm1)
-  
-# colour bar label
-cb.set_label('$\mathrm{log_{10}}$ (simulation time (s))', size=14, rotation=270, labelpad=20)
-
-# end of contour plot section ------------------------------------------------------------
-
 # spatial resolution sensitivity section, coagulation and wall loss with partitioning and 
 # nucleation------------------------------------------------------------------------------
 
@@ -2424,7 +2403,26 @@ p27, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', label='NSD, coag. &
 p28, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', label='[N], coag.  & wall')
 p29, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', label='[SOA], coag.  & wall')
 
+# add contour plot to show computer processing time --------------------------------------
+cont_y = np.array((1.5e-2, 1.1e2))
+cont_x = np.append(2.0, per_err[:, 0])
 
+# customised colormap (https://www.rapidtables.com/web/color/RGB_Color.html)
+n_bin = 100  # Discretizes the colormap interpolation into bins
+cmap_name = 'my_list'
+# Create the colormap
+cm = LinearSegmentedColormap.from_list(cmap_name, colors, N=n_bin)
+# set contour levels
+levels = (MaxNLocator(nbins = n_bin).tick_values(0.85, 4.65))
+# associate colours and contour levels
+norm1 = BoundaryNorm(levels, ncolors = cm.N, clip=True)
+# contour plot with times along x axis and particle diameters along y axis
+pc1 = ax6.pcolormesh(cont_x, cont_y, np.log10(speed[:, :]), cmap=cm, norm=norm1)
+  
+# colour bar label
+cb.set_label('$\mathrm{log_{10}}$ (simulation time (s))', size=14, rotation=270, labelpad=20)
+
+# end of contour plot section ------------------------------------------------------------
 # ----------------------------------------------------------------------------------------
 
 

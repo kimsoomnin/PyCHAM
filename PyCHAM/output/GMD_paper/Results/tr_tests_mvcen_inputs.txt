@@ -1,9 +1,9 @@
-res_file_name = sens2tr_60s_opspltcoagwlnuc_64sb_sv
+res_file_name = sens2tr_60s_opspltcoagwlnuc_32sb_sv
 total_model_time = 86400.0
 bc_time_step = 60.0
 op_spl_step = 60.0
 recording_time_step = 60.0
-number_size_bins = 64
+number_size_bins = 32
 lower_part_size = 0.005
 upper_part_size = 6
 space_mode = log

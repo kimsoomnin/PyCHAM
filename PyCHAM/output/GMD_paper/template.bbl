@@ -1,4 +1,4 @@
-\begin{thebibliography}{65}
+\begin{thebibliography}{66}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{{\tt #1}}
 \providecommand{\urlprefix}{URL }
@@ -293,6 +293,12 @@ Roldin, P., Ehn, M., Kurt{\'e}n, T., Olenius, T., Rissanen, M., Sarnela, N.,
   I., and Boy, M.: The role of highly oxygenated organic molecules in the
   Boreal aerosol-cloud-climate system, Nat. Commun., 10,
   \doi{10.1038/s41467-019-12338-8}, 2019.
+
+\bibitem[{Sander and Sandu(2006)}]{Sander2006}
+Sander, R. and Sandu, A.: Technical note: Simulating chemical systems in
+  Fortran90 and Matlab with the Kinetic PreProcessor KPP-2.1, Atmospheric
+  chemistry and physics : ACP., 6, 187--195, \doi{10.5194/acp-6-187-2006},
+  2006.
 
 \bibitem[{Saunders et~al.(2003)Saunders, Jenkin, Derwent, and
   Pilling}]{Saunders2003}

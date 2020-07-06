@@ -70,7 +70,7 @@ def kimt_calc(y, mfp, num_sb, num_speci, accom_coeff, y_mw, surfT, R_gas, TEMP, 
 	# eq. 16.2 of Jacobson (2005) and eq. 5 Zaveri et al. (2008)
 	# species in rows and size bins in columns (/s)
 	kimt = (4.0E0*np.pi*(radius*1.0e2)*N_perbin.reshape(1, -1))*kimt
-# 	print('whoop again', kimt[6,:], kimt[5,:])
+
 	# zero partitioning to particles for any components with low partitioning rates
 	# provides significant computation acceleration
 	highVPi = (Psat*act_coeff>1.0e12)[:, 0] # ignore second dimension

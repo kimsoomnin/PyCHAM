@@ -329,7 +329,7 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 					name_indx = spec_name.index(name_only)
 					name_SMILE = spec_smil[name_indx]
 				else:
-					sys.exit(str('Error: inside eqn_parser, chemical scheme name '+str(spec_name)+' not found in xml file'))
+					sys.exit(str('Error: inside eqn_parser, chemical scheme name '+str(name_only)+' not found in xml file'))
 				
 				spec_list.append(name_SMILE) # list SMILE string of parsed species
 				name_indx = species_step # allocate index to this species
