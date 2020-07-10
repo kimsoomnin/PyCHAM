@@ -45,7 +45,7 @@ def nv_change_func(y):
 
 # 8 size bins, 60 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_8sb_60s'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_8sb_60s'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -79,7 +79,7 @@ ax0.text(0.1,3e5, '$\Delta nv_{60 s} = $' + str(nv_change) + '$\,\%$', size=12)
 
 # 8 size bins, 600 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_8sb_600s'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_8sb_600s'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -111,7 +111,7 @@ ax0.text(0.1,1e5, '$\Delta nv_{600 s} = $' + str(nv_change) + '$\,\%$', size=12)
 
 # 8 size bins, 6000 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_8sb_6000s'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_8sb_6000s'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -149,7 +149,7 @@ ax0.set_ylabel('$dN/d \mathrm{log_{10}}D_p\, \mathrm{(\#/cm^{3})}$', size=14)
 
 # 32 size bins, 60 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_32sb_60s'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_32sb_60s'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -183,7 +183,7 @@ ax1.set_title('32 size bins', size = 14)
 
 # 32 size bins, 600 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_32sb_600s'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_32sb_600s'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -215,7 +215,7 @@ ax1.text(0.1,1.0e5, '$\Delta nv_{600 s} = $' + str(nv_change) + '$\,\%$', size=1
 
 # 32 size bins, 6000 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_32sb_6000s'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_32sb_6000s'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -247,7 +247,7 @@ ax1.text(0.1,3.7e4, '$\Delta nv_{6000 s} = $' + str(nv_change) + '$\,\%$', size=
 
 # 128 size bins, 60 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_128sb_60s'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_128sb_60s'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -281,7 +281,7 @@ ax2.set_title('128 size bins', size=14)
 
 # 128 size bins, 600 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_128sb_600s'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_128sb_600s'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -313,7 +313,7 @@ ax2.text(0.1,1.0e5, '$\Delta nv_{600 s} = $' + str(nv_change) + '$\,\%$', size=1
 
 # 128 size bins, 6000 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_128sb_6000s'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_128sb_6000s'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -356,7 +356,7 @@ ax2.text(0.1,3.7e4, '$\Delta nv_{6000 s} = $' + str(nv_change) + '$\,\%$', size=
 
 # 8 size bins, 60 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_8sb_60s_SOA'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_8sb_60s_SOA'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -392,7 +392,7 @@ ax3.xaxis.set_tick_params(size=12)
 
 # 8 size bins, 600 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_8sb_600s_SOA'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_8sb_600s_SOA'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -423,7 +423,7 @@ ax3.text(0.4,1.0e5, '$\Delta nv_{600 s} = $' + str(nv_change) + '$\,\%$', size=1
 
 # 8 size bins, 6000 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_8sb_6000s_SOA'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_8sb_6000s_SOA'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -458,7 +458,7 @@ ax3.set_ylabel('$dN/d \mathrm{log_{10}}D_p\, \mathrm{(\#/cm^{3})}$', size=14)
 
 # 32 size bins, 60 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_32sb_60s_SOA'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_32sb_60s_SOA'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -492,7 +492,7 @@ ax4.xaxis.set_tick_params(size=12)
 
 # 32 size bins, 600 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_32sb_600s_SOA'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_32sb_600s_SOA'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -523,7 +523,7 @@ ax4.loglog(x[-1,:]*2.0, N[-1,:]/dDp, '^', markersize=8, label=r'$\Delta$ t = 600
 ax4.text(0.4,1.0e5, '$\Delta nv_{600 s} = $' + str(nv_change) + '$\,\%$', size=12)
 # 32 size bins, 6000 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_32sb_6000s_SOA'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_32sb_6000s_SOA'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -558,7 +558,7 @@ ax4.set_xlabel('$D_p\, \mathrm{(\mu m)}$', size=14)
 
 # 128 size bins, 60 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_128sb_60s_SOA'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_128sb_60s_SOA'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -592,7 +592,7 @@ ax5.xaxis.set_tick_params(size=12)
 
 # 128 size bins, 600 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_128sb_600s_SOA'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_128sb_600s_SOA'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')
@@ -624,7 +624,7 @@ ax5.text(0.5,1.0e5, '$\Delta nv_{600 s} = $' + str(nv_change) + '$\,\%$', size=1
 
 # 128 size bins, 6000 s ----------------------------------------------------------------------
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/coag_test_data/coag_resol_128sb_6000s_SOA'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/coag_test_data/coag_resol_128sb_6000s_SOA'
 
 # withdraw times (s)
 fname = str(output_by_sim+'/t')

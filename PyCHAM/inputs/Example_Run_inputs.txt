@@ -1,7 +1,6 @@
 res_file_name = Example_Run_output2
 total_model_time = 3600.0
-bc_time_step = 60.0
-op_spl_step = 60.0
+update_step = 60.0
 recording_time_step = 60.0
 number_size_bins = 2
 lower_part_size = 0.0
@@ -24,7 +23,7 @@ coag_on = 1
 nucv1 = 31000.0
 nucv2 = -55.0
 nucv3 = 180.0
-nuc_comp = ELVOC_o3
+nuc_comp = 
 new_partr =
 inflectDp = 2.0e-7
 Grad_pre_inflect = 0.0

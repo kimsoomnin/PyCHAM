@@ -11,6 +11,11 @@
 # case it's set to 9.8 ppb
 # important that exactly the same chemical scheme as used in the AtChem2 simulation is
 # used, this saved as AtChem2_apinene_scheme.txt in the same folder as this file
+# for the simulations to compare with AtChem2 use:
+# update_step = 90.0
+# recording_time_step = 90.0
+# whereas, for the temporal resolution sensitivity simulations use the appropriate
+# resolution for update_step and set recording_time_step to be the same
 
 import numpy as np
 import sys
@@ -20,7 +25,7 @@ import matplotlib.ticker as mtick
 # ----------------------------------------------------------------------------------------
 # AtChem2 part
 # open saved files
-Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/hiNOx/speciesConcentrations.output'
+Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/hiNOx/speciesConcentrations.output'
 inputs = open(Atfname, mode='r') # open results
 # read the file and store everything into a list
 in_list = inputs.readlines()
@@ -54,7 +59,7 @@ if str(comp_names[0]) != 't' and str(comp_names[0]) != 'time':
 # ----------------------------------------------------------------------------------------
 # PyCHAM2 part
 # file name
-Pyfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/photo_chem_data/PyCHAM_APINENE/hiNOx/AtChem2_comp_hiNOx'
+Pyfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/photo_chem_data/PyCHAM_APINENE/hiNOx/AtChem2_comp_hiNOx'
 
 # name of file where experiment constants saved (number of size bins and whether wall 
 # included)
@@ -164,7 +169,7 @@ ax0.yaxis.set_tick_params(size=14)
 ax0.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.1f'))
 ax0.xaxis.set_tick_params(size=14)
 ax0.legend(fontsize=12)
-ax0.text(x=-1.8, y=8.4, s='a)', size=14)
+ax0.text(x=-1.8, y=8.6, s='(a)', size=14)
 ax0.yaxis.set_tick_params(size=13)
 
 # ----------------------------------------------------------------------------------------
@@ -195,7 +200,7 @@ ax0.yaxis.set_tick_params(size=13)
 #-----------------------------------------------------------------------------------------
 # AtChem2 part
 # open saved files
-Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/loNOx/speciesConcentrations.output'
+Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/loNOx/speciesConcentrations.output'
 
 inputs = open(Atfname, mode='r') # open results
 # read the file and store everything into a list
@@ -231,7 +236,7 @@ if str(comp_names[0]) != 't' and str(comp_names[0]) != 'time':
 # ----------------------------------------------------------------------------------------
 # PyCHAM2 part
 # file name
-Pyfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/photo_chem_data/PyCHAM_APINENE/loNOx/AtChem2_comp_loNOx'
+Pyfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/photo_chem_data/PyCHAM_APINENE/loNOx/AtChem2_comp_loNOx'
 
 # name of file where experiment constants saved (number of size bins and whether wall 
 # included)
@@ -345,7 +350,7 @@ ax1.yaxis.set_tick_params(size=14)
 ax1.xaxis.set_tick_params(size=14)
 ax1.legend(fontsize=12)
 ax1.set_xlabel(r'Time of day (hours)', fontsize=14)
-ax1.text(x=-1.8, y=0.16, s='b)', size=14)
+ax1.text(x=-1.8, y=0.18, s='(b)', size=14)
 ax1.xaxis.set_tick_params(size=13)
 ax1.yaxis.set_tick_params(size=13)
 fig.savefig('photo_chem_conc_dev.png')
@@ -357,7 +362,7 @@ plt.show()
 # first, the high NOx case
 
 # open AtChem2 loss reaction results
-Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/hiNOx/lossRates.output'
+Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/hiNOx/lossRates.output'
 inputs = open(Atfname, mode='r') # open results
 # read the file and store everything into a list
 in_list = inputs.readlines()
@@ -388,7 +393,7 @@ for i in range(1, len(in_list)): # loop through lines in list, skipping heading 
 					
 					
 # open AtChem2 production reaction results
-Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/hiNOx/productionRates.output'
+Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/hiNOx/productionRates.output'
 inputs = open(Atfname, mode='r') # open results
 # read the file and store everything into a list
 in_list = inputs.readlines()
@@ -419,7 +424,7 @@ for i in range(1, len(in_list)): # loop through lines in list, skipping heading 
 
 
 # open the PyCHAM tracking results
-Pyfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/photo_chem_data/PyCHAM_APINENE/hiNOx/AtChem2_comp_hiNOx'
+Pyfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/photo_chem_data/PyCHAM_APINENE/hiNOx/AtChem2_comp_hiNOx'
 fname = str(Pyfname+'/HCHO_rate_of_change')
 dydt = np.loadtxt(fname, delimiter=',', skiprows=1) # skiprows=1 omits header
 
@@ -525,7 +530,7 @@ ax0.plot(Pyres[int(loss_reac_i[0])::num_lossr, 0]/3600.0, frac_dev_loss[int(loss
 ax0.plot(Pyres[int(loss_reac_i[1])::num_lossr, 0]/3600.0, frac_dev_loss[int(loss_reac_i[1])::num_lossr, 0], linewidth=3, label=r'$\mathrm{NO3 + HCHO\rightarrow HNO3 + CO + HO2}$')
 ax0.plot(Pyres_prod[int(prod_reac_i[0])::num_prodr, 0]/3600.0, frac_dev_prod[int(prod_reac_i[0])::num_prodr, 0], linewidth=3, label=r'$\mathrm{C621O\rightarrow HCHO + H1C23C4CHO + HO2}$')
 ax0.plot(Pyres_prod[int(prod_reac_i[1])::num_prodr, 0]/3600.0, frac_dev_prod[int(prod_reac_i[1])::num_prodr, 0], linewidth=3, label=r'$\mathrm{C109O\rightarrow C89CO3 + HCHO}$')
-ax0.text(x=-1.0, y=4.5, s='a)', size=16)
+ax0.text(x=-1.0, y=4.5, s='(a)', size=16)
 ax0.set_ylabel(r'Deviation (%)', fontsize=16)
 ax0.legend(fontsize=13, loc = [0.55, 0.5])
 ax0.yaxis.set_tick_params(size=16)
@@ -537,7 +542,7 @@ ax0.yaxis.set_major_formatter(mtick.FormatStrFormatter('%.1f'))
 # Repeat for low NOx case
 
 # open AtChem2 loss reaction results
-Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/loNOx/lossRates.output'
+Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/loNOx/lossRates.output'
 inputs = open(Atfname, mode='r') # open results
 # read the file and store everything into a list
 in_list = inputs.readlines()
@@ -568,7 +573,7 @@ for i in range(1, len(in_list)): # loop through lines in list, skipping heading 
 					
 					
 # open AtChem2 production reaction results
-Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/loNOx/productionRates.output'
+Atfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/photo_chem_data/AtChem2_APINENE/loNOx/productionRates.output'
 inputs = open(Atfname, mode='r') # open results
 # read the file and store everything into a list
 in_list = inputs.readlines()
@@ -599,7 +604,7 @@ for i in range(1, len(in_list)): # loop through lines in list, skipping heading 
 
 
 # open the PyCHAM tracking results
-Pyfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/PyCHAM_v100/PyCHAM/output/GMD_paper/Results/photo_chem_data/PyCHAM_APINENE/loNOx/AtChem2_comp_loNOx'
+Pyfname = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/photo_chem_data/PyCHAM_APINENE/loNOx/AtChem2_comp_loNOx'
 fname = str(Pyfname+'/HCHO_rate_of_change')
 dydt = np.loadtxt(fname, delimiter=',', skiprows=1) # skiprows=1 omits header
 
@@ -722,7 +727,7 @@ ax1.plot(Pyres_prod[int(prod_reac_i[0])::num_prodr, 0]/3600.0, frac_dev_prod[int
 ax1.plot(Pyres_prod[int(prod_reac_i[1])::num_prodr, 0]/3600.0, frac_dev_prod[int(prod_reac_i[1])::num_prodr, 0], linewidth=3, label=r'$\mathrm{CH3O2\rightarrow HCHO}$')
 
 
-ax1.text(x=-1.0, y=0.8, s='b)', size=16)
+ax1.text(x=-1.0, y=0.8, s='(b)', size=16)
 ax1.set_xlabel(r'Time of day (hours)', fontsize=16)
 ax1.set_ylabel(r'Deviation (%)', fontsize=16)
 ax1.legend(fontsize=13, loc = [0.70, -0.05])

@@ -4,6 +4,13 @@
 
 # For the chemical scheme file use: limonene MCM PRAM sheme (limonene_MCM_PRAM.txt)
 # For model variable inputs use: GMD_paper/Results/limonene_inputs.txt
+# Which, for the NOx present case should include:
+# C0 = 10.0, 0.0, 0.0, 22.0, 0.0, 500.0e3
+# Comp0 = LIMONENE, N2O5, NO3, NO2, O3, CO
+# injectt = 5400.0, 14400.0
+# Compt = LIMONENE, N2O5, NO3, NO2, O3
+# Ct = 0.0, 10.0; 0.0, 0.0; 0.0, 0.0; 8.0, 19.0; 38.0, 45.0
+# whereas for the NOx absent case, NOx concentrations should be set to zero
 # Use the xml file in the inputs folder as this has been updated for PRAM components
 
 # import required modules
@@ -36,7 +43,7 @@ mw_dict = {}
 # get current working directory - assumes module called inside the GMD_paper/Results 
 # directory of PyCHAM
 cwd = os.getcwd()
-(num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], comp_names['cn0'], mw_dict['mw0']) = retr(str(cwd + '/limonene_output/test19/'))
+(num_sb_dict['num_sb0'], num_speci_dict['num_speci0'], Cfac_dict['Cfac0'], y_dict['y0'], N_dict['N0'], sbb_dict['sbb0'], x_dict['x0'], thr_dict['thr0'], comp_names['cn0'], mw_dict['mw0'], _, _, _, _) = retr(str(cwd + '/limonene_output/test19/'))
 
 # plt.semilogy(y_dict['y0'][:, 6+num_speci_dict['num_speci0']*0], 'r')
 # plt.semilogy(y_dict['y0'][:, 6+num_speci_dict['num_speci0']*1]/Cfac_dict['Cfac0'], 'g')
@@ -119,7 +126,7 @@ ax0.plot([4.0, 4.0], [0.0, 500.0], color='black', linewidth=1, linestyle='dashed
 ax0.text(x=3.7, y=1, s='injection 2', size=12, rotation=90, color='black')
 
 ax0.legend(fontsize=10)
-ax0.text(x=(thr_dict['thr0'])[0], y=1.6e2, s='a)', size=12)
+ax0.text(x=(thr_dict['thr0'])[0], y=1.6e2, s='(a)', size=12)
 
 # ----------------------------------------------------------------------------------------
 # particle-phase properties
@@ -191,9 +198,9 @@ cb = plt.colorbar(p1, format=ticker.FuncFormatter(fmt), pad=0.25)
 cb.ax.tick_params(labelsize=14)   
 
 # colour bar label
-cb.set_label('dN/dlog10(D) $\mathrm{(cm^{-3})}$', size=12, rotation=270, labelpad=20)
+cb.set_label('dN/dlog$\mathrm{_{10}}$(D) $\mathrm{(cm^{-3})}$', size=12, rotation=270, labelpad=20)
 
-ax1.text(x=(thr_dict['thr0'])[0], y=(sbb[-1]*2*1e3)*1.05, s='b)', size=12)
+ax1.text(x=(thr_dict['thr0'])[0], y=(sbb[-1]*2*1e3)*1.05, s='(b)', size=12)
 
 # set line and label denoting injections
 ax1.plot([1.5, 1.5], [0.0, 500.0], color='white', linewidth=1, linestyle='dashed')
@@ -254,12 +261,12 @@ Owall = (((y[:, num_speci*num_sb:num_speci*(num_sb+1)-final_i]/si.N_A)*y_mw[0:-f
 # inorg_NO3vst = inorg_NO3vst/(10**(SOAmax))
 
 p5, = par2.semilogy(thr_dict['thr0'], SOAvst, '--k', label = 'SOA')
-p6, = par2.semilogy(thr_dict['thr0'], Owall, '-.k', label = 'wall-phase')
+p6, = par2.semilogy(thr_dict['thr0'], Owall, '-.k', label = 'wall deposit')
 p7, = par2.semilogy(thr_dict['thr0'], NO3vst, ':k', label = 'particle organic nitrate')
 p8, = par2.semilogy(thr_dict['thr0'], inorg_NO3vst, '.k', label = 'particle inorganic nitrate')
 par2.set_ylim(5.0e-1, 1.0e2)
 # par2.set_ylabel(str('[organics]x ' + str(10**(SOAmax)) + ' ($\mathrm{\mu g\, m^{-3}})$'), rotation=270, size=12, labelpad=25)
-par2.set_ylabel(str('Condensed-phase concentration' + ' ($\mathrm{\mu g\, m^{-3}})$'), rotation=270, size=12, labelpad=25)
+par2.set_ylabel(str('Particulate & wall concentration' + ' ($\mathrm{\mu g\, m^{-3}})$'), rotation=270, size=12, labelpad=25)
 
 par2.yaxis.set_tick_params(labelsize=12)
 

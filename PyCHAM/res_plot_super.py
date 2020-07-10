@@ -314,14 +314,14 @@ def run(testf):
 		SOAvst[0, :] = SOAvst[0, :]/(10**(SOAmax))
 		
 	
-		p5, = par2.plot(t_array/3600.0, SOAvst[0, :], 'xk', label = '[SOA] (sim)')
-		par2.set_ylabel(str('[SOA]/ ' + str(10**(SOAmax)) + ' ($\mathrm{\mu g\, m^{-3}})$'), rotation=270, size=16, labelpad=25)
+		p5, = par2.plot(t_array/3600.0, SOAvst[0, :], 'xk', label = '[secondary aerosol excluding water and seed] (sim)')
+		par2.set_ylabel(str('[secondary aerosol]/ ' + str(10**(SOAmax)) + ' ($\mathrm{\mu g\, m^{-3}})$'), rotation=270, size=16, labelpad=25)
 		# set label, tick font and [SOA] vertical axis to red to match scatter plot presentation
 		par2.yaxis.label.set_color('black')
 		par2.tick_params(axis='y', colors='black')
 		par2.spines['right'].set_color('black')
 		par2.yaxis.set_tick_params(labelsize=16)
-		par2.text((t_array/3600.0)[0], max(SOAvst[0, :])/2.0, 'assumed particle density for [SOA] = 1.0 $\mathrm{g\, cm^{-3}}$')
+		par2.text((t_array/3600.0)[0], max(SOAvst[0, :])/2.0, 'assumed particle density = 1.0 $\mathrm{g\, cm^{-3}}$')
 		plt.legend(fontsize=14, handles=[p3, p5] ,loc=4)
 		
 

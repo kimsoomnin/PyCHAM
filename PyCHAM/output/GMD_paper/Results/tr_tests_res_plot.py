@@ -14,9 +14,11 @@ import matplotlib.ticker as ticker # set colormap tick labels to standard notati
 import scipy.constants as si
 
 # for moving-centre, the maximum integration time step is adapted depending on the 
-# structure's tolerance for volume change
+# structure's tolerance for size bin change
 
 # use the tr_tests_chem.txt scheme for these tests (saved in GMD_paper/Results)
+
+# input file is saved as: tr_tests_input.txt
 
 # parameters to assess sensitivity over:
 # 128 size bins, Riverside (polydisperse) distribution, with pconc 
@@ -399,7 +401,7 @@ ax0.set_xlim(2.0e0, 5.0e4)
 ax0.set_ylim(1.5e-2, 1.1e2)
 ax0.xaxis.set_tick_params(labelsize=16)
 ax0.yaxis.set_tick_params(labelsize=16)
-ax0.text(x=1.0e0, y=3.0e2, s='a)', size=14) # plot label
+ax0.text(x=1.0e0, y=3.0e2, s='(a)', size=14) # plot label
 		
 
 
@@ -782,7 +784,7 @@ p12, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label=
 p13, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag. & wall')
 
 
-ax1.set_xlabel('operator-split time step (s)', size=16) # horizontal axis label
+ax1.set_xlabel('update time interval (s)', size=16) # horizontal axis label
 # ax1.set_yticklabels([]) # turn off labels for number size distribution
 ax1.xaxis.set_tick_params(labelsize=16)
 # par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
@@ -793,7 +795,7 @@ ax1.xaxis.set_tick_params(labelsize=16)
 
 ax1.set_ylim(1.5e-2, 1.1e2)
 ax1.set_xlim(2.0e0, 5.0e4)
-ax1.text(x=1.0e0, y=3.0e2, s='b)', size=14)
+ax1.text(x=1.0e0, y=3.0e2, s='(b)', size=14)
 
 lines = [p7, p8, p9, p11, p12, p13]
 ## ax1.legend(lines, [l.get_label() for l in lines])
@@ -1011,7 +1013,7 @@ p16, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='
 # ax2.set_xlabel('operator-split time step (s)', size=16) # vertical axis label
 # ax1.set_yticklabels([]) # turn off labels for number size distribution
 ax2.xaxis.set_tick_params(labelsize=16)
-ax2.text(x=1.0e0, y=3.0e2, s='c)', size=14)
+ax2.text(x=1.0e0, y=3.0e2, s='(c)', size=14)
 ax2.set_title('Nucleation, with partitioning', size=12)
 # par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
 # par2.yaxis.set_tick_params(labelsize=16)
@@ -1426,7 +1428,7 @@ p21, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='
 ax4.set_ylabel('$\sigma$ (spatial resolution)', size=18) # vertical axis label
 ax4.xaxis.set_tick_params(labelsize=16)
 ax4.yaxis.set_tick_params(labelsize=16)
-ax4.text(x=1.0e0, y=2.0e2, s='d)', size=14)
+ax4.text(x=1.0e0, y=2.0e2, s='(d)', size=14)
 
 
 # add contour plot to show computer processing time --------------------------------------
@@ -1823,7 +1825,7 @@ p25, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='
 p26, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 
 ax5.xaxis.set_tick_params(labelsize=16)
-ax5.text(x=1.0e0, y=2.0e2, s='e)', size=14)
+ax5.text(x=1.0e0, y=2.0e2, s='(e)', size=14)
 
 
 
@@ -2218,7 +2220,7 @@ p25, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='
 p26, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 
 ax6.xaxis.set_tick_params(labelsize=16)
-ax6.text(x=1.0e0, y=2.0e2, s='f)', size=14)
+ax6.text(x=1.0e0, y=2.0e2, s='(f)', size=14)
 
 
 # spatial resolution sensitivity section, coagulation and wall loss with partitioning and 

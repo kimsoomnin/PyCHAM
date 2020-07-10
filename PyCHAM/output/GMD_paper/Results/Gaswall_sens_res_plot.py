@@ -3,19 +3,24 @@
 # partitioning and the effective absorbing mass concentration of the wall on SOA mass
 # concentration estimates
 
+# all runs for plot (a) used the isoprene MCM sheme (isoprene_scheme_MCM.txt), whilst 
+# plot (b) used Gaswall_simple_chem.txt
+# PyCHAM inputs are saved as: Gaswall_sens_inputs.txt and Gaswall_sens_inputs_b.txt
+#  
+
 # import required modules
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.constants as si
 
 # ----------------------------------------------------------------------------------------
-# import results files, all used the isoprene MCM sheme (isoprene_scheme_MCM.txt) 
+#import result files
 
 # first case is no gas-wall partitioning, where kgwt was set to 
 # 1.0e-20 /s and Cw was set to 1.0e-10 g/m3 (air)
 
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-20_kw1e-20'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-20_kw1e-20'
 
 # name of file where experiment constants saved (number of size bins and whether wall 
 # included)
@@ -73,7 +78,7 @@ for i in range(1, num_sb):
 # SOA summed) was around 7.0e-4 g/m3 (air))
 
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-5_kw1e-1'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-5_kw1e-1'
 
 # name of file where experiment constants saved (number of size bins and whether wall 
 # included)
@@ -125,7 +130,7 @@ for i in range(1, num_sb):
 # 1.0e-1 /s and Cw was set to 7.0e-2 g/m3 (air)
 
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-2_kw1e-1'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-2_kw1e-1'
 
 # name of file where experiment constants saved (number of size bins and whether wall 
 # included)
@@ -177,7 +182,7 @@ for i in range(1, num_sb):
 # 1.0e2 /s and Cw was set to 7.0e-5 g/m3 (air)
 
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-5_kw1e2'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-5_kw1e2'
 
 # name of file where experiment constants saved (number of size bins and whether wall 
 # included)
@@ -237,7 +242,7 @@ ax0.set_ylabel(r'[SOA] ($\mathrm{\mu g\, m^{-3}}$)', fontsize=12)
 ax0.yaxis.set_tick_params(size=12)
 ax0.xaxis.set_tick_params(size=12)
 ax0.legend(fontsize=10)
-ax0.text(x=-1.1, y=31.7, s='a)', size=12)
+ax0.text(x=-1.1, y=31.7, s='(a)', size=12)
 
 
 # ----------------------------------------------------------------------------------------
@@ -254,7 +259,7 @@ ax0.text(x=-1.1, y=31.7, s='a)', size=12)
 # ----------------------------------------------------------------------------------------
 # moderate Kw (1e-1 /s) and moderate Cw (7e-5 ug/m3)
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-5_kw1e-1_2comp'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-5_kw1e-1_2comp'
 
 # name of file where experiment constants saved (number of size bins and whether wall 
 # included)
@@ -320,7 +325,7 @@ ax1.plot(t_array[0:45], y[0:45, comp_index[1]]/Cfactor, '+g', label= r''+' $k_{w
 # ----------------------------------------------------------------------------------------
 # moderate Kw (1e-1 /s) high Cw (7e-2 ug/m3)
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-2_kw1e-1_2comp'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-2_kw1e-1_2comp'
 
 # name of file where experiment constants saved (number of size bins and whether wall 
 # included)
@@ -387,7 +392,7 @@ ax1.plot(t_array[0:45], y[0:45, comp_index[1]]/Cfactor, '--g', label= r''+' $k_{
 # ----------------------------------------------------------------------------------------
 # fourth case is Kw (1e-2 /s) moderate Cw (7e-5 ug/m3)
 # open saved files
-output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc_stuff/box-model/paper_GMD/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-5_kw1e-2_2comp'
+output_by_sim = '/Users/Simon_OMeara/Documents/Manchester/postdoc/box/PyCHAM_v120/PyCHAM/output/GMD_paper/Results/Gas_wall_partit_data/Gaswall_sens_Cw7e-5_kw1e-2_2comp'
 
 # name of file where experiment constants saved (number of size bins and whether wall 
 # included)
@@ -455,7 +460,7 @@ ax1.set_ylabel(r'[2-methylglyceric acid] (ppb)', fontsize=12)
 ax1.yaxis.set_tick_params(size=12)
 ax1.xaxis.set_tick_params(size=12)
 ax1.legend(fontsize=10)
-ax1.text(x=-4.0, y=53.0, s='b)', size=12)
+ax1.text(x=-4.0, y=53.0, s='(b)', size=12)
 plt.subplots_adjust(hspace=0.34)
 plt.show()
 fig.savefig('Gaswall_sens_fig.png')

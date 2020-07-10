@@ -67,8 +67,9 @@ class PyCHAM(QWidget):
 		dirpath = os.getcwd() # get current path
 # 		fname = dirpath+ '/PyCHAM/output/GMD_paper/Results/AtChem2_apinene_scheme.txt'
 # 		fname = dirpath+'/PyCHAM/inputs/limonene_MCM_PRAM.txt' # hard-code chemical scheme input
-		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/Nah_eval_scheme.txt' # hard-code chemical scheme input
-# 		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
+# 		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/Nah_eval_scheme.txt' # hard-code chemical scheme input
+# 		fname = dirpath+'/PyCHAM/inputs/Example_Run.txt'
+		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
 		with open(dirpath+'/fname.txt','w') as f:
 			f.write(fname)
 		f.close()
@@ -77,8 +78,8 @@ class PyCHAM(QWidget):
 	def on_click2(self):
 		
 		dirpath = os.getcwd() # get current path
-		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml' # hard-code xml input
-# 		xmlname = self.openFileNameDialog()
+# 		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml' # hard-code xml input
+		xmlname = self.openFileNameDialog()
 		with open(dirpath+'/xmlname.txt','w') as f:
 			f.write(xmlname)
 		f.close()
@@ -88,8 +89,9 @@ class PyCHAM(QWidget):
 		dirpath = os.getcwd() # get current path
 # 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/Photo_chem_inputs_hiNOx.txt' # hard-code model variables input
 # 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/limonene_inputs.txt' # hard-code model variables input
-		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/Nah_eval_inputs.txt' # hard-code model variables input
-# 		inname = self.openFileNameDialog() # name of model variables inputs file
+# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/Nah_eval_inputs.txt' # hard-code model variables input
+# 		inname = dirpath+'/PyCHAM/inputs/Example_Run_inputs.txt'
+		inname = self.openFileNameDialog() # name of model variables inputs file
 		
 		# open the file
 		inputs = open(inname, mode='r')
@@ -99,7 +101,7 @@ class PyCHAM(QWidget):
 		inputs.close()
 		
 		# check on whether correct number of inputs supplied
-		input_len = 65
+		input_len = 64
 		if len(in_list) != input_len:
 			print(('Error: The number of variables in the model variables file is incorrect, should be ' + str(input_len) + ', but is ' + str(len(in_list)) + ', please see the README file for guidance'))
 			sys.exit()
@@ -118,19 +120,13 @@ class PyCHAM(QWidget):
 					sys.exit()
 				else:
 					end_sim_time = float(value.strip())
-			if key == 'bc_time_step':
-				if value.split(',')==['\n']:
-					print('Notice: No boundary condition update time step (bc_time_step) detected in model variables file, defaulting to 60s')
-					tstep_len = float(60.0)
-				else:
-					tstep_len = float(value.strip())
 			# the time step (s) to be used for operator-split processes
-			if key == 'op_spl_step':
+			if key == 'update_step':
 				if (value.strip()).split(',')==['']:
-					print('Notice: No operator-splitting time step (op_spl_step) detected in model variables files, defaulting to 60s')
-					op_splt_step = float(60.0)
+					print('Notice: No update time step (update_step) detected in model variables files, defaulting to 60s')
+					update_step = float(60.0)
 				else:
-					op_splt_step = float(value.strip())
+					update_step = float(value.strip())
 			if key == 'recording_time_step': # frequency (s) of storing results
 				if value.split(',')==['\n']:
 					print('Notice: no recording time step detected in model inputs file, defaulting to 60s')
@@ -257,7 +253,7 @@ class PyCHAM(QWidget):
 					nucv3 = float(value.strip())
 			if key == 'nuc_comp': # name of nucleating component
 				if (value.strip()).split(',')==['']:
-					nuc_comp = [] # empty list
+					nuc_comp = ['core']
 				else:
 					nuc_comp = [str(i).strip() for i in (value.split(','))]
 			if key == 'new_partr': # radius of newly nucleated particles (cm)
@@ -596,18 +592,6 @@ class PyCHAM(QWidget):
 		# --------------------------------------------------------------------------------
 		# checks on inputs
 		
-		# cannot have operator-split step less than boundary condition step as the 
-		# operator split processes won't be called with sufficient frequency
-		if op_splt_step<tstep_len:
-			print('Note: inside the model variables input file the time interval for integrating over by the ode solver and updating boundary conditions (bc_time_step) is more than that for the opertaor split (op_spl_step) processes, therefore reducing to value of the boundary condition time step to equal the operator-split time step.  Please see README for guidance.')
-			tstep_len = op_splt_step
-		
-		# can't have a recording time step (s) less than the ode solver time step (s),
-		# so force to be equal and tell user
-		if save_step<tstep_len:
-			print('Recording time step (recording_time_step in model variables file) cannot be less than the boundary condition time step (bc_time_step in model variables file), so increasing recording time step to be equal to boundary condition time step, note both variables set in the model variables input file.  Please see README for guidance.')
-			save_step = tstep_len
-		
 		# if initial particle concentration is an array, its elements must align with the
 		# number of size bins (pp_intro.py is where initial concentrations are sorted)
 		if len(pconc)>1 and len(pconc)!=num_sb:
@@ -637,11 +621,6 @@ class PyCHAM(QWidget):
 		# components with assigned vapour pressures
 		if len(vol_Comp)!=len(volP):
 			print('Error: the number of components with assigned vapour pressures does not equal the number of assigned vapour pressures (vol_Comp and volP variables, respectively, in the model variables input folder), please see the README for guidance')
-			sys.exit()
-		
-		# nucleation inputs
-		if nucv1>0.0 and nuc_comp == []:
-			print('Error: the nucleation parameter nucv1 set in the model variables input folder is greater than zero, but no nucleating component is recognised from the nuc_comp variable, so nucleation cannot proceed.  Please see README for guidance.')
 			sys.exit()
 		
 		# check actinic flux and photochemical parameter files in expected place
@@ -687,7 +666,7 @@ class PyCHAM(QWidget):
 		
 		# write variable values to pickle file
 		list_vars = [fname, num_sb, lowersize, uppersize, end_sim_time, 
-		resfname, tstep_len, TEMP, PInit, RH, lat, lon, DayOfYear, dt_start, 
+		resfname, TEMP, PInit, RH, lat, lon, DayOfYear, dt_start, 
 		act_flux_path, Cw,  
 		save_step, ChamSA, nucv1, nucv2, nucv3, nuc_comp, new_partr,   
 		inflectDp, pwl_xpre, pwl_xpro, inflectk, Rader, xmlname, C0, Comp0, 
@@ -695,7 +674,7 @@ class PyCHAM(QWidget):
 		kgwt, dydt_trak, space_mode, Ct, Compt, injectt, seed_name, const_comp,
 		const_infl, Cinfl, act_comp, act_user, seed_mw, umansysprop_update, seed_dens, 
 		p_char, e_field, const_infl_t, chem_scheme_markers, int_tol, photo_par_file, 
-		dil_fac, pconct, accom_coeff_ind, accom_coeff_user, op_splt_step, tempt, coag_on]
+		dil_fac, pconct, accom_coeff_ind, accom_coeff_user, update_step, tempt, coag_on]
 		
 		if os.path.isfile(dirpath+'/testf.txt'):
 			print('Model input buttons work successfully')

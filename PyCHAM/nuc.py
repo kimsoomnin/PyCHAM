@@ -55,22 +55,19 @@ def nuc(sumt, new_part_sum1, n0, y, MW, rho, num_speci, x, new_partr, MV,
 	Vpermolec = (MV[nuc_comp, 0])/si.N_A # molecular volume (cc/molecule)
 	# concentration of ELVOC this represents (molecules/cc (air))
 	ELVOC_conc1 = new_vol1/Vpermolec
-	 		
-	# if insufficient ELVOC present
-	if y[nuc_comp]<(ELVOC_conc1):
-	
-		# reverse above changes
-		n0[0] -= new_part1
-		
-		new_part_sum1 -= new_part1
-		
-		ELVOC_conc1 = 0.0
-		
-		print('insufficient nucleating component for nucleation')
+# 	 		
+# 	# if insufficient ELVOC present
+# 	if y[nuc_comp]<(ELVOC_conc1):
+# 		# reverse above changes
+# 		n0[0] -= new_part1
+# 		new_part_sum1 -= new_part1
+# 		ELVOC_conc1 = 0.0
+# 		print('insufficient nucleating component for nucleation')
 	
 	
-	# remove from gas-phase (molecules/cc (air))
-	y[nuc_comp] -= ELVOC_conc1
+	# remove from gas-phase (molecules/cc (air)), note commented out as violation of
+	# mass conservation assumed negligible
+# 	y[nuc_comp] -= ELVOC_conc1
 		
 	# add to particle-phase (molecules/cc (air))
 	y[num_speci*1+nuc_comp] += ELVOC_conc1

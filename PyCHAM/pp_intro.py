@@ -8,7 +8,7 @@ import ipdb
 
 def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 			mfp, accom_coeff, y_mw, surfT, 
-			DStar_org, RH, num_sb, lowersize, uppersize, pconc, tmax, 
+			DStar_org, RH, num_sb, lowersize, uppersize, pconc, 
 			nuc_comp, testf, std, mean_rad, therm_sp,
 			Cw, y_dens, Psat, core_diss, kgwt, space_mode, corei, spec_namelist, 
 			act_coeff):
@@ -23,7 +23,6 @@ def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 	# pconc - starting particle concentration (# particle/cc (air)) - if scalar then
 	# gets split between size bins in Size_distributions call, or if an array, elements 
 	# are allocated to corresponding size bins
-	# tmax - maximum time step used in ode solver (s)
 	# nuc_comp - name of the nucleating component
 	# testf - test flag to say whether in normal mode (0) or test mode for front.py (1)
 	#       or test mode for pp_intro.py
@@ -57,6 +56,7 @@ def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 	
 	# index of nucleating component
 	if len(nuc_comp)>0:
+		print('whoop', nuc_comp, nuc_comp[0])
 		nuc_compi = spec_namelist.index(nuc_comp[0])
 		nuc_comp = np.empty(1, dtype=int)
 		nuc_comp[0] = nuc_compi
@@ -160,7 +160,7 @@ def pp_intro(y, num_speci, Pybel_objects, TEMP, H2Oi,
 	# allow water to equilibrate with particles and walls
 	[y, Varr, x, N_perbin] = init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci, 
 					accom_coeff, y_mw, surfT, R_gas, TEMP, NA, y_dens, 
-					N_perbin, DStar_org, RH, core_diss, Varr, Vbou, Vol0, tmax, MV,
+					N_perbin, DStar_org, RH, core_diss, Varr, Vbou, Vol0, MV,
 					therm_sp, Cw, pconc, kgwt, corei, act_coeff)
 
 	if testf==2:

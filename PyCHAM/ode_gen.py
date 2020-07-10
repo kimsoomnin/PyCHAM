@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 import sys
 import time
 
-def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi, 
+def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi, 
 			TEMP, RO2_indices, num_sb, 
 			Psat, mfp, accom_coeff, surfT, y_dens, 
 			N_perbin, DStar_org, y_mw, x, core_diss, Varr, Vbou, RH, rad0, 
@@ -35,12 +35,12 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			dydt_vst, daytime, lat, lon, act_flux_path, DayOfYear, Ct, injectt, inj_indx,
 			corei, const_compi, const_comp, const_infli, Cinfl, act_coeff, p_char, 
 			e_field, const_infl_t, int_tol, photo_par_file, Jlen, dil_fac, pconct,
-			lowersize, uppersize, mean_rad, std, op_splt_step, Pybel_objects, tempt,
+			lowersize, uppersize, mean_rad, std, update_step, Pybel_objects, tempt,
 			Cfactor, coag_on):
 
 	# inputs:---------------------------------------------------
 	
-	# t - suggested time step length for updating boundary conditions (s)
+	# y - initial concentrations of components (molecules/cc (air)) 
 	# num_speci - number of components
 	# num_eqn - number of equations
 	# TEMP - temperature(s) (K) of chamber
@@ -102,8 +102,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	# mean_rad - mean radius of particles (relevant if only one size bin or number size
 	# distribution being calculated (um)
 	# std - standard deviation for lognormal size distribution (dimensionless)
-	# op_splt_step - time step to use for operator-split processes (coagulation, particle 
-	#					loss to wall, nucleation)
+	# update_step - time step for updating initial values/constants (s)
 	# Pybel_objects - list of Pybel objects representing the species in spec_list
 	# (omitting water and core, if present)
 	# tempt - times (s) at which chamber temperatures given in TEMP reached
@@ -136,7 +135,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	NA = si.Avogadro # Avogadro's number (molecules/mol)
 	
 	step = 0 # ode time interval step number
-	t0 = t # remember original suggested time step (s)
+	t0 = update_step # remember original initial value/constant time step (s)
 	y0 = np.zeros((num_speci+num_sb*num_speci))	
 	y0[:] = y[:] # initial concentrations (molecules/cc (air))
 	y00 = np.zeros((num_speci+num_sb*num_speci))	
@@ -186,6 +185,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 								lat, lon, act_flux_path, DayOfYear, Pnow, 
 								photo_par_file, Jlen)
 
+	# setup recording matrices and record initial conditions
 	[t_out, y_mat, Nresult_dry, Nresult_wet, x2, dydt_vst, 
 				Cfactor_vst] = recording(y, N_perbin, x, 
 				save_count-1, sumt,
@@ -212,7 +212,8 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	gasinj_count = 0 # count on injection times of components
 	temp_count = 0 # count on changes to temperature
 	influx_count = 0 # count on constant influx of gas-phase components
-	op_spl_count = 0.0 # count on time since operator-split processes last called (s)
+	# count on time since update to initial values/constants last called (s)
+	update_count = 0.0 
 	# temperature at start (K)
 	temp_now = TEMP[0]
 	
@@ -229,8 +230,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	print('starting ode solver')
 	
 	while sumt < end_sim_time: # step through time intervals to do ode
-		t10 = time.time()
-		# start of update for changed boundary conditions --------------------------------
+		# start of update for changed initial values/constants ---------------------------
 		
 		# ---------------------
 		# change of light setting check
@@ -251,7 +251,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 					
 			
 			# check whether light on/off changes during proposed integration time step
-			elif (sumt+tnew > light_time[light_time_count] and light_time_count!=-1):
+			if (sumt+tnew > light_time[light_time_count] and light_time_count!=-1):
 				# if yes, then reset integration time step so that next step coincides 
 				# with change
 				tnew = light_time[light_time_count]-sumt
@@ -315,7 +315,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				bc_red = 0 # reset flag for time step reduction due to boundary conditions
 				
 			# check whether light on/off changes during proposed integration time step
-			elif (sumt+tnew > tempt[temp_count] and temp_count!=-1):
+			if (sumt+tnew > tempt[temp_count] and temp_count!=-1):
 				# if yes, then reset integration time step so that next step coincides 
 				# with change
 				tnew = tempt[temp_count]-sumt
@@ -339,7 +339,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				bc_red = 0 # reset flag for time step reduction due to boundary conditions
 					
 			# check whether changes occur during proposed integration time step
-			elif (sumt+tnew > injectt[gasinj_count] and gasinj_count!=-1):
+			if (sumt+tnew > injectt[gasinj_count] and gasinj_count!=-1):
 				# if yes, then reset integration time step so that next step coincides 
 				# with change
 				tnew = injectt[gasinj_count]-sumt
@@ -367,7 +367,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				bc_red = 0 # reset flag for time step reduction due to boundary conditions
 				
 			# check whether changes occur during proposed integration time step
-			elif (sumt+tnew > pconct[0, seedt_count] and seedt_count!=-1): 
+			if (sumt+tnew > pconct[0, seedt_count] and seedt_count!=-1): 
 				# if yes, then reset integration time step so that next step coincides 
 				# with change
 				tnew = pconct[0, seedt_count]-sumt
@@ -375,9 +375,8 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 
 		
 		# ----------------------
-		# check on constant influxes of components, note this different in nature to
-		# the instantaneous changes of lights on/off and instant injection of gases or
-		# seed particles
+		# check on constant influxes of components, note this causes a change in the ode
+		# as influx occurs over a period and is not instantaneous
 		
 		if len(const_infl_t)>0 and influx_count>-1: # if constant influx occurs
 		
@@ -400,7 +399,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				bc_red = 0 # reset flag for time step reduction due to boundary conditions
 			
 			# check whether changes occur during proposed integration time step
-			elif (sumt+tnew > const_infl_t[influx_count] and influx_count!=-1):
+			if (sumt+tnew > const_infl_t[influx_count] and influx_count!=-1):
 				# if yes, then reset integration time step so that next step coincides 
 				# with change
 				tnew = const_infl_t[influx_count]-sumt
@@ -410,9 +409,9 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		
 		# check whether time step needs reducing to ensure operator-split time step not
 		# overrun
-		if op_spl_count+tnew>op_splt_step:
-			print('temporarily reducing time step to enable operator-split processes at requested interval')
-			tnew = op_splt_step-op_spl_count
+		if update_count+tnew>update_step:
+			print('temporarily reducing time step to enable update to particle number concentration at requested interval')
+			tnew = update_step-update_count
 			bc_red = 1
 		
 		# --------------------------------------------------------------------------------
@@ -423,7 +422,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			tnew = end_sim_time-sumt # integration time step (s)
 		t = tnew # reset maximum integration time (s)
 		
-		print('cumulative time (s) through simulation : ', sumt)
+		print('cumulative time (s) through simulation: ', sumt)
 		a = (np.where(N_perbin>1.0e-10))[0]
 		if len(a)>0:
 			a = int(a[0])
@@ -537,23 +536,28 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			# relative tolerance, going higher than 1.0e-4 can cause issues with water 
 			# vapour
 			mod_sim.rtol = int_tol[1]
+			# check if total integration time exceeds the next required recording time
+			# step, if it does, then limit the integration sub-time step to that of the
+			# recording interval (s)
+			if sumt+t>save_step*save_count:
+				mod_sim.maxh = (save_step*save_count)-sumt
 			mod_sim.discr = 'BDF' # the integration approach, default is 'Adams'
-			t13 = time.time() # computation time profiling
+
 			t_array, res = mod_sim.simulate(t)		
 			y = res[-1, :] # new concentrations (molecule/cc (air))
-			t14 = time.time()
+
 			# low value filler for concentrations (molecules/cc (air)) to prevent 
 			# numerical errors
 			y0[y0==0.0] = 1.0e-40
 			y[y==0.0] = 1.0e-40
 			
 			
-			if num_sb>1 and (N_perbin>1.0e-10).sum()>0:
-			
+			if num_sb>1 and (N_perbin>1.0e-10).sum()>0: # if particles present
 				# call on the moving centre method for rebinning particles
 				(N_perbin, Varr, y, x, redt, t, bc_red) = movcen(N_perbin, 
 				Vbou, num_sb, num_speci, y_mw, x, Vol0, t, 
 				t0, tinc_count, y0, MV, Psat[:, 0], bc_red, res, t_array)
+				
 			else: # if no moving-centre needed, then allow model to continue
 				redt = 0
 			
@@ -583,12 +587,12 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		
 		sumt += t # total time covered (s)
 		step += 1 # ode time interval step number
-		op_spl_count += t # count on time since operator-split processes last called (s)
+		update_count += t # count on time since operator-split processes last called (s)
 
-		# start of operator-split section ------------------------------------------------
-		# the following particle-phase processes are evaluated on a possibly different 
-		# time step to those above: coagulation, particle loss to wall and nucleation
-		if op_spl_count >= op_splt_step:
+		# start of update to particle number concentration section -----------------------
+		# the following particle-phase processes are evaluated to update the particle 
+		# number concentration constant: coagulation, particle loss to wall and nucleation
+		if update_count >= update_step:
 			
 			if num_sb>1: 
 				if (N_perbin>1.0e-10).sum()>0:
@@ -600,7 +604,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 							temp_now, x*1.0e-6, (Varr*1.0e-18).reshape(1, -1), 
 							y_mw.reshape(-1, 1), x*1.0e-6, 
 							np.transpose(y[num_speci::].reshape(num_sb, num_speci)), 
-							(N_perbin).reshape(1, -1), op_spl_count, 
+							(N_perbin).reshape(1, -1), update_count, 
 							(Vbou*1.0e-18).reshape(1, -1), 
 							num_speci, 0, (np.squeeze(y_dens*1.0e-3)), rad0, Pnow, 0,
 							np.transpose(y[num_speci::].reshape(num_sb, num_speci)),
@@ -614,7 +618,7 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 														y[num_speci:-(num_speci)], Gi, 
 														eta_ai, x*2.0e-6, y_mw, 
 														Varr*1.0e-18, num_sb, num_speci, 
-														temp_now, op_spl_count, 
+														temp_now, update_count, 
 														inflectDp, pwl_xpre,
 														pwl_xpro, inflectk, ChamR, Rader, 
 														0, p_char, e_field)
@@ -628,8 +632,8 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 								num_speci, x[0], new_partr, MV, nucv1, nucv2, 
 								nucv3, nuc_comp[0])
 			
-			# reset count on time since operator-split processes last called (s)
-			op_spl_count = 0
+			# reset count on time since initial value/constant update last called (s)
+			update_count = 0
 				
 		# end of operator-split section --------------------------------------------------
 							
@@ -642,28 +646,40 @@ def ode_gen(t, y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		# save at every time step given by save_step (s) and at end of experiment
 		if (save_step*save_count-sumt)<1.0e-10 or (sumt-save_step*save_count)>=0.0 or sumt == end_sim_time:
 			
-			if num_sb>0:
-				
+			if num_sb>0: # if particles present
 				# particle-phase concentrations (molecules/cc (air))
 				yp = np.transpose(y[num_speci:-(num_speci)].reshape(num_sb-1, 
 										num_speci))
 			else:
 				yp = 0.0
-
-			# record values at the end of this time step, note that these will correspond
-			# to sumt, which is the cumulative time (s) at the end of this time step.  
-			# This makes sense because the integration results are what is being saved 
-			# and these correspond to sumt (time at the end of the time step)
-			[t_out, y_mat, Nresult_dry, Nresult_wet, x2, 
-				dydt_vst, Cfactor_vst] = recording(y, 
-				N_perbin, x, save_count, 
-				sumt, y_mat, Nresult_dry, Nresult_wet, x2, t_out, int(end_sim_time/save_step), 
-				num_speci, num_sb, y_mw[:, 0], y_dens[:, 0]*1.0e-3, yp, Vbou, rindx, 
-				rstoi, pindx, nprod, dydt_vst, RO2_indices, H2Oi, temp_now, lightm, nreac,
-				pconc, core_diss, Psat, kelv_fac, kimt, kgwt, Cw, daytime+sumt, lat, lon, 
-				act_flux_path, DayOfYear, act_coeff, Pnow, photo_par_file, Jlen, 
-				reac_coef, Cfactor, Cfactor_vst)
+			
+			# if particles present, the recording time step is at least the same as the
+			# step for updating particle concentration and therefore the integration step,
+			# so the maximum number of recordings is one per integration step
+			# but if no particle phase, then may need to record concentrations in gas 
+			# and wall at several times covered by integration
+			while ((save_step*save_count-sumt)<1.0e-10):
 				
-			save_count += int(1) # track number of times saved at
+				# convert list to numpy array
+				t_array = np.array(t_array)
+				# select solution at closest time to recording interval
+				indx = np.where(np.abs(((sumt-t)+t_array)-save_step*save_count)==
+								np.min(np.abs(((sumt-t)+t_array)-save_step*save_count)))[0][0]
+				ythen = res[indx, :] # get concentrations (molecules/cm3) at this time
+				# time at this time
+				sumt_rec = (sumt-t)+t_array[indx]
+				
+				# record values
+				[t_out, y_mat, Nresult_dry, Nresult_wet, x2, 
+					dydt_vst, Cfactor_vst] = recording(ythen, 
+					N_perbin, x, save_count, 
+					sumt_rec, y_mat, Nresult_dry, Nresult_wet, x2, t_out, int(end_sim_time/save_step), 
+					num_speci, num_sb, y_mw[:, 0], y_dens[:, 0]*1.0e-3, yp, Vbou, rindx, 
+					rstoi, pindx, nprod, dydt_vst, RO2_indices, H2Oi, temp_now, lightm, nreac,
+					pconc, core_diss, Psat, kelv_fac, kimt, kgwt, Cw, daytime+sumt, lat, lon, 
+					act_flux_path, DayOfYear, act_coeff, Pnow, photo_par_file, Jlen, 
+					reac_coef, Cfactor, Cfactor_vst)
+					
+				save_count += int(1) # track number of times saved at
 		
 	return(t_out, y_mat, Nresult_dry, Nresult_wet, x2, dydt_vst, Cfactor_vst)

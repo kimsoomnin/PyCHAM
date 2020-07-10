@@ -30,7 +30,7 @@ def run(source, testf):
 	with open(var_store_name,'rb') as pk:
 		# read in variables from gui
 		if source == 0: # when called from front.py
-			[fname, num_sb, lowersize, uppersize, end_sim_time, resfname, tstep_len, 
+			[fname, num_sb, lowersize, uppersize, end_sim_time, resfname, 
 			TEMP, PInit, RH, lat, lon, DayOfYear, dt_start, act_flux_path, Cw, save_step, 
 			ChamSA, 
 			nucv1, nucv2, nucv3, nuc_comp, new_partr, inflectDp, pwl_xpre, pwl_xpro, 
@@ -41,7 +41,7 @@ def run(source, testf):
 			umansysprop_update, core_dens, p_char, e_field, 
 			const_infl_t, chem_scheme_markers, int_tol, photo_par_file, 
 			dil_fac, pconct, accom_coeff_ind, accom_coeff_user, 
-			op_splt_step, tempt, coag_on] = pickle.load(pk)	
+			update_step, tempt, coag_on] = pickle.load(pk)	
 
 			
 			# convert chamber surface area (m2) to spherical equivalent radius (m)
@@ -69,14 +69,14 @@ def run(source, testf):
 	
 	if source == 0:
 		return(fname, num_sb, lowersize, uppersize, end_sim_time, resfname, 
-		tstep_len, tstep_len, TEMP, PInit, RH, lat, lon, dt_start, act_flux_path, save_step, 
+		TEMP, PInit, RH, lat, lon, dt_start, act_flux_path, save_step, 
 		Cw, ChamR, nucv1, nucv2, nucv3, nuc_comp, new_partr, inflectDp, 
 		pwl_xpre, pwl_xpro, inflectk, xmlname, C0, Comp0, Rader, vol_Comp, volP, pconc, 
 		std, mean_rad, core_diss, light_stat, light_time, kgwt, 0, dydt_trak, DayOfYear, 
 		space_mode, Ct, Compt, injectt, seed_name, const_comp, const_infl, Cinfl, 
 		act_comp, act_user, seed_mw, umansysprop_update, core_dens, p_char, e_field, 
 		const_infl_t, chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, 
-		accom_coeff_ind, accom_coeff_user, op_splt_step, tempt, coag_on)
+		accom_coeff_ind, accom_coeff_user, update_step, tempt, coag_on)
 		
 	if source == 1:
 		return(fname, resfname, y_indx_plot, Comp0)

@@ -273,7 +273,7 @@ RO2 = NISOPO2 + ISOP34O2 + CH3C2H2O2 + MACO3 + MACRO2 + MACROHO2 +
 *;
 * Reaction definitions. ;
 *;
-% 5.6e-17 : APINENE + O3 = APINOOA ;
+% 5.6e-17 : APINENE + O3 = ELVOC_O3 ;
 
 *;
 * End of Subset.  No. of Species = 3, No. of Reactions = 1 ;

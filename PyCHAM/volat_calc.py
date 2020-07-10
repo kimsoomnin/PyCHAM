@@ -17,7 +17,7 @@ import stat
 
 def volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci, Psat_water, vol_Comp, 
 				volP, testf, corei, pconc, umansysprop_update, core_dens, spec_namelist,
-				ode_gen_flag):
+				ode_gen_flag, nuci, nuc_comp):
 
 	# inputs: ------------------------------------------------------------
 	# spec_list - array of SMILE strings for components 
@@ -34,6 +34,8 @@ def volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci, Psat_water, vol_
 	# core_dens - density of core material (g/cc (liquid/solid density))
 	# spec_namelist - list of components' names in chemical equation file
 	# ode_gen_flag - whether or not called from front or ode_gen
+	# nuci - index of nucleating component
+	# nuc_comp - name of nucleating component
 	# ------------------------------------------------------------
 	
 	
@@ -83,9 +85,13 @@ def volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci, Psat_water, vol_
 			if i == H2Oi:
 				y_dens[i] = 1.0*1.0E3 # (kg/m3 (particle))
 				continue
-			# core properties (only used if seed particles present)
-			if i == corei and sum(sum(pconc))>0.0:
+			# core properties
+			if i == corei:
 				y_dens[i] = core_dens*1.0E3 # core density (kg/m3 (particle))
+				continue
+			# nucleating component density, if component is core (kg/m3 (particle))
+			if i == nuci and nuc_comp[0] == 'core': 
+				y_dens[i] = 1.0*1.0E3
 				continue
 			if spec_list[i] == '[HH]': # omit H2 as unliked by liquid density code
 				# liquid density code does not like H2, so manually input kg/m3
@@ -100,6 +106,8 @@ def volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci, Psat_water, vol_
 		
 		
 		if i == corei and sum(sum(pconc))>0.0:
+			continue # core component not included in Pybel_objects
+		if i == nuci and nuc_comp[0] == 'core':
 			continue # core component not included in Pybel_objects
 		
 		# water vapour pressure already given by Psat_water (log10(atm))
@@ -124,6 +132,9 @@ def volat_calc(spec_list, Pybel_objects, TEMP, H2Oi, num_speci, Psat_water, vol_
 			# index of component in list of components
 			vol_indx = spec_namelist.index(vol_Comp[i])
 			Psat[vol_indx, 0] = volP[i]
+	# ensure if nucleating component is core that it is involatile
+	if nuc_comp == 'core':
+		Psat[nuci, 0] = 0.0
 	
 	Psat_Pa = np.zeros((len(Psat), 1)) # for storing vapour pressures in Pa (Pa)
 	Psat_Pa[:, 0] = Psat[:, 0]

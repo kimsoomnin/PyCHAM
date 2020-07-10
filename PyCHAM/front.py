@@ -29,8 +29,8 @@ def run(testf):
 	if testf==1:
 		print('calling user_input.py')
 	# module to ask, receive and return required inputs
-	[fname, num_sb, lowersize, uppersize, end_sim_time, resfname, tstep_len, 
-	tmax, TEMP, PInit, RH, lat, lon, start_sim_time, act_flux_path, save_step, Cw, 
+	[fname, num_sb, lowersize, uppersize, end_sim_time, resfname,
+	TEMP, PInit, RH, lat, lon, start_sim_time, act_flux_path, save_step, Cw, 
 	ChamR, nucv1, nucv2, nucv3, nuc_comp, new_partr, inflectDp, pwl_xpre,  
 	pwl_xpro, inflectk, xmlname, init_conc, Comp0, Rader, vol_Comp, volP, 
 	pconc, std, mean_rad, core_diss, light_stat, light_time, kgwt, testm, 
@@ -38,7 +38,7 @@ def run(testf):
 	const_comp, const_infl, Cinfl, act_comp, act_user, seed_mw, 
 	umansysprop_update, core_dens, p_char, e_field, const_infl_t, 
 	chem_scheme_markers, int_tol, photo_par_file, dil_fac, pconct, accom_coeff_ind, 
-	accom_coeff_user, op_splt_step, tempt, coag_on] = ui.run(0, testf)
+	accom_coeff_user, update_step, tempt, coag_on] = ui.run(0, testf)
 	
 	if testm == 1:
 		print('PyCHAM calls front fine, now returning to PyCHAM.py')
@@ -65,14 +65,14 @@ def run(testf):
 	Cfactor, y_indx_plot, corei, dydt_vst, spec_namelist, 
 							inj_indx, const_compi, 
 							const_infli, core_diss, 
-							Psat_water] = init_conc_func(num_speci, 
+							Psat_water, nuci] = init_conc_func(num_speci, 
 							Comp0, init_conc, TEMP[0], RH, 
 							reac_coef, fname, 
 							PInit, start_sim_time, lat, lon, Pybel_objects, testf, pconc,
 							act_flux_path, dydt_trak, end_sim_time, save_step, rindx, 
 							pindx, num_eqn, nreac, nprod, DayOfYear, 
 							spec_namelist, Compt, seed_name, const_comp, const_infl, 
-							seed_mw, core_diss)
+							seed_mw, core_diss, nuc_comp)
 
 	if testf==1:
 		print('init_conc_func called and returned fine')
@@ -92,7 +92,8 @@ def run(testf):
 	[Psat, y_dens, Psat_Pa] = volat_calc(spec_list, Pybel_objects, TEMP[0], H2Oi, 
 								num_speci,  
 								Psat_water, vol_Comp, volP, testf, corei, pconc,
-								umansysprop_update, core_dens, spec_namelist, 0)
+								umansysprop_update, core_dens, spec_namelist, 0, nuci,
+								nuc_comp)
 
 	if testf==1:
 		print('volat_calc called and returned fine')
@@ -113,7 +114,7 @@ def run(testf):
 							MV, num_sb, nuc_comp, rbou00, upper_bin_rad_amp] = pp_intro(y, 
 							num_speci, Pybel_objects, TEMP[0], H2Oi, 
 							mfp, accom_coeff, y_mw, surfT, DStar_org, 
-							RH, num_sb, lowersize, uppersize, pconc_now, tmax, nuc_comp, 
+							RH, num_sb, lowersize, uppersize, pconc_now, nuc_comp, 
 							testf, std[0, 0], mean_rad[0, 0], 
 							therm_sp, Cw, y_dens, Psat, core_diss, kgwt, space_mode, 
 							corei, spec_namelist, act_coeff)
@@ -125,7 +126,7 @@ def run(testf):
 	
 	# call on ode function
 	[t_out, y_mat, Nresult_dry, Nresult_wet, x2, 
-				dydt_vst, Cfactor_vst] = ode_gen(tstep_len, y, 
+				dydt_vst, Cfactor_vst] = ode_gen(y, 
 				num_speci, num_eqn, 
 				rindx, pindx, 
 				rstoi, pstoi, H2Oi, TEMP, RO2_indices, 
@@ -139,7 +140,7 @@ def run(testf):
 				start_sim_time, lat, lon, act_flux_path, DayOfYear, Ct, injectt, inj_indx,
 				corei, const_compi, const_comp, const_infli, Cinfl, act_coeff, p_char, 
 				e_field, const_infl_t, int_tol, photo_par_file, Jlen, dil_fac, pconct,
-				lowersize, uppersize, mean_rad, std, op_splt_step, Pybel_objects, tempt,
+				lowersize, uppersize, mean_rad, std, update_step, Pybel_objects, tempt,
 				Cfactor, coag_on)
 				
 	

@@ -11,7 +11,7 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH,
 					testf, pconc, act_flux_path, dydt_trak, end_sim_time, save_step, 
 					rindx, pindx, num_eqn, nreac, nprod, DayOfYear, 
 					spec_namelist, Compt, seed_name, const_comp, const_infl, seed_mw,
-					core_diss):
+					core_diss, nuc_comp):
 		
 	# -----------------------------------------------------------
 	# inputs:
@@ -34,11 +34,12 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH,
 	# DayOfYear - day of year for natural light calculation (integer 1-365)
 	# spec_namelist - list of components' names in chemical equation file
 	# Compt - name of component injected after start of experiment
-	# seed_name - name of core material (input by user)
+	# seed_name - name of core component (input by user)
 	# const_comp - names of components with constant gas-phase concentration
 	# const_infl - names of components with constant influx
 	# seed_mw - molecular weight of seed material (g/mol)
 	# core_diss - dissociation constant of seed material
+	# nuc_comp - name of nucleating component (input by user, or defaults to 'core')
 	# -----------------------------------------------------------
 
 	if testf==1: # testing mode
@@ -148,7 +149,7 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH,
 	# that an index is provided for core material
 	
 	# if seed particles present and made of a 'core' material
-	if sum(sum(pconc))>0.0 and seed_name=='core':
+	if sum(sum(pconc))>0.0 and seed_name == 'core':
 		# append core gas-phase concentration (molecules/cc (air)) and molecular 
 		# weight (g/mol) (needs to have a 1 length in second dimension for the kimt 
 		# calculations)
@@ -157,7 +158,19 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH,
 		corei = num_speci # index of core component
 		num_speci += 1 # update number of species to account for core material
 		spec_namelist.append('core') # append core's name to component name list
-
+	# if nucleating component formed of core component
+	if nuc_comp[0] == 'core':
+		if sum(sum(pconc))>0.0 and seed_name == 'core':
+			nuci = corei
+		else:
+			y = np.append(y, 1.0e-40) 
+			y_mw = (np.append(y_mw, seed_mw)).reshape(-1, 1)
+			nuci = num_speci # index of core component
+			num_speci += 1 # update number of species to account for core material
+			spec_namelist.append('core') # append core's name to component name list
+	else:
+		nuci = -1 # filler
+		
 	# if seed particles made of a non-'core' material
 	if seed_name != 'core':
 		# append core gas-phase concentration (molecules/cc (air)) and molecular weight 
@@ -180,4 +193,4 @@ def init_conc_func(num_speci, Comp0, init_conc, TEMP, RH,
 	
 	return (y, H2Oi, y_mw, num_speci, Cfactor, y_indx_plot, corei, dydt_vst, 
 				spec_namelist, inj_indx, const_compi, const_infli, core_diss,
-				Psat_water)
+				Psat_water, nuci)

@@ -221,9 +221,8 @@ note that if a variable is irrelevant for your simulation, it can be left empty
 | ---------- | ---------- |
 | res_file_name = | Name of folder to save results to |
 | total_model_time = | Total experiment time to be simulated (s) |
-| bc_time_step =  | Maximum time interval for ode solver and updating boundary conditions (s).  Must be at most the value of op_spl_step.  Default is 60 s |
-| op_spl_step =  | Time (s) interval for solving operator-split processes over, must be at least as long as bc_time_step.  Default to 60 s.  Can be set to more than the total_model_time variable above to prevent operator-split processes occurring. |
-| recording_time_step =  | Time interval for recording results (s).  Must be at least the value of bc_time_step.  Defaults to 60 s.|
+| update_step =  | Time (s) interval for updating integration constants (specifically natural light intensity (if applicable) and particle number concentration due to its change during any of: coagulation, particle loss to wall and/or nucleation).  Default to 60 s.  Can be set to more than the total_model_time variable above to prevent updates. |
+| recording_time_step =  | Time interval for recording results (s).  Must be at least the value of update_step if particles are present (number_size_bins variable below greater than zero).  Defaults to 60 s.|
 | number_size_bins = | Number of size bins (excluding wall); to turn off particle considerations set to 0 (which is also the default), likewise set pconc and seed_name variables below off.  Must be integer (e.g. 1) not float (e.g. 1.0) |
 | lower_part_size = | Radius of smallest size bin boundary (um) |
 | upper_part_size = | Radius of largest size bin boundary (um) |
@@ -249,7 +248,7 @@ note that if a variable is irrelevant for your simulation, it can be left empty
 | new_partr = | Radius of newly nucleated particles (cm), if empty defaults to 2.0e-7 cm. |
 | inflectDp = | Particle diameter wall deposition rate at inflection point (m). |
 | Grad_pre_inflect = | Negative log10 of the gradient of particle wall deposition rate against the log10 of particle diameter before inflection (/s).  For example, for the rate to decrease by an order of magnitude every order of magnitude increase in particle diameter, set to 1.|
-| Grad_post_inflect = | Log10 of the gradient of particle wall deposition rate against the log10 of particle diameter after inflection (/s).  For example, for the rate to increase by an order of magnitude every order of magnitude increase in particle diameter, set to 1.|
+| Grad_post_inflect = | log10 of the gradient of particle wall deposition rate against the log10 of particle diameter after inflection (/s).  For example, for the rate to increase by an order of magnitude every order of magnitude increase in particle diameter, set to 1.|
 | Rate_at_inflect = | Particle deposition rate to wall at inflection (/s). |
 | part_charge_num = | Average number of charges per particle, only required if the McMurry and Rader (1985) model for particle deposition to walls is selected.|
 | elec_field = | Average electric field inside the chamber (g.m/A.s3), only required if the McMurry and Rader (1985) model for particle deposition to walls is selected |

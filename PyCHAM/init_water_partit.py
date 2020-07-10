@@ -10,7 +10,7 @@ import scipy.constants as si
 
 def init_water_partit(x, y, H2Oi, Psat, mfp, num_sb, num_speci, 
 						accom_coeff, y_mw, surfT, R_gas, TEMP, NA, y_dens, 
-						N_perbin, DStar_org, RH, core_diss, Varr, Vbou, Vol0, tmax, MV,
+						N_perbin, DStar_org, RH, core_diss, Varr, Vbou, Vol0, MV,
 						therm_sp, Cw, total_pconc, kgwt, corei, act_coeff):
 
 	# inputs: ------------------------------------------------------
