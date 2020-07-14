@@ -1,4 +1,4 @@
-# PyCHAM: Python CHemistry with Aerosol Microphysics Box Model
+# PyCHAM: CHemistry with Aerosol Microphysics in Python Box Model
 
 Welcome to the PyCHAM software for modelling of aerosol chambers.  Funding has been provided by the [EUROCHAMP-2020 research project](http://www.eurochamp.org) and the National Centre for Atmospheric Science ([NCAS](https://www.ncas.ac.uk/en/)).  Please open an issue above or contact Simon O'Meara (simon.omeara@manchester.ac.uk) with any issues, comments or suggestions.
 
@@ -30,7 +30,7 @@ There are two options for installing, via conda and from source.  Experience ind
 
 2. Download and install the package manager Anaconda using the following address and selecting the appropriate operating system version: https://www.anaconda.com/distribution/#download-section
 
-Following steps need to be in the terminal/command prompt:
+The following steps need to be at the command line:
 
 3. cd into the directory where the PyCHAM package is stored.
 

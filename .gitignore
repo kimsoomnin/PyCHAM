@@ -110,9 +110,6 @@ venv.bak/
 # previously produced Travis output
 /PyCHAM/output/Example_Run/Example_output_Travis_CI
 
-# GMD paper material
-/PyCHAM/output/GMD_paper/
-/PyCHAM/output/Nah_eval_scheme/
 
 # any secondary example runs
 /PyCHAM/output/Example_Run/Example_Run_output2
