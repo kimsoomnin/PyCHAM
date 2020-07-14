@@ -116,9 +116,10 @@ ax0.semilogy(thr_dict['thr0'], y[:, comp_index[2]], label = 'LIMONENE')
 # ax0.semilogy(thr_dict['thr0'], y[:, comp_index[4]], label = 'NO3')
 ax0.set_ylim(1.0e-1, 1.0e2)
 ax0.set_ylabel(r'Gas-phase concentration (ppb)', fontsize=12)
-ax0.yaxis.set_tick_params(size=14)
+ax0.yaxis.set_tick_params(labelsize=14)
 ax0.set_xlabel(r'Time through simulation (hours)', fontsize=12)
-ax0.yaxis.set_tick_params(size=14)
+ax0.xaxis.set_tick_params(labelsize=14)
+
 
 ax0.plot([1.5, 1.5], [0.0, 500.0], color='black', linewidth=1, linestyle='dashed')
 ax0.text(x=1.2, y=1, s='injection 1', size=12, rotation=90, color='black')
@@ -182,11 +183,13 @@ norm1 = BoundaryNorm(levels, ncolors = cm.N, clip=True)
 p1 = ax1.pcolormesh(thr_dict['thr0'], (sbb*2*1e3), z[:, :], cmap=cm, norm=norm1)
 
 
-ax1.set_ylabel('Diameter (nm)', size=12)
+ax1.set_ylabel('Diameter ($D_p$, nm)', size=12)
 ax1.xaxis.set_tick_params(labelsize=14)
 ax1.yaxis.set_tick_params(labelsize=14)
 ax1.set_xlabel(r'Time through simulation (hours)', fontsize=12)
 ax1.set_ylim((sbb[0]*2*1e3), (sbb[-1]*2*1e3))
+# set y axis to standard notation
+ax1.ticklabel_format(axis='y', style='sci')
 
 # function for doing colorbar tick labels in standard notation
 def fmt(x, pos):
@@ -198,9 +201,9 @@ cb = plt.colorbar(p1, format=ticker.FuncFormatter(fmt), pad=0.25)
 cb.ax.tick_params(labelsize=14)   
 
 # colour bar label
-cb.set_label('dN/dlog$\mathrm{_{10}}$(D) $\mathrm{(cm^{-3})}$', size=12, rotation=270, labelpad=20)
+cb.set_label('d$N$ ($\#\,\mathrm{cm^{-3}}$)/dlog$\mathrm{_{10}}$($D_p$)', size=12, rotation=270, labelpad=20)
 
-ax1.text(x=(thr_dict['thr0'])[0], y=(sbb[-1]*2*1e3)*1.05, s='(b)', size=12)
+ax1.text(x=(thr_dict['thr0'])[0]-0.1, y=(sbb[-1]*2*1e3)*1.05, s='(b)', size=12)
 
 # set line and label denoting injections
 ax1.plot([1.5, 1.5], [0.0, 500.0], color='white', linewidth=1, linestyle='dashed')
@@ -273,8 +276,9 @@ par2.yaxis.set_tick_params(labelsize=12)
 # ----------------------------------------------------------------------------------------
 # total particle number concentration
 
-p3, = par1.plot(thr_dict['thr0'], N.sum(axis=1), '-k', label = '[N]')
-par1.set_ylabel('[N] ($\mathrm{cm^{-3}})$', rotation=270, size=12, labelpad=25)
+p3, = par1.plot(thr_dict['thr0'], N.sum(axis=1), '-k', label = '$N$')
+par1.set_ylabel('$N$ ($\#\,\mathrm{cm^{-3}}$', rotation=270, size=12, labelpad=25)
+par1.yaxis.set_tick_params(labelsize=12)
 
 plt.legend(fontsize=12, handles=[p3, p5, p6, p7, p8] ,loc=2)
 fig.savefig('limonene_res_plot.png')

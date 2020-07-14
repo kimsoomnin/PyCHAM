@@ -234,9 +234,9 @@ for i in range(1, num_sb):
 fig, (ax0, ax1) = plt.subplots(2, 1, figsize=(8,5))
 
 ax0.plot(t_array/3600.0, SOA0, linewidth=3, label='No wall')
-ax0.plot(t_array/3600.0, SOA1, linewidth=3, label=r'$k_{w}=1x10^{-1}\, \mathrm{/s}$, $C_{w}=7x10^{1}\, \mathrm{\mu g \, m^{-3}}$')
-ax0.plot(t_array/3600.0, SOA2, linewidth=3, label=r'$k_{w}=1x10^{-1}\, \mathrm{/s}$, $C_{w}=7x10^{4}\, \mathrm{\mu g \, m^{-3}}$')
-ax0.plot(t_array/3600.0, SOA3, '--', linewidth=3, label=r'$k_{w}=1x10^{2}\, \mathrm{/s}$, $C_{w}=7x10^{1}\, \mathrm{\mu g \, m^{-3}}$')
+ax0.plot(t_array/3600.0, SOA1, linewidth=3, label=r'$k_{w}=1x10^{-1}\, \mathrm{s^{-1}}$, $C_{w}=7x10^{1}\, \mathrm{\mu g \, m^{-3}}$')
+ax0.plot(t_array/3600.0, SOA2, linewidth=3, label=r'$k_{w}=1x10^{-1}\, \mathrm{s^{-1}}$, $C_{w}=7x10^{4}\, \mathrm{\mu g \, m^{-3}}$')
+ax0.plot(t_array/3600.0, SOA3, '--', linewidth=3, label=r'$k_{w}=1x10^{2}\, \mathrm{s^{-1}}$, $C_{w}=7x10^{1}\, \mathrm{\mu g \, m^{-3}}$')
 ax0.set_xlabel(r'Time (hours of day)', fontsize=12)
 ax0.set_ylabel(r'[SOA] ($\mathrm{\mu g\, m^{-3}}$)', fontsize=12)
 ax0.yaxis.set_tick_params(size=12)
@@ -319,8 +319,8 @@ y = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header)
 fname = str(output_by_sim+'/t')
 t_array = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header)
 
-# ax1.plot(t_array[0:45], y[0:45, comp_index[0]]/Cfactor, '+r', label= r''+str('methylglyoxal')+' $k_{w}=1x10^{-1}\, \mathrm{/s}, C_{w}=7x10^{-5}\, \mathrm{g \, m^{-3}}$')
-ax1.plot(t_array[0:45], y[0:45, comp_index[1]]/Cfactor, '+g', label= r''+' $k_{w}=1x10^{-1}\, \mathrm{/s}, C_{w}=7x10^{1}\, \mathrm{\mu g \, m^{-3}}$')
+# ax1.plot(t_array[0:45], y[0:45, comp_index[0]]/Cfactor, '+r', label= r''+str('methylglyoxal')+' $k_{w}=1x10^{-1}\, \mathrm{s^{-1}}, C_{w}=7x10^{-5}\, \mathrm{g \, m^{-3}}$')
+ax1.plot(t_array[0:45], y[0:45, comp_index[1]]/Cfactor, '+g', label= r''+' $k_{w}=1x10^{-1}\, \mathrm{s^{-1}}, C_{w}=7x10^{1}\, \mathrm{\mu g \, m^{-3}}$')
 
 # ----------------------------------------------------------------------------------------
 # moderate Kw (1e-1 /s) high Cw (7e-2 ug/m3)
@@ -385,8 +385,8 @@ y = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header)
 fname = str(output_by_sim+'/t')
 t_array = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header)
 
-# ax1.plot(t_array[0:45], y[0:45, comp_index[0]]/Cfactor, '--r', label= r''+str('methylglyoxal')+' $k_{w}=1x10^{-1}\, \mathrm{/s}, C_{w}=7x10^{-2}\, \mathrm{g \, m^{-3}}$')
-ax1.plot(t_array[0:45], y[0:45, comp_index[1]]/Cfactor, '--g', label= r''+' $k_{w}=1x10^{-1}\, \mathrm{/s}, C_{w}=7x10^{4}\, \mathrm{\mu g \, m^{-3}}$')
+# ax1.plot(t_array[0:45], y[0:45, comp_index[0]]/Cfactor, '--r', label= r''+str('methylglyoxal')+' $k_{w}=1x10^{-1}\, \mathrm{s^{-1}}, C_{w}=7x10^{-2}\, \mathrm{g \, m^{-3}}$')
+ax1.plot(t_array[0:45], y[0:45, comp_index[1]]/Cfactor, '--g', label= r''+' $k_{w}=1x10^{-1}\, \mathrm{s^{-1}}, C_{w}=7x10^{4}\, \mathrm{\mu g \, m^{-3}}$')
 
 
 # ----------------------------------------------------------------------------------------
@@ -452,8 +452,8 @@ y = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header)
 fname = str(output_by_sim+'/t')
 t_array = np.loadtxt(fname,delimiter=',',skiprows=1) # skiprows=1 omits header)
 
-# ax1.plot(t_array[0:45], y[0:45, comp_index[0]]/Cfactor, '.r', label= r''+str('methylglyoxal')+' $k_{w}=1x10^{-2}\, \mathrm{/s}, C_{w}=7x10^{-5}\, \mathrm{g \, m^{-3}}$')
-ax1.plot(t_array[0:45], y[0:45, comp_index[1]]/Cfactor, '.g', label= r''+' $k_{w}=1x10^{-2}\, \mathrm{/s}, C_{w}=7x10^{1}\, \mathrm{\mu g \, m^{-3}}$')
+# ax1.plot(t_array[0:45], y[0:45, comp_index[0]]/Cfactor, '.r', label= r''+str('methylglyoxal')+' $k_{w}=1x10^{-2}\, \mathrm{s^{-1}}, C_{w}=7x10^{-5}\, \mathrm{g \, m^{-3}}$')
+ax1.plot(t_array[0:45], y[0:45, comp_index[1]]/Cfactor, '.g', label= r''+' $k_{w}=1x10^{-2}\, \mathrm{s^{-1}}, C_{w}=7x10^{1}\, \mathrm{\mu g \, m^{-3}}$')
 
 ax1.set_xlabel(r'Time (seconds into simulation)', fontsize=12)
 ax1.set_ylabel(r'[2-methylglyceric acid] (ppb)', fontsize=12)

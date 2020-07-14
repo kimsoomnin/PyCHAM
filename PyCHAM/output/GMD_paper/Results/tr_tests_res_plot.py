@@ -217,7 +217,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
 p1, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
-p2, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+p2, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='$N$, coag.')
 ax0.set_title('Seeded, no partitioning', size = 12)
 
 # add contour plot to show computer processing time --------------------------------------
@@ -389,14 +389,14 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	
 # plot of absolute percentage error, summed across size and times
 p5, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
-p6, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag. & wall')
+p6, = ax0.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='$N$, coag. & wall')
 
 lines = [p1, p2, p5, p6]
 ## ax0.legend(lines, [l.get_label() for l in lines])
 # ax0.set_ylim(4.5e-2, 1.05e2)
 
 # ax0.set_xlabel('operator-split time step (s)', size=16) # vertical axis label
-ax0.set_ylabel('$\sigma$ (temporal resolution)', size=18) # vertical axis label
+ax0.set_ylabel('Deviation (%)\n(temporal resolution)', size=18) # vertical axis label
 ax0.set_xlim(2.0e0, 5.0e4)
 ax0.set_ylim(1.5e-2, 1.1e2)
 ax0.xaxis.set_tick_params(labelsize=16)
@@ -590,7 +590,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	
 # plot of absolute percentage error, summed across size and times
 p7, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
-p8, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+p8, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='$N$, coag.')
 p9, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 ax1.set_title('Seeded, with partitioning', size=12)
 
@@ -780,14 +780,14 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	
 # plot of absolute percentage error, summed across size and times
 p11, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
-p12, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag. & wall')
+p12, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='$N$, coag. & wall')
 p13, = ax1.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag. & wall')
 
 
 ax1.set_xlabel('update time interval (s)', size=16) # horizontal axis label
 # ax1.set_yticklabels([]) # turn off labels for number size distribution
 ax1.xaxis.set_tick_params(labelsize=16)
-# par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
+# par2.set_ylabel('$|\%\, \Delta|$ N', rotation=270, size=18, color='b') # vertical axis label
 # par2.yaxis.set_tick_params(labelsize=16)
 # par2.yaxis.label.set_color('blue')
 # par2.tick_params(axis='y', colors='blue')
@@ -1006,7 +1006,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	
 # plot of absolute percentage error, summed across size and times
 p14, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
-p15, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+p15, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='$N$, coag.')
 p16, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 
 
@@ -1015,7 +1015,7 @@ p16, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='
 ax2.xaxis.set_tick_params(labelsize=16)
 ax2.text(x=1.0e0, y=3.0e2, s='(c)', size=14)
 ax2.set_title('Nucleation, with partitioning', size=12)
-# par2.set_ylabel('$|\%\, \Delta|$ [N]', rotation=270, size=18, color='b') # vertical axis label
+# par2.set_ylabel('$|\%\, \Delta|$ N', rotation=270, size=18, color='b') # vertical axis label
 # par2.yaxis.set_tick_params(labelsize=16)
 # par2.yaxis.label.set_color('blue')
 # par2.tick_params(axis='y', colors='blue')
@@ -1226,7 +1226,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 	
 # plot of absolute percentage error, summed across size and times
 p17, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
-p18, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag. & wall')
+p18, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='$N$, coag. & wall')
 p19, = ax2.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag. & wall')
 
 
@@ -1423,9 +1423,9 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
 p20, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
-p21, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+p21, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='$N$, coag.')
 
-ax4.set_ylabel('$\sigma$ (spatial resolution)', size=18) # vertical axis label
+ax4.set_ylabel('Deviation (%)\n(spatial resolution)', size=18) # vertical axis label
 ax4.xaxis.set_tick_params(labelsize=16)
 ax4.yaxis.set_tick_params(labelsize=16)
 ax4.text(x=1.0e0, y=2.0e2, s='(d)', size=14)
@@ -1637,7 +1637,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
 p22, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
-p23, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag.  & wall')
+p23, = ax4.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='$N$, coag.  & wall')
 
 # lines = [p20, p21, p22, p23]
 # ax4.legend(lines, [l.get_label() for l in lines])
@@ -1821,7 +1821,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
 p24, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
-p25, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+p25, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='$N$, coag.')
 p26, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 
 ax5.xaxis.set_tick_params(labelsize=16)
@@ -2028,7 +2028,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
 p27, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', linewidth=2, label='NSD, coag. & wall')
-p28, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='[N], coag.  & wall')
+p28, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', linewidth=2, label='$N$, coag.  & wall')
 p29, = ax5.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', linewidth=2, label='[SOA], coag.  & wall')
 
 # lines = [p24, p25, p26, p27, p28, p29]
@@ -2216,7 +2216,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
 p24, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-k', linewidth=2, label='NSD, coag.')
-p25, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='[N], coag.')
+p25, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-b', linewidth=2, label='$N$, coag.')
 p26, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-r', linewidth=2, label='[SOA], coag.')
 
 ax6.xaxis.set_tick_params(labelsize=16)
@@ -2402,7 +2402,7 @@ for resi in np.linspace(len(num_sb_dict)-1, 0, len(num_sb_dict)):
 # plot of absolute percentage error, summed across size and times, excluding the reference
 # (highest temporal resolution) case
 p27, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 1], '-.k', label='NSD, coag. & wall')
-p28, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', label='[N], coag.  & wall')
+p28, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 2], '-.b', label='$N$, coag.  & wall')
 p29, = ax6.loglog(per_err[0:-1, 0], per_err[0:-1, 3], '-.r', label='[SOA], coag.  & wall')
 
 # add contour plot to show computer processing time --------------------------------------
