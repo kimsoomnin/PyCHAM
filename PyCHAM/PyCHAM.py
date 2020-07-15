@@ -65,11 +65,8 @@ class PyCHAM(QWidget):
 	def on_click1(self):
 		
 		dirpath = os.getcwd() # get current path
-# 		fname = dirpath+ '/PyCHAM/output/GMD_paper/Results/AtChem2_apinene_scheme.txt'
-# 		fname = dirpath+'/PyCHAM/inputs/limonene_MCM_PRAM.txt' # hard-code chemical scheme input
-# 		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/Nah_eval_scheme.txt' # hard-code chemical scheme input
-# 		fname = dirpath+'/PyCHAM/inputs/Example_Run.txt'
-		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
+		fname = dirpath+'/PyCHAM/inputs/apinene_wp_scheme.txt'
+# 		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
 		with open(dirpath+'/fname.txt','w') as f:
 			f.write(fname)
 		f.close()
@@ -78,8 +75,8 @@ class PyCHAM(QWidget):
 	def on_click2(self):
 		
 		dirpath = os.getcwd() # get current path
-# 		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml' # hard-code xml input
-		xmlname = self.openFileNameDialog()
+		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml' # hard-code xml input
+# 		xmlname = self.openFileNameDialog()
 		with open(dirpath+'/xmlname.txt','w') as f:
 			f.write(xmlname)
 		f.close()
@@ -87,11 +84,8 @@ class PyCHAM(QWidget):
 	@pyqtSlot()
 	def on_click3(self):
 		dirpath = os.getcwd() # get current path
-# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/Photo_chem_inputs_hiNOx.txt' # hard-code model variables input
-# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/limonene_inputs.txt' # hard-code model variables input
-# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/Nah_eval_inputs.txt' # hard-code model variables input
-# 		inname = dirpath+'/PyCHAM/inputs/Example_Run_inputs.txt'
-		inname = self.openFileNameDialog() # name of model variables inputs file
+		inname = dirpath+'/PyCHAM/inputs/Example_Run_inputs_wp.txt'
+# 		inname = self.openFileNameDialog() # name of model variables inputs file
 		
 		# open the file
 		inputs = open(inname, mode='r')
@@ -573,7 +567,7 @@ class PyCHAM(QWidget):
 			if key == 'chem_scheme_markers': # formatting for chemical scheme
 				if (value.strip()).split(',')==['']:
 					# default to Kinetic Preprocessor (KPP) inputs
-					chem_scheme_markers = ['{', 'RO2', '+', 'C(ind_', ')', 20, '']
+					chem_scheme_markers = ['{', 'RO2', '+', 'C(ind_', ')', 20, '', '']
 				else:
 					chem_scheme_markers = [str(i).strip() for i in (value.split(','))]
 			if key == 'int_tol': # tolerances for integration

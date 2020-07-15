@@ -506,7 +506,7 @@ for i in range(len(in_list)):
 	if key == 'chem_scheme_markers': # formatting for chemical scheme
 		if (value.strip()).split(',')==['']:
 			# default to Kinetic Preprocessor (KPP) inputs
-			chem_scheme_markers = ['{', 'RO2', '+', 'C(ind_', ')', 20, '']
+			chem_scheme_markers = ['{', 'RO2', '+', 'C(ind_', ')', 20, '', '']
 		else:
 			chem_scheme_markers = [str(i).strip() for i in (value.split(','))]
 	if key == 'int_tol': # tolerances for integration

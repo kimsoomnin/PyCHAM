@@ -12,7 +12,7 @@ import pybel
 import formatting
 import xmltodict # for opening and converting xml files to python dictionaries
 import ipdb
-from water_calc import water_calc
+from eqn_interr import eqn_interr
 
 # ----------Extraction of eqn info----------
 # Extract the mechanism information
@@ -32,6 +32,7 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 	if testf == 1: # for just testing mode
 		return(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
     
+    print('Now parsing the equation information ... \n')
     
 	# open the chemical scheme file
 	f_open_eqn = open(filename, mode='r')
@@ -45,7 +46,8 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 		print('Eqn file not closed')
 		sys.exit()
 	
-	naked_list_eqn = [] # empty list for equation reactions
+	naked_list_eqn = [] # empty list for gas-phase equation reactions
+	naked_list_peqn = [] # empty list for other equation reactions
 	RO2_names = [] # empty list for peroxy radicals
 	rrc = [] # empty list for reaction rate coefficients
 	rrc_name = [] # empty list for reaction rate coefficient labels
@@ -55,7 +57,7 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 	RO2_count = 0 # count on number of lines considered in peroxy radical list
 	
 	# obtain lists for reaction rate coefficients, peroxy radicals and equation reactions
-	# using chemical scheme input file separators
+	# using markers for separating chemical scheme elements
 	for line in total_list_eqn:
 		
 		line1 = line.strip() # remove bounding white space
@@ -111,21 +113,22 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 						line3 = line3[0:-len(chem_scheme_markers[4])]
 					RO2_names.append(line3.strip())
 		# --------------------------------------------------------------------------------
-		# reaction equation part
+		# gas-phase reaction equation part
 		if (re.match(chem_scheme_markers[0], line1) != None):
 			naked_list_eqn.append(line1) # store reaction equations
-
+		# aqueous-phase reaction equation part
+		if (re.match(chem_scheme_markers[7], line1) != None):
+			naked_list_peqn.append(line1) # store reaction equations
+		
 			
 		# --------------------------------------------------------------------------------
 	
 	# format the equation list
-
-	# naked_list_eqn contains everything except the comments starting with //
-	print('Now parsing the eqn info...\n')
+	
 	
 	# first loop through equation list to concatenate any multiple lines that hold just
 	# one equation, note this depends on a symbol representing the start and end of
-	# and equation (inside MCM this is % for start and ; for end)
+	# and equation (provided by chem_scheme_markers)
 	for iline in range (0, len(naked_list_eqn)):
 		
 		# keep track of when we reach end of naked_list_eqn (required as naked_list_eqn
@@ -134,7 +137,7 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 			break
 			
 		# if one equation already on one line
-		if (re.search(r'%', naked_list_eqn[iline])!=None and re.search(r';', naked_list_eqn[iline])!=None):
+		if (re.match(chem_scheme_markers[0], naked_list_eqn[iline])!=None and re.match(chem_scheme_markers[0], naked_list_eqn[iline+1])!=None):
 			continue
 		# if spread across more than one line
 		else:
@@ -143,12 +146,12 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 			while con_count!=0:
 				iline2 += 1 # move onto next line
 				naked_list_eqn[iline] = str(naked_list_eqn[iline]+naked_list_eqn[iline2])
-				if re.search(r';', naked_list_eqn[iline2])!=None:
+				if re.match(chem_scheme_markers[0], naked_list_eqn[iline2+1])!=None:
 					# remove concatenated line(s) from original list
 					naked_list_eqn = naked_list_eqn[0:iline]+naked_list_eqn[iline2+1::]
 					con_count = 0 # finish concatenating
 	
-	num_eqn = len(naked_list_eqn) # get number of equations
+	num_eqn = [len(naked_list_eqn), len(naked_list_peqn)] # get number of equations
 	
 	
 	# --open and initialise the xml file for converting chemical names to SMILES-----
@@ -180,188 +183,50 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 	
 	# matrix to record indices of reactants (cols) in each equation (rows)
 	rindx = np.zeros((num_eqn, 1)).astype(int)
+	rindx_p = np.zeros((num_eqn, 1)).astype(int)
 	# matrix to record indices of products (cols) in each equation (rows)
 	pindx = np.zeros((num_eqn, 1)).astype(int)
+	pindx_p = np.zeros((num_eqn, 1)).astype(int)
 	# matrix to record stoichometries of reactants (cols) in each equation (rows)
 	rstoi = np.zeros((num_eqn, 1))
+	rstoi_p = np.zeros((num_eqn, 1))
 	# matrix to record stoichometries of products (cols) in each equation (rows)
 	pstoi = np.zeros((num_eqn, 1))
-	# array to store number of reactants and products in an equation
-	nreac = np.empty(num_eqn, dtype=np.int8)
-	nprod = np.empty(num_eqn, dtype=np.int8)
+	pstoi_p = np.zeros((num_eqn, 1))
+	# arrays to store number of reactants and products in gas-phase equations
+	nreac = np.empty(num_eqn[0], dtype=np.int8)
+	nprod = np.empty(num_eqn[0], dtype=np.int8)
+	nreac_p = np.empty(num_eqn[1], dtype=np.int8)
+	nprod_p = np.empty(num_eqn[1], dtype=np.int8)
 	# list for equation reaction rate coefficients
 	reac_coef = []
+	reac_coef_p = []
 	# list for components' SMILE strings
 	spec_list = []
 	# list of Pybel objects
 	Pybel_objects = []
-	# a new list for the name strings of species presenting in the scheme (not SMILES)
+	# a new list for the name strings of species presented in the scheme (not SMILES)
 	spec_namelist = []
 	
-	# Loop through the equations line by line and extract the information
-	for eqn_step in range(num_eqn):
+	# get equation information for gas-phase reactions
+	[rindx, rstoi, pindx, pstoi, reac_coef, spec_namelist, spec_list, 
+			Pybel_objects, nreac, nprod, species_step] = eqn_interr(num_eqn[0], naked_list_eqn, 
+				rindx, rstoi, pindx, pstoi, 
+				rate_coeff_start_mark[0], reac_coef, spec_namelist, spec_name, spec_smil,
+				spec_list, Pybel_objects, species_step, nreac, nprod)
+	# get equation information for aqueous-phase reactions
+	[rindx_p, rstoi_p, pindx_p, pstoi_p, reac_coef_p, spec_namelist, spec_list, 
+			Pybel_objects, nreac_p, nprod_p, species_step] = eqn_interr(num_eqn[1], naked_list_peqn, 
+				rindx_p, rstoi_p, pindx_p, pstoi_p, 
+				rate_coeff_start_mark[7], reac_coef_p, spec_namelist, spec_name, spec_smil,
+				spec_list, Pybel_objects, species_step, nreac_p, nprod_p)
 	
-		line = naked_list_eqn[eqn_step] # extract this line
-		
-		# split the line into 2 parts: equation; rate coef 
-		# (fac format doesnt have id for each equation)
-		# extract the equation (in a string)
-		eqn_regex = r"\:.*\;" # eqn starts with a : and end with a ;
-		eqn = re.findall(eqn_regex, line)[0][1:-1].strip()
-		
-		eqn_split = eqn.split()
-		eqmark_pos = eqn_split.index('=')
-		# with stoich number; rule out the photon
-		reactants = [i for i in eqn_split[:eqmark_pos] if i != '+' and i != 'hv']
-		products = [t for t in eqn_split[eqmark_pos+1:] if t != '+'] # with stoich number
-		
-		# record maximum number of reactants across all equations
-		max_no_reac = np.maximum(len(reactants), max_no_reac)
-		# record maximum number of products across all equations
-		max_no_prod = np.maximum(len(products), max_no_prod)
-
-		# append columns if needed
-		while max_no_reac > np.minimum(rindx.shape[1], rstoi.shape[1]): 
-			rindx = np.append(rindx, (np.zeros((num_eqn, 1))).astype(int), axis=1)
-			rstoi = np.append(rstoi, (np.zeros((num_eqn, 1))), axis=1)
-		while max_no_prod > np.minimum(pindx.shape[1], pstoi.shape[1]): 
-			pindx = np.append(pindx, (np.zeros((num_eqn, 1))).astype(int), axis=1)
-			pstoi = np.append(pstoi, (np.zeros((num_eqn, 1))), axis=1)
-
-		# extract the reaction rate constant (in a string)
-		rate_regex = r"\%.*\:" # rate coef starts with a % and end with a :
-		# rate_ex: rate coefficient expression in a string
-		rate_ex = re.findall(rate_regex, line)[0][1:-1].strip()
-		# convert fortran-type scientific notation to python type
-		rate_ex = formatting.SN_conversion(rate_ex)
-		# convert the rate coefficient expressions into Python readable commands
-		rate_ex = formatting.convert_rate_mcm(rate_ex)
-		if (rate_ex.find('EXP') != -1):
-			print(rate_ex)
-			sys.exit()
-		
-		# store the reaction rate for this equation (/s once any inputs applied)
-		reac_coef.append(rate_ex)
-		
-		# extract the stoichiometric number of the specii in current equation
-		reactant_step = 0
-		product_step = 0
-		stoich_regex = r"^\d*\.\d*|^\d*"
-		numr = len(reactants) # number of reactants in this equation
-		
-		
-		# left hand side of equations (losses)
-		for reactant in reactants:
-				
-			if (re.findall(stoich_regex, reactant)[0] != ''):
-				stoich_num = float(re.findall(stoich_regex, reactant)[0])
-				# name with no stoich number
-				name_only = re.sub(stoich_regex, '', reactant)
-			elif (re.findall(stoich_regex, reactant)[0] == ''):
-				stoich_num = 1.0
-				name_only = reactant
-			
-			# store stoichometry
-			rstoi[eqn_step, reactant_step] = stoich_num
-			
-			if name_only not in spec_namelist: # if new component encountered
-				spec_namelist.append(name_only) # add to chemical scheme name list
-			
-				# convert MCM chemical names to SMILES
-				if name_only in spec_name:
-					# index where xml file name matches reaction component name
-					name_indx = spec_name.index(name_only)
-					name_SMILE = spec_smil[name_indx] # SMILES of component
-				else:
-					sys.exit(str('Error: inside eqn_parser, chemical scheme name '+str(name_only)+' not found in xml file'))
-			
-				spec_list.append(name_SMILE) # list SMILE names
-				name_indx = species_step # allocate index to this species
-				# Generate pybel
-				Pybel_object = pybel.readstring('smi', name_SMILE)
-				# append to Pybel object list
-				Pybel_objects.append(Pybel_object)
-				
-				species_step += 1 # number of unique species
-				
-
-			else: # if it's a species already encountered it will be in spec_list
-				# existing index
-				name_indx = spec_namelist.index(name_only)
-			
-			# store reactant index
-			# check if index already present - i.e. component appears more than once
-			if sum(rindx[eqn_step, 0:reactant_step]==int(name_indx))>0:
-				# get pre-existing index of this component
-				exist_indx = np.where(rindx[eqn_step, 0:reactant_step]==(int(name_indx)))
-				# add to pre-existing stoichometry
-				rstoi[eqn_step, exist_indx] += rstoi[eqn_step, product_step]
-				rstoi[eqn_step, reactant_step] = 0 # remove stoichometry added above
-				reactant_step -= 1 # ignore this duplicate product
-			else:
-				rindx[eqn_step, reactant_step] = int(name_indx)
-
-			reactant_step += 1
-			
-		# number of reactants in this equation
-		nreac[eqn_step] = int(reactant_step)
-		
-		# right hand side of equations (gains)
-		for product in products:
-
-			if (re.findall(stoich_regex, product)[0] != ''):
-				stoich_num = float(re.findall(stoich_regex, product)[0])
-				name_only = re.sub(stoich_regex, '', product) # name with no stoich number
-
-			elif (re.findall(stoich_regex, product)[0] == ''):
-				stoich_num = 1.0
-				name_only = product
-			
-			# store stoichometry
-			pstoi[eqn_step, product_step] = stoich_num
-			
-			if name_only not in spec_namelist: # if new component encountered
-				spec_namelist.append(name_only)
-				
-				# convert MCM chemical names to SMILES
-				# index where xml file name matches reaction component name
-				if name_only in spec_name:
-					name_indx = spec_name.index(name_only)
-					name_SMILE = spec_smil[name_indx]
-				else:
-					sys.exit(str('Error: inside eqn_parser, chemical scheme name '+str(name_only)+' not found in xml file'))
-				
-				spec_list.append(name_SMILE) # list SMILE string of parsed species
-				name_indx = species_step # allocate index to this species
-				# Generate pybel
-				
-				Pybel_object = pybel.readstring('smi', name_SMILE)
-				# append to Pybel object list
-				Pybel_objects.append(Pybel_object)
-				
-				species_step += 1 # number of unique species
-				
-			
-
-			else: # if it's a species already encountered
-				# index of component already listed
-				name_indx = spec_namelist.index(name_only)
-				
-			# store product index
-			# check if index already present - i.e. component appears more than once
-			if sum(pindx[eqn_step, 0:product_step]==int(name_indx))>0:
-				exist_indx = np.where(pindx[eqn_step, 0:product_step]==(int(name_indx))) # get pre-existing index of this component
-				# add to pre-existing stoichometry
-				pstoi[eqn_step, exist_indx] += pstoi[eqn_step, product_step]
-				pstoi[eqn_step, product_step] = 0 # remove stoichometry added above
-				product_step -= 1 # ignore this duplicate product
-			else:
-				pindx[eqn_step, product_step] = int(name_indx)
-			product_step += 1
-		
-		# number of products in this equation
-		nprod[eqn_step] = int(product_step)
-		
+	print(rindx_p)
+	print(rstoi_p)
+	print(pindx_p)
+	print(pstoi_p)
+	ipdb.set_trace()
+	
 	if len(spec_list)!=len(spec_namelist):
 		sys.exit('Error: inside eqn_parser, length of spec_list is different to length of spec_namelist and the SMILES in the former should align with the chemical scheme names in the latter')	
 	
@@ -393,18 +258,10 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 
 	# print the brief info for the simulation to the screen
 	print('Briefing:')
-	print('Total number of equations: %i' %(num_eqn))
+	print('Total number of gas-phase equations: %i' %(num_eqn[0]))
+	print('Total number of aqueous-phase equations: %i' %(num_eqn[1]))
 	print('Total number of species found in chemical scheme file: %i\n' %(species_step))
 	
-# 	print(rindx[940,:], 'whoop',pindx[940,:])
-# 	print(spec_namelist[312])
-# 	print(spec_namelist[1])
-# 	count = 0
-# 	for i in spec_namelist:
-# 		if i == "O3":
-# 			print(count, i)
-# 		count+=1
-# 	ipdb.set_trace()
 	# outputs: 
 	
 	# rindx  - matrix to record indices of reactants (cols) in each equation (rows)

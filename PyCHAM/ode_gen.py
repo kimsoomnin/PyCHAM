@@ -1,4 +1,6 @@
-'''module to solve the gas-phase reactions odes, and odes for partitioning of gas-particle and gas-wall'''
+'''module to solve the equations for fundamental processes in PyCHAM'''
+# equations included: ODEs for gas-phase reactions, partitioning of gas-particle and 
+# gas-wall; also solution of coagulation, deposition of particles to wall and nucleation 
 
 import numpy as np
 from assimulo.problem import Explicit_Problem
