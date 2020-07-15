@@ -44,7 +44,8 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	
 	# y - initial concentrations of components (molecules/cc (air)) 
 	# num_speci - number of components
-	# num_eqn - number of equations
+	# num_eqn - number of equations related to gas-phase only [0] and related to 
+	# 			particulates [1]
 	# TEMP - temperature(s) (K) of chamber
 	# Psat - saturation vapour pressures (molecules/cm3 (air))
 	# y_dens - components' densities (kg/m3)
@@ -464,15 +465,18 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				# empty array to hold rate of change (molecules/cc(air).s)
 				dydt = np.zeros((len(y)))
 				# gas-phase rate of change ------------------------------------
-				for i in range(num_eqn): # equation loop
+				for i in range(num_eqn[0]): # equation loop
 					
 					# gas-phase rate of change (molecules/cc (air).s)
-					if (y[rindx[i, 0:nreac[i]]]==0.0).sum()>0:
-						continue
+					if (y[rindx[i, 0:nreac[i]]]==0.0).sum()>0: 
+						continue # if any reactants not present skip this reaction
 					else:
-						gprate = ((y[rindx[i, 0:nreac[i]]]**rstoi[i, 0:nreac[i]]).prod())*reac_coef[i] 
-						dydt[rindx[i, 0:nreac[i]]] -= gprate*rstoi[i, 0:nreac[i]] # loss of reactants
-						dydt[pindx[i, 0:nprod[i]]] += gprate*pstoi[i, 0:nprod[i]] # gain of products
+						gprate = ((y[rindx[i, 0:nreac[i]]]**
+									rstoi[i, 0:nreac[i]]).prod())*reac_coef[i]
+						# loss of reactants
+						dydt[rindx[i, 0:nreac[i]]] -= gprate*rstoi[i, 0:nreac[i]]
+						# gain of products
+						dydt[pindx[i, 0:nprod[i]]] += gprate*pstoi[i, 0:nprod[i]]
 				
 				# the constant gas-phase influx of components with this property
 				if const_infli_len>0:
@@ -507,6 +511,19 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 						dydt[0:num_speci] -= dydt_all
 						# particle-phase change
 						dydt[num_speci*(ibin+1):num_speci*(ibin+2)] += dydt_all
+						
+						# rate of change to particulate components due to
+						# reactions in particulates (molecules/cc (air).s)
+						for i in range(num_eqn[1]): # particulate equation loop
+							if (y[rindx_p[i, 0:nreac_p[i]]]==0.0).sum()>0: 
+								continue # if any reactants not present skip this reaction
+							else:
+								gprate = ((y[rindx_p[i, 0:nreac_p[i]]]**
+											rstoi_p[i, 0:nreac_p[i]]).prod())*reac_coef_p[i]
+								# loss of reactants
+								dydt[rindx[i, 0:nreac_p[i]]+num_speci*(ibin+1)] -= gprate*rstoi_p[i, 0:nreac_p[i]]
+								# gain of products
+								dydt[pindx[i, 0:nprod_p[i]]+num_speci*(ibin+1)] += gprate*pstoi_p[i, 0:nprod_p[i]]
 				
 				if (kgwt*Cw)>1.0e-10:
 					# -----------------------------------------------------------
