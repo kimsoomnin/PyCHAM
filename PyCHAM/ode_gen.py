@@ -1,4 +1,6 @@
-'''module to solve the gas-phase reactions odes, and odes for partitioning of gas-particle and gas-wall'''
+'''module to solve the equations for fundamental processes in PyCHAM'''
+# equations included: ODEs for gas-phase reactions, partitioning of gas-particle and 
+# gas-wall; also solution of coagulation, deposition of particles to wall and nucleation 
 
 import numpy as np
 from assimulo.problem import Explicit_Problem
@@ -624,7 +626,7 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 														0, p_char, e_field)
 						
 				# particle nucleation
-				if len(nuc_comp)>0:
+				if len(nuc_comp)>0 and (nucv1 != 0.0):
 					
 					[N_perbin, y, x[0], Varr[0], new_part_sum1] = nuc(sumt, new_part_sum1, 
 								N_perbin, y, y_mw.reshape(-1, 1), 
