@@ -44,9 +44,14 @@ def rate_valu_calc(RO2_indices, H2O, TEMP, lightm, y, time, lat, lon, act_flux_p
 	# note, using __import__ rather than import allows opening in run time, thereby using
 	# updated module
 	Rate_coeffs = __import__('Rate_coeffs') # calculate the rate coef. for each equation
-	# Calculate the new rate coef. array (/s) 
+	# calculate the new rate coefficient array for gas phase (/s) 
 	reac_coef = Rate_coeffs.evaluate_rates(RO2, H2O, TEMP, lightm, time, lat, lon, 
 											act_flux_path, DayOfYear, M_val, N2_val, 
 											O2_val, photo_par_file, Jlen)
+	Rate_coeffs_aq = __import__('Rate_coeffs_aq')
+	# calculate the new rate coefficient array for aqueous phase (/s)
+	reac_coef_aq = Rate_coeffs_aq.evaluate_rates(RO2, H2O, TEMP, lightm, time, lat, lon, 
+											act_flux_path, DayOfYear, M_val, N2_val, 
+											O2_val, photo_par_file, Jlen)
 	
-	return reac_coef
+	return(reac_coef, reac_coef_aq)

@@ -6,10 +6,11 @@ import numpy as np
 import re
 import formatting
 import pybel
+import sys
 
 def eqn_interr(num_eqn, naked_list_eqn, rindx, rstoi, pindx, pstoi, 
-				rate_coeff_start_mark, reac_coef, spec_namelist, spec_name, spec_smil,
-				spec_list, Pybel_objects, species_step, nreac, nprod):
+				chem_scheme_markers, reac_coef, spec_namelist, spec_name, spec_smil,
+				spec_list, Pybel_objects, nreac, nprod, comp_num, phase):
 				
 	# inputs: ----------------------------------------------------------------------------
 	# num_eqn - number of equations (scalar)
@@ -18,29 +19,37 @@ def eqn_interr(num_eqn, naked_list_eqn, rindx, rstoi, pindx, pstoi,
 	# rstoi - to hold stoichiometries of reactants
 	# pindx - to hold indices of products
 	# pstoi - to hold stoichiometries of products
-	# rate_coeff_start_mark - punctuation to mark the start of an equation
+	# chem_scheme_markers - markers for separating sections of the chemical scheme
 	# reac_coef - to hold reaction rate coefficients
 	# spec_namelist - name strings of components present in the scheme (not SMILES)
 	# spec_name - name string of components in xml file (not SMILES)
 	# spec_smil - SMILES from xml file
 	# spec_list - SMILES of components present in scheme
 	# Pybel_objects - list containing pybel objects
-	# species_step - number of unique components
 	# nreac - to hold number of reactions per equation
 	# nprod - number of products per equation
+	# comp_num - number of unique components in reactions across all phases
+	# phase - marker for the phase being considered: 0 for gas, 1 for particulates
 	# ------------------------------------------------------------------------------------
 	
+	max_no_reac = 0.0 # log maximum number of reactants in a reaction
+	max_no_prod = 0.0 # log maximum number of products in a reaction
 
-	# Loop through the gas-phase equations line by line and extract the information
+	# Loop through equations line by line and extract the required information
 	for eqn_step in range(num_eqn):
 	
 		line = naked_list_eqn[eqn_step] # extract this line
 		
-		# split the line into 2 parts: equation; rate coef 
-		# (fac format doesnt have id for each equation)
-		# extract the equation (in a string)
-		eqn_regex = r"\:.*\;" # eqn starts with a : and end with a ;
-		eqn = re.findall(eqn_regex, line)[0][1:-1].strip()
+		# split the line into 2 parts: equation and rate coefficient
+		# . means match with anything except a new line character., when followed by a * 
+		# means match zero or more times (so now we match with all characters in the line
+		# except for new line characters, so final part is stating the character(s) we 
+		# are specifically looking for, \\ ensures the marker is recognised
+		eqn_markers = str('\\' +  chem_scheme_markers[8]+ '.*\\' +  chem_scheme_markers[9])
+
+		# extraction the equation as a string ([0] extracts the equation section and 
+		# [1:-1] removes the bounding markers)
+		eqn = re.findall(eqn_markers, line)[0][1:-1].strip()
 		
 		eqn_split = eqn.split()
 		eqmark_pos = eqn_split.index('=')
@@ -61,10 +70,24 @@ def eqn_interr(num_eqn, naked_list_eqn, rindx, rstoi, pindx, pstoi,
 			pindx = np.append(pindx, (np.zeros((num_eqn, 1))).astype(int), axis=1)
 			pstoi = np.append(pstoi, (np.zeros((num_eqn, 1))), axis=1)
 
-		# extract the reaction rate constant (in a string)
-		rate_regex = str(rate_coeff_start_mark + '.*\:') # rate coef starts and end punctuation
-		# rate_ex: rate coefficient expression in a string
+		# ^ means occurs at start of line and, first \ means second \ can be interpreted 
+		# and second \ ensures recognition of marker
+		if phase == 0:
+			mark_indx = 0 # gas-phase
+		if phase == 1:
+			mark_indx = 7 # aqueous-phase
+		rate_coeff_start_mark = str('^\\' +  chem_scheme_markers[mark_indx])
+		# . means match with anything except a new line character, when followed by a * 
+		# means match zero or more times (so now we match with all characters in the line
+		# except for new line characters, \\ ensures the marker
+		# is recognised
+		rate_coeff_end_mark = str('.*\\' +  chem_scheme_markers[8])
+		
+		# rate coefficient starts and end punctuation
+		rate_regex = str(rate_coeff_start_mark + rate_coeff_end_mark)
+		# rate coefficient expression in a string
 		rate_ex = re.findall(rate_regex, line)[0][1:-1].strip()
+		
 		# convert fortran-type scientific notation to python type
 		rate_ex = formatting.SN_conversion(rate_ex)
 		# convert the rate coefficient expressions into Python readable commands
@@ -110,13 +133,13 @@ def eqn_interr(num_eqn, naked_list_eqn, rindx, rstoi, pindx, pstoi,
 					sys.exit(str('Error: inside eqn_parser, chemical scheme name '+str(name_only)+' not found in xml file'))
 			
 				spec_list.append(name_SMILE) # list SMILE names
-				name_indx = species_step # allocate index to this species
+				name_indx = comp_num # allocate index to this species
 				# Generate pybel
 				Pybel_object = pybel.readstring('smi', name_SMILE)
 				# append to Pybel object list
 				Pybel_objects.append(Pybel_object)
 				
-				species_step += 1 # number of unique species
+				comp_num += 1 # number of unique species
 				
 
 			else: # if it's a species already encountered it will be in spec_list
@@ -166,14 +189,14 @@ def eqn_interr(num_eqn, naked_list_eqn, rindx, rstoi, pindx, pstoi,
 					sys.exit(str('Error: inside eqn_parser, chemical scheme name '+str(name_only)+' not found in xml file'))
 				
 				spec_list.append(name_SMILE) # list SMILE string of parsed species
-				name_indx = species_step # allocate index to this species
+				name_indx = comp_num # allocate index to this species
 				# Generate pybel
 				
 				Pybel_object = pybel.readstring('smi', name_SMILE)
 				# append to Pybel object list
 				Pybel_objects.append(Pybel_object)
 				
-				species_step += 1 # number of unique species
+				comp_num += 1 # number of unique species
 				
 			
 
@@ -197,4 +220,4 @@ def eqn_interr(num_eqn, naked_list_eqn, rindx, rstoi, pindx, pstoi,
 		nprod[eqn_step] = int(product_step)
 
 	return(rindx, rstoi, pindx, pstoi, reac_coef, spec_namelist, spec_list, 
-			Pybel_objects, nreac, nprod, species_step)
+			Pybel_objects, nreac, nprod, comp_num)

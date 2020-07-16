@@ -67,7 +67,7 @@ def run(testf):
 				i = i.strip(']')
 				i = i.strip(' ')
 				dlist.append(float(i))
-			if str(line.split(',')[0]) == 'component_names':
+			if str(line.split(',')[0]) == 'component_names' or str(line.split(',')[0]) == 'seed_name':
 				i = i.strip('\n')
 				i = i.strip('[')
 				i = i.strip(']')
@@ -87,6 +87,7 @@ def run(testf):
 	# conversion factor to change gas-phase concentrations from molecules/cc 
 	# (air) into ppb
 	Cfactor = const['factor_for_multiplying_ppb_to_get_molec/cm3_with_time']
+	seed_name = const['seed_name'] # name of component comprising seeds
 
 	
 	# name of file where concentration (molecules/cc (air)) results saved
@@ -243,7 +244,7 @@ def run(testf):
 		# logarithmically
 		if space_mode == 'log':
 			ax0.set_yscale("log")
-		ax0.set_ylabel('Diameter (nm)', size=14)
+		ax0.set_ylabel('Diameter ($\mathrm{D_p}$, nm)', size=14)
 		ax0.xaxis.set_tick_params(labelsize=14)
 		ax0.yaxis.set_tick_params(labelsize=14)
 		ax0.text(x=t_array[0]/3600-(t_array[-1]/3600-t_array[0]/3600)/10.0, y=max(sbb*2*1e3)*1.05, s='a)', size=14)
@@ -256,7 +257,7 @@ def run(testf):
 		cb = plt.colorbar(p1, format=ticker.FuncFormatter(fmt), pad=0.25)
 		cb.ax.tick_params(labelsize=14)   
 		# colour bar label
-		cb.set_label('dN/dlog10(D) $\mathrm{(cm^{-3})}$', size=14, rotation=270, labelpad=20)
+		cb.set_label('dN $\mathrm{(\#\, cm^{-3})}$/dlog$\mathrm{_{10}}$$\mathrm{(D_p)}$', size=14, rotation=270, labelpad=20)
 	
 	
 		# ----------------------------------------------------------------------------------------
@@ -286,27 +287,32 @@ def run(testf):
 		# array for SOA sum with time
 		SOAvst = np.zeros((1, len(t_array)))
 		
-		final_i = 0
-		# check whether water and/or core is present
-		if PyCHAM_names[-2] == 'H2O': # if both present
-			final_i = 2
-		if PyCHAM_names[-1] == 'H2O': # if just water
-			final_i = 1
-		# note that the seed component is only registered in init_conc_func if initial
-		# particle concentration (pconc) exceeds zero, therefore particle-phase material 
-		# must be present at start of experiment (row 0 in y)
-		if final_i == 0 and y[0, num_speci:(num_speci*(num_sb+1))].sum()>1.0e-10: 
-			final_i = 1
-		
+		try:
+			wat_indx = PyCHAM_names.index('H2O') # index of water
+		except:
+			wat_indx = []
+		try:
+			see_indx = PyCHAM_names.index(seed_name[0]) # index of seed component
+		except:
+			see_indx = []
+
 		for i in range(num_sb): # size bin loop, including wall
 	
-			# sum of organics in condensed-phase at end of simulation (ug/m3 (air))
+			# sum of organics in particulates at end of simulation (ug/m3 (air))
 			if i < num_sb-1:
 			
 				# to replicate the SMPS results when using 
 				# low size bin resolution in the model, find the volume of particles, then
 				# assume a density of 1.0 g/cm3
-				SOAvst[0, :] += np.sum((y[:, ((i+1)*num_speci):((i+2)*num_speci-final_i)]/si.N_A*(y_MV[0:-final_i])*1.0e12), axis = 1)
+				SOAvst[0, :] += np.sum((y[:, ((i+1)*num_speci):((i+2)*num_speci)]/
+									si.N_A*(y_MV)*1.0e12), axis = 1)
+				if wat_indx: # subtract any water present in this size bin
+					SOAvst[0, :] -= (y[:, ((i+1)*num_speci)+wat_indx]/
+									si.N_A*(y_MV[wat_indx])*1.0e12)
+				if see_indx: # subtract any seed material present in this size bin
+					SOAvst[0, :] -= (y[:, ((i+1)*num_speci)+see_indx]/
+									si.N_A*(y_MV[see_indx])*1.0e12)
+				
 				
 		# log10 of maximum in SOA
 		SOAmax = int(np.log10(max(SOAvst[0, :])))
@@ -321,7 +327,7 @@ def run(testf):
 		par2.tick_params(axis='y', colors='black')
 		par2.spines['right'].set_color('black')
 		par2.yaxis.set_tick_params(labelsize=16)
-		par2.text((t_array/3600.0)[0], max(SOAvst[0, :])/2.0, 'assumed particle density = 1.0 $\mathrm{g\, cm^{-3}}$')
+		ax0.text((t_array/3600.0)[0], (sbb[-1]*2*1e3)/2.0, 'assumed particle density = 1.0 $\mathrm{g\, cm^{-3}}$')
 		plt.legend(fontsize=14, handles=[p3, p5] ,loc=4)
 		
 

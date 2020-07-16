@@ -610,8 +610,8 @@ class PyCHAM(QWidget):
 				print('Error: the number of times given for constant influx by the const_infl_t variable inside the model variables input file does not match the number of times with constant influx concentrations provided by the Cinfl variable of that file, please see the README for guidance.')
 				sys.exit()
 				
-		if len(chem_scheme_markers)!=7:
-			print('Error: length of chem_scheme_markers (specified in model variables input file) is not 7 and should be, please see README for guidance')
+		if len(chem_scheme_markers) != 10:
+			print('Error: length of chem_scheme_markers (specified in model variables input file) is not 10 and should be (even if commas separate empty inputs), please see README for guidance')
 		# components with assigned vapour pressures
 		if len(vol_Comp)!=len(volP):
 			print('Error: the number of components with assigned vapour pressures does not equal the number of assigned vapour pressures (vol_Comp and volP variables, respectively, in the model variables input folder), please see the README for guidance')
@@ -687,9 +687,9 @@ class PyCHAM(QWidget):
 		import front as model
 		dirpath = os.getcwd() # get current path
 		if os.path.isfile(dirpath+'/testf.txt'):
-			testf=2	
+			testf = 2	
 		else:
-			testf=0
+			testf = 0
 		# call on model to run
 		t = threading.Thread(target=model.run(testf))
 		t.daemon = False
@@ -701,9 +701,9 @@ class PyCHAM(QWidget):
 		
 		dirpath = os.getcwd() # get current path
 		if os.path.isfile(dirpath+'/testf.txt'):
-			testf=1		
+			testf = 1		
 		else:
-			testf=0
+			testf = 0
 		
 		# pass the name of the folder where results are saved
 		t = threading.Thread(target=plotter.run(testf))

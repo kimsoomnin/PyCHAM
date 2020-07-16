@@ -38,7 +38,9 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			corei, const_compi, const_comp, const_infli, Cinfl, act_coeff, p_char, 
 			e_field, const_infl_t, int_tol, photo_par_file, Jlen, dil_fac, pconct,
 			lowersize, uppersize, mean_rad, std, update_step, Pybel_objects, tempt,
-			Cfactor, coag_on):
+			Cfactor, coag_on, rindx_aq, pindx_aq, rstoi_aq, 
+			pstoi_aq, nreac_aq, nprod_aq, prodn_aq, 
+			reacn_aq):
 
 	# inputs:---------------------------------------------------
 	
@@ -112,6 +114,15 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	# Cfactor - one billionth the number of molecules in a unit volume of chamber
 	#			at experiment start (molecules/cc)
 	# coag_on - flag to say whether coagulation to be modelled or not
+	# rindx_aq - reactant indices per aqueous reaction
+	# pindx_aq - product indices per aqueous reaction
+	# rstoi_aq - stoichiometries of reactants per aqueous reaction
+	# pstoi_aq - stoichiometries of products per aqueous reaction
+	# nreac_aq - total number of reactants per aqueous reaction
+	# nprod_aq - total number of products per aqueous reaction
+	# prodn_aq - maximum number of products per aqueous reaction
+	# reacn_aq - maximum number of reactants per aqueous reaction
+			
 	# ------------------------------------------------------------------------------------
 	
 	# testing mode
@@ -431,7 +442,7 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			a = int(a[0])
 			
 		# update reaction rate coefficients
-		reac_coef = rate_valu_calc(RO2_indices, y[H2Oi], temp_now, lightm, y, 
+		[reac_coef, reac_coef_aq] = rate_valu_calc(RO2_indices, y[H2Oi], temp_now, lightm, y, 
 									daytime+sumt, 
 									lat, lon, act_flux_path, DayOfYear, Pnow, 
 									photo_par_file, Jlen)
@@ -458,7 +469,7 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 		while redt == 1:
 			
 			# numba compiler to convert to machine code
-			@jit(f8[:](f8, f8[:]), nopython=True, cache=False)
+# 			@jit(f8[:](f8, f8[:]), nopython=True, cache=False)
 			# ode solver -------------------------------------------------------------
 			def dydt(t, y):
 				
@@ -515,15 +526,15 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 						# rate of change to particulate components due to
 						# reactions in particulates (molecules/cc (air).s)
 						for i in range(num_eqn[1]): # particulate equation loop
-							if (y[rindx_p[i, 0:nreac_p[i]]]==0.0).sum()>0: 
+							if (y[rindx_aq[i, 0:nreac_aq[i]]]==0.0).sum()>0: 
 								continue # if any reactants not present skip this reaction
 							else:
-								gprate = ((y[rindx_p[i, 0:nreac_p[i]]]**
-											rstoi_p[i, 0:nreac_p[i]]).prod())*reac_coef_p[i]
+								gprate = ((y[rindx_aq[i, 0:nreac_aq[i]]]**
+											rstoi_aq[i, 0:nreac_aq[i]]).prod())*reac_coef_aq[i]
 								# loss of reactants
-								dydt[rindx[i, 0:nreac_p[i]]+num_speci*(ibin+1)] -= gprate*rstoi_p[i, 0:nreac_p[i]]
+								dydt[rindx_aq[i, 0:nreac_aq[i]]+num_speci*(ibin+1)] -= gprate*rstoi_aq[i, 0:nreac_aq[i]]
 								# gain of products
-								dydt[pindx[i, 0:nprod_p[i]]+num_speci*(ibin+1)] += gprate*pstoi_p[i, 0:nprod_p[i]]
+								dydt[pindx_aq[i, 0:nprod_aq[i]]+num_speci*(ibin+1)] += gprate*pstoi_aq[i, 0:nprod_aq[i]]
 				
 				if (kgwt*Cw)>1.0e-10:
 					# -----------------------------------------------------------
@@ -643,7 +654,7 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 														0, p_char, e_field)
 						
 				# particle nucleation
-				if len(nuc_comp)>0:
+				if len(nuc_comp)>0 and nucv1>0.0:
 					
 					[N_perbin, y, x[0], Varr[0], new_part_sum1] = nuc(sumt, new_part_sum1, 
 								N_perbin, y, y_mw.reshape(-1, 1), 

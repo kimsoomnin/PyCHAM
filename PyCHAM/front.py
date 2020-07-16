@@ -19,9 +19,10 @@ from volat_calc import volat_calc
 
 def run(testf):
 	
-	# inputs:
+	# inputs: ----------------------------------------------------------------------------
 	# testf - test flag, 1 for test mode (called by test_front.py), 2 for test mode 
 	# (called by test_PyCHAM.py), 0 for normal mode
+	# ------------------------------------------------------------------------------------
 	
 	if testf==2:
 		print('"Run Model" button works fine')
@@ -52,10 +53,12 @@ def run(testf):
 	# obtain gas-phase reaction info
 	[rindx, pindx, rstoi, pstoi, reac_coef, spec_list, Pybel_objects, num_eqn, num_speci, 
 		RO2_indices, nreac, nprod, prodn, 
-		reacn, spec_namelist, Jlen] = eqn_parser.extract_mechanism(fname, xmlname, 
-							PInit, testf, RH, start_sim_time, lat, 
-							lon, act_flux_path, DayOfYear, chem_scheme_markers, 
-							photo_par_file)
+		reacn, spec_namelist, Jlen, rindx_aq, pindx_aq, rstoi_aq, 
+		pstoi_aq, reac_coef_aq, nreac_aq, nprod_aq, prodn_aq, 
+		reacn_aq] = eqn_parser.extract_mechanism(fname, xmlname, 
+		PInit, testf, RH, start_sim_time, lat, 
+		lon, act_flux_path, DayOfYear, chem_scheme_markers, 
+		photo_par_file)
 
 	if testf==1:
 		print('eqn_parser.extract_mechanism called and returned fine')
@@ -141,7 +144,9 @@ def run(testf):
 				corei, const_compi, const_comp, const_infli, Cinfl, act_coeff, p_char, 
 				e_field, const_infl_t, int_tol, photo_par_file, Jlen, dil_fac, pconct,
 				lowersize, uppersize, mean_rad, std, update_step, Pybel_objects, tempt,
-				Cfactor, coag_on)
+				Cfactor, coag_on, rindx_aq, pindx_aq, rstoi_aq, 
+				pstoi_aq, nreac_aq, nprod_aq, prodn_aq, 
+				reacn_aq)
 				
 	
 	t2 = time.clock() # get wall clock time after call to solver
@@ -171,7 +176,7 @@ def run(testf):
 							y_mw, num_speci, 
 							resfname, rbou, Cfactor, MV, testf, dydt_vst, dydt_trak,
 							spec_namelist, rbou00, upper_bin_rad_amp, Cfactor_vst, 
-							time_taken)
+							time_taken, seed_name)
 	if testf==1:
 		print('saving called and returned successfully')
 	return()

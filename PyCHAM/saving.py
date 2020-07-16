@@ -1,4 +1,5 @@
 '''module to save PyCHAM results to files'''
+# module called following simulation in PyCHAM to store generated and input information
 
 import os
 import sys
@@ -6,10 +7,9 @@ import numpy as np
 
 def saving(filename, y_mat, t_out, Nresult_dry, Nresult_wet, x2, numsb, y_mw, num_speci, 
 			savefolder, rbou, Cfactor, MV, testf, dydt_vst, dydt_trak, spec_namelist, 
-			rbou00, upper_bin_rad_amp, Cfactor_vst, time_taken):
+			rbou00, upper_bin_rad_amp, Cfactor_vst, time_taken, seed_name):
 			
-	#  -------------------------------
-	# inputs:
+	# inputs: ----------------------------------------------------------------------------
 	
 	# filename - name of inputs file name
 	# y_mat - species (columns) concentrations with time (rows) (molecules/cc (air))
@@ -28,6 +28,7 @@ def saving(filename, y_mat, t_out, Nresult_dry, Nresult_wet, x2, numsb, y_mw, nu
 	# Cfactor_vst - one billionth the molecular concentration in a unit volume of chamber
 	#				(molecules/cc) per recording time step
 	# time_taken - computer time for entire simulation (s)
+	# seed_name - name of seed component
 	# -------------------------------
 	
 	if testf==1:
@@ -53,6 +54,7 @@ def saving(filename, y_mat, t_out, Nresult_dry, Nresult_wet, x2, numsb, y_mw, nu
 	const["component_names"] = spec_namelist
 	const["factor_for_multiplying_ppb_to_get_molec/cm3_with_time"] = (Cfactor_vst.tolist())
 	const["simulation_computer_time(s)"] = time_taken
+	const["seed_name"] = seed_name
 	with open(os.path.join(output_by_sim,'model_and_component_constants'),'w') as f:
 		for key in const.keys():
 			f.write("%s,%s\n"%(key, const[key]))
