@@ -198,7 +198,6 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 		else:
 			
 			marker = str('^\\' +  chem_scheme_markers[8])
-			print('whoop0', marker, line1)
 			if (re.match(marker, line1) != None):
 				
 				# second check is whether markers for starting reaction rate coefficients
@@ -206,13 +205,11 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 				eqn_markers = [str('.*\\' +  chem_scheme_markers[9]), str('.*\\' +  chem_scheme_markers[11])]
 				if (re.match(eqn_markers[0], line1) != None and 
 					re.match(eqn_markers[1], line1) != None):
-					print('whoop1')
 					naked_list_peqn.append(line1) # store reaction equations
 		
 			
 		# --------------------------------------------------------------------------------
 	# format the equation list
-	print('whoop', naked_list_peqn)
 	
 	# get number of equations for phases
 	num_eqn = np.array((len(naked_list_eqn), len(naked_list_peqn)))
