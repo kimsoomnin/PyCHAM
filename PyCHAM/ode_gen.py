@@ -704,7 +704,7 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				[t_out, y_mat, Nresult_dry, Nresult_wet, x2, 
 					dydt_vst, Cfactor_vst] = recording(ythen, 
 					N_perbin, x, save_count, 
-					sumt_rec, y_mat, Nresult_dry, Nresult_wet, x2, t_out, int(end_sim_time/save_step), 
+					sumt_rec, y_mat, Nresult_dry, Nresult_wet, x2, t_out, math.ceil(end_sim_time/save_step), 
 					num_speci, num_sb, y_mw[:, 0], y_dens[:, 0]*1.0e-3, yp, Vbou, rindx, 
 					rstoi, pindx, nprod, dydt_vst, RO2_indices, H2Oi, temp_now, lightm, nreac,
 					pconc, core_diss, Psat, kelv_fac, kimt, kgwt, Cw, daytime+sumt, lat, lon, 
@@ -715,7 +715,7 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				
 			# ensure result at simulation end captured - won't be captured using the above
 			# condition if the total simulation time is not divisible by save_step
-			if (save_step*save_count-sumt)>1.0e-10 and np.abs(sumt-end_sim_time)<1.0e-10:
+			if (save_step*save_count-sumt)>0.0 and np.abs(sumt-end_sim_time)<1.0e-10 and save_count != math.ceil(end_sim_time/save_step)+1:
 			
 				# convert list to numpy array
 				t_array = np.array(t_array)
@@ -730,7 +730,7 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				[t_out, y_mat, Nresult_dry, Nresult_wet, x2, 
 					dydt_vst, Cfactor_vst] = recording(ythen, 
 					N_perbin, x, save_count, 
-					sumt_rec, y_mat, Nresult_dry, Nresult_wet, x2, t_out, int(end_sim_time/save_step), 
+					sumt_rec, y_mat, Nresult_dry, Nresult_wet, x2, t_out, math.ceil(end_sim_time/save_step), 
 					num_speci, num_sb, y_mw[:, 0], y_dens[:, 0]*1.0e-3, yp, Vbou, rindx, 
 					rstoi, pindx, nprod, dydt_vst, RO2_indices, H2Oi, temp_now, lightm, nreac,
 					pconc, core_diss, Psat, kelv_fac, kimt, kgwt, Cw, daytime+sumt, lat, lon, 
