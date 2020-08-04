@@ -12,7 +12,7 @@ import pybel
 import formatting
 import xmltodict # for opening and converting xml files to python dictionaries
 import ipdb
-from water_calc import water_calc
+from eqn_interr import eqn_interr
 
 # ----------Extraction of eqn info----------
 # Extract the mechanism information
@@ -32,6 +32,7 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 	if testf == 1: # for just testing mode
 		return(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
     
+	print('Now parsing the equation information ... \n')
     
 	# open the chemical scheme file
 	f_open_eqn = open(filename, mode='r')
@@ -45,7 +46,8 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 		print('Eqn file not closed')
 		sys.exit()
 	
-	naked_list_eqn = [] # empty list for equation reactions
+	naked_list_eqn = [] # empty list for gas-phase equation reactions
+	naked_list_peqn = [] # empty list for other equation reactions
 	RO2_names = [] # empty list for peroxy radicals
 	rrc = [] # empty list for reaction rate coefficients
 	rrc_name = [] # empty list for reaction rate coefficient labels
@@ -55,43 +57,86 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 	RO2_count = 0 # count on number of lines considered in peroxy radical list
 	
 	# obtain lists for reaction rate coefficients, peroxy radicals and equation reactions
-	# using chemical scheme input file separators
+	# using markers for separating chemical scheme elements
 	for line in total_list_eqn:
 		
 		line1 = line.strip() # remove bounding white space
 		
 		# --------------------------------------------------------------------------------
 		# generic reaction rate coefficients part
+		# marker at end of generic reaction rate coefficient lines
+		end_mark = str('$\\' + chem_scheme_markers[7])
 		# look out for start of generic reaction rate coefficients
 		# could be generic reaction coefficient if just one = in line
+		
 		if len(line1.split('='))==2:
-
-			# dont consider if start of peroxy radical list
-			if (line1.split('=')[0]).strip() != chem_scheme_markers[1]:
-				# don't consider if a chemical scheme reaction
-				if ((line1.split('=')[0]).strip())[0] != chem_scheme_markers[0]:
-					# remove end characters
-					line2 = line1.replace(str(chem_scheme_markers[6]), '')
-					# remove all white space
-					line2 = line2.replace(' ', '')
-					# convert fortran-type scientific notation to python type
-					line2 = formatting.SN_conversion(line2)
-					# ensure rate coefficient is python readable
-					line2 = formatting.convert_rate_mcm(line2)
-					rrc.append(line2.strip())
-					# get just name of reaction rate coefficient
-					rrc_name.append((line2.split('=')[0]).strip())
+			rrc_flag = 1
+			# don't record if nothing preceding '=' (can occur in KPP files, e.g.
+			# =IGNORE)
+			if (len((line1.split('=')[0]).strip()) == 0):
+				rrc_flag = 0
+				# don't record if this just an IGNORE command
+			if len((line1.split('=')[1]).strip()) >= 6:
+				if (line1.split('=')[1]).strip()[0:6]=='IGNORE':
+					rrc_flag = 0
+			# don't record if marker (if one present) for end of generic reaction rate
+			# coefficient lines not present
+			if len(chem_scheme_markers[7])>0:
+				if re.match(end_mark, line1) == None:
+					rrc_flag = 0
+			
+			if rrc_flag == 1: 
+			
+				# dont consider if start of peroxy radical list
+				if (line1.split('=')[0]).strip() != chem_scheme_markers[1]:
+					# don't consider if a gas-phase chemical scheme reaction
+					if ((line1.split('=')[0]).strip())[0] != chem_scheme_markers[0]:
+						# don't consider if an aqueous-phase chemical scheme reaction
+						if ((line1.split('=')[0]).strip())[0] != chem_scheme_markers[8]:
+							# remove end characters
+							line2 = line1.replace(str(chem_scheme_markers[7]), '')
+							# remove all white space
+							line2 = line2.replace(' ', '')
+							# convert fortran-type scientific notation to python type
+							line2 = formatting.SN_conversion(line2)
+							# ensure rate coefficient is python readable
+							line2 = formatting.convert_rate_mcm(line2)
+							rrc.append(line2.strip())
+							# get just name of generic reaction rate coefficient
+							rrc_name.append((line2.split('=')[0]).strip())
 			
 		# --------------------------------------------------------------------------------
 		# peroxy radical part
 		# now start logging peroxy radicals
-		if (re.match(chem_scheme_markers[1], line1) != None):
-			pr_flag = 1
-		if RO2_count == float(chem_scheme_markers[5]): # no longer log peroxy radicals
-			pr_flag=0
-		if (pr_flag==1):
+		
+		RO2_start_mark = str('.*' + chem_scheme_markers[1])
+		
+		# if starting marker for peroxy radical list seen, flag that recording needed
+		if (re.match(RO2_start_mark, line1) != None):
+			# to double check that recording needed for peroxy radicals (in case 
+			# chem_scheme_markers[1] is not unique
+			
+			# first check whether the RO2 list comprises just one line, as this will
+			# mean its end marker is present
+			if (len(chem_scheme_markers[5].strip()) > 0):
+				# .* allows search across all elements of line, \\ ensures marker is
+				# recognised as string
+				mark = str('.*\\' + chem_scheme_markers[5])
+				if (re.match(mark, line1) != None):
+					pr_flag = 1
+			
+			# look for presence of marker for RO2 list continuing onto next line, which
+			# confirms this is the RO2 list when it covers more than one line
+			# .* allows search across all elements of line, \\ ensures marker is
+			# recognised as string
+			mark = str('.*\\' + chem_scheme_markers[6])
+			if (re.match(mark, line1) != None):
+				pr_flag = 1
+		
+		if (pr_flag == 1):
 			# get the elements in line separated by peroxy radical separator
 			line2 = line1.split(chem_scheme_markers[2])
+			
 			RO2_count += 1 # count on number of lines considered in peroxy radical list
 			
 			for line3 in line2: # loop through elements in line
@@ -101,54 +146,76 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 					line3 = (line3.split(';'))[0]
 				if len(line3.split('&'))>1: # in case of RO2 list finishing with &
 					line3 = (line3.split('&'))[0]
+				
+				# remove any white space
+				line3 = line3.strip()
 				# don't include white space or ampersands
-				if (line3.strip() == '' or line3.strip() == '&'):
+				if (line3 == '' or line3 == '&'):
 					continue
+				
 				else: # if not these, then first strip surrounding marks
 					if line3[0:len(chem_scheme_markers[3])] == chem_scheme_markers[3]:
 						line3 = line3[len(chem_scheme_markers[3])::]
-					if line3[-len(chem_scheme_markers[4]):-1] == chem_scheme_markers[4]:
+					if line3[-len(chem_scheme_markers[4])::] == chem_scheme_markers[4]:
 						line3 = line3[0:-len(chem_scheme_markers[4])]
-					RO2_names.append(line3.strip())
-		# --------------------------------------------------------------------------------
-		# reaction equation part
-		if (re.match(chem_scheme_markers[0], line1) != None):
-			naked_list_eqn.append(line1) # store reaction equations
-
+					
+					RO2_names.append(line3)
+			# check for end of RO2 list - given either by marker for end or absence of
+			# marker for continuation onto next line of RO2
+			# check for marker for end of RO2 list
+			if (len(chem_scheme_markers[5].strip()) > 0):
+				# .* allows search across all elements of line, \\ ensures marker is
+				# recognised as string
+				mark = str('.*\\' + chem_scheme_markers[5])
+				if (re.match(mark, line1) != None):
+					pr_flag = 0
 			
+			else: # look for absence of marker for RO2 list continuing onto next line
+				# .* allows search across all elements of line, \\ ensures marker is
+				# recognised as string
+				mark = str('.*\\' + chem_scheme_markers[6])
+				if (re.match(mark, line1) == None):
+					pr_flag = 0
 		# --------------------------------------------------------------------------------
-	
-	# format the equation list
-
-	# naked_list_eqn contains everything except the comments starting with //
-	print('Now parsing the eqn info...\n')
-	
-	# first loop through equation list to concatenate any multiple lines that hold just
-	# one equation, note this depends on a symbol representing the start and end of
-	# and equation (inside MCM this is % for start and ; for end)
-	for iline in range (0, len(naked_list_eqn)):
-		
-		# keep track of when we reach end of naked_list_eqn (required as naked_list_eqn
-		# may shorten)
-		if (iline+1)==len(naked_list_eqn):
-			break
-			
-		# if one equation already on one line
-		if (re.search(r'%', naked_list_eqn[iline])!=None and re.search(r';', naked_list_eqn[iline])!=None):
+		# gas-phase reaction equation part
+		# ^ means occurs at start of line and, first \ means second \ can be interpreted 
+		# and second \ ensures recognition of marker
+		marker = str('^\\' +  chem_scheme_markers[0])
+		# first check is whether equation start marker is present
+		if (re.match(marker, line1) != None):
+			# second check is whether markers for starting reaction rate coefficients
+			# part, and markers for end of equation lines, are present
+			eqn_markers = [str('.*\\' +  chem_scheme_markers[9]), str('.*\\' +  chem_scheme_markers[11])]
+			if (re.match(eqn_markers[0], line1) != None and 
+				re.match(eqn_markers[1], line1) != None):
+				naked_list_eqn.append(line1) # store reaction equations
+		# aqueous-phase reaction equation part
+		# ^ means occurs at start of line and, first \ means second \ can be interpreted 
+		# and second \ ensures recognition of marker
+		# first, check if a marker given, if not bypass
+		if chem_scheme_markers[8] == '':
 			continue
-		# if spread across more than one line
 		else:
-			con_count = 1 # count number of lines that need concatenating
-			iline2 = iline # index for further lines
-			while con_count!=0:
-				iline2 += 1 # move onto next line
-				naked_list_eqn[iline] = str(naked_list_eqn[iline]+naked_list_eqn[iline2])
-				if re.search(r';', naked_list_eqn[iline2])!=None:
-					# remove concatenated line(s) from original list
-					naked_list_eqn = naked_list_eqn[0:iline]+naked_list_eqn[iline2+1::]
-					con_count = 0 # finish concatenating
+			
+			marker = str('^\\' +  chem_scheme_markers[8])
+			print('whoop0', marker, line1)
+			if (re.match(marker, line1) != None):
+				
+				# second check is whether markers for starting reaction rate coefficients
+				# part, and markers for end of equation lines, are present
+				eqn_markers = [str('.*\\' +  chem_scheme_markers[9]), str('.*\\' +  chem_scheme_markers[11])]
+				if (re.match(eqn_markers[0], line1) != None and 
+					re.match(eqn_markers[1], line1) != None):
+					print('whoop1')
+					naked_list_peqn.append(line1) # store reaction equations
+		
+			
+		# --------------------------------------------------------------------------------
+	# format the equation list
+	print('whoop', naked_list_peqn)
 	
-	num_eqn = len(naked_list_eqn) # get number of equations
+	# get number of equations for phases
+	num_eqn = np.array((len(naked_list_eqn), len(naked_list_peqn)))
 	
 	
 	# --open and initialise the xml file for converting chemical names to SMILES-----
@@ -169,214 +236,70 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 			 spec_smil[i] = '['+spec_name[i]+']'
 		else:
 			 spec_smil[i] = spec_name[i] 
-    
-	species_step = 0 # log the number of unique species
-	max_no_reac = 0.0 # log maximum number of reactants in a reaction
-	max_no_prod = 0.0 # log maximum number of products in a reaction
 	
-	species_step = 0 # ready for equation loop
+	# initialising variables for equation interrogator (eqn_interr)
 	
-	# initialising lists
-	
+	comp_num = 0 # count the number of unique components
 	# matrix to record indices of reactants (cols) in each equation (rows)
-	rindx = np.zeros((num_eqn, 1)).astype(int)
+	rindx = np.zeros((num_eqn[0], 1)).astype(int)
+	rindx_p = np.zeros((num_eqn[1], 1)).astype(int)
 	# matrix to record indices of products (cols) in each equation (rows)
-	pindx = np.zeros((num_eqn, 1)).astype(int)
-	# matrix to record stoichometries of reactants (cols) in each equation (rows)
-	rstoi = np.zeros((num_eqn, 1))
-	# matrix to record stoichometries of products (cols) in each equation (rows)
-	pstoi = np.zeros((num_eqn, 1))
-	# array to store number of reactants and products in an equation
-	nreac = np.empty(num_eqn, dtype=np.int8)
-	nprod = np.empty(num_eqn, dtype=np.int8)
+	pindx = np.zeros((num_eqn[0], 1)).astype(int)
+	pindx_p = np.zeros((num_eqn[1], 1)).astype(int)
+	# matrix to record stoichiometries of reactants (cols) in each equation (rows)
+	rstoi = np.zeros((num_eqn[0], 1))
+	rstoi_p = np.zeros((num_eqn[1], 1))
+	# matrix to record stoichiometries of products (cols) in each equation (rows)
+	pstoi = np.zeros((num_eqn[0], 1))
+	pstoi_p = np.zeros((num_eqn[1], 1))
+	# arrays to store number of reactants and products in gas-phase equations
+	nreac = np.empty(num_eqn[0], dtype=np.int8)
+	nprod = np.empty(num_eqn[0], dtype=np.int8)
+	nreac_p = np.empty(num_eqn[1], dtype=np.int8)
+	nprod_p = np.empty(num_eqn[1], dtype=np.int8)
 	# list for equation reaction rate coefficients
 	reac_coef = []
+	reac_coef_p = []
 	# list for components' SMILE strings
 	spec_list = []
 	# list of Pybel objects
 	Pybel_objects = []
-	# a new list for the name strings of species presenting in the scheme (not SMILES)
+	# a new list for the name strings of species presented in the scheme (not SMILES)
 	spec_namelist = []
 	
-	# Loop through the equations line by line and extract the information
-	for eqn_step in range(num_eqn):
+	# get equation information for gas-phase reactions
+	[rindx, rstoi, pindx, pstoi, reac_coef, spec_namelist, spec_list, 
+			Pybel_objects, nreac, nprod, comp_num] = eqn_interr(num_eqn[0], naked_list_eqn, 
+				rindx, rstoi, pindx, pstoi, 
+				chem_scheme_markers, reac_coef, spec_namelist, spec_name, spec_smil,
+				spec_list, Pybel_objects, nreac, nprod, comp_num, 0)
+	# get equation information for aqueous-phase reactions
+	[rindx_aq, rstoi_aq, pindx_aq, pstoi_aq, reac_coef_aq, spec_namelist, spec_list, 
+			Pybel_objects, nreac_aq, nprod_aq, comp_num] = eqn_interr(num_eqn[1], naked_list_peqn, 
+				rindx_p, rstoi_p, pindx_p, pstoi_p, 
+				chem_scheme_markers, reac_coef_p, spec_namelist, spec_name, spec_smil,
+				spec_list, Pybel_objects, nreac_p, nprod_p, comp_num, 1)
 	
-		line = naked_list_eqn[eqn_step] # extract this line
-		
-		# split the line into 2 parts: equation; rate coef 
-		# (fac format doesnt have id for each equation)
-		# extract the equation (in a string)
-		eqn_regex = r"\:.*\;" # eqn starts with a : and end with a ;
-		eqn = re.findall(eqn_regex, line)[0][1:-1].strip()
-		
-		eqn_split = eqn.split()
-		eqmark_pos = eqn_split.index('=')
-		# with stoich number; rule out the photon
-		reactants = [i for i in eqn_split[:eqmark_pos] if i != '+' and i != 'hv']
-		products = [t for t in eqn_split[eqmark_pos+1:] if t != '+'] # with stoich number
-		
-		# record maximum number of reactants across all equations
-		max_no_reac = np.maximum(len(reactants), max_no_reac)
-		# record maximum number of products across all equations
-		max_no_prod = np.maximum(len(products), max_no_prod)
-
-		# append columns if needed
-		while max_no_reac > np.minimum(rindx.shape[1], rstoi.shape[1]): 
-			rindx = np.append(rindx, (np.zeros((num_eqn, 1))).astype(int), axis=1)
-			rstoi = np.append(rstoi, (np.zeros((num_eqn, 1))), axis=1)
-		while max_no_prod > np.minimum(pindx.shape[1], pstoi.shape[1]): 
-			pindx = np.append(pindx, (np.zeros((num_eqn, 1))).astype(int), axis=1)
-			pstoi = np.append(pstoi, (np.zeros((num_eqn, 1))), axis=1)
-
-		# extract the reaction rate constant (in a string)
-		rate_regex = r"\%.*\:" # rate coef starts with a % and end with a :
-		# rate_ex: rate coefficient expression in a string
-		rate_ex = re.findall(rate_regex, line)[0][1:-1].strip()
-		# convert fortran-type scientific notation to python type
-		rate_ex = formatting.SN_conversion(rate_ex)
-		# convert the rate coefficient expressions into Python readable commands
-		rate_ex = formatting.convert_rate_mcm(rate_ex)
-		if (rate_ex.find('EXP') != -1):
-			print(rate_ex)
-			sys.exit()
-		
-		# store the reaction rate for this equation (/s once any inputs applied)
-		reac_coef.append(rate_ex)
-		
-		# extract the stoichiometric number of the specii in current equation
-		reactant_step = 0
-		product_step = 0
-		stoich_regex = r"^\d*\.\d*|^\d*"
-		numr = len(reactants) # number of reactants in this equation
-		
-		
-		# left hand side of equations (losses)
-		for reactant in reactants:
-				
-			if (re.findall(stoich_regex, reactant)[0] != ''):
-				stoich_num = float(re.findall(stoich_regex, reactant)[0])
-				# name with no stoich number
-				name_only = re.sub(stoich_regex, '', reactant)
-			elif (re.findall(stoich_regex, reactant)[0] == ''):
-				stoich_num = 1.0
-				name_only = reactant
-			
-			# store stoichometry
-			rstoi[eqn_step, reactant_step] = stoich_num
-			
-			if name_only not in spec_namelist: # if new component encountered
-				spec_namelist.append(name_only) # add to chemical scheme name list
-			
-				# convert MCM chemical names to SMILES
-				if name_only in spec_name:
-					# index where xml file name matches reaction component name
-					name_indx = spec_name.index(name_only)
-					name_SMILE = spec_smil[name_indx] # SMILES of component
-				else:
-					sys.exit(str('Error: inside eqn_parser, chemical scheme name '+str(name_only)+' not found in xml file'))
-			
-				spec_list.append(name_SMILE) # list SMILE names
-				name_indx = species_step # allocate index to this species
-				# Generate pybel
-				Pybel_object = pybel.readstring('smi', name_SMILE)
-				# append to Pybel object list
-				Pybel_objects.append(Pybel_object)
-				
-				species_step += 1 # number of unique species
-				
-
-			else: # if it's a species already encountered it will be in spec_list
-				# existing index
-				name_indx = spec_namelist.index(name_only)
-			
-			# store reactant index
-			# check if index already present - i.e. component appears more than once
-			if sum(rindx[eqn_step, 0:reactant_step]==int(name_indx))>0:
-				# get pre-existing index of this component
-				exist_indx = np.where(rindx[eqn_step, 0:reactant_step]==(int(name_indx)))
-				# add to pre-existing stoichometry
-				rstoi[eqn_step, exist_indx] += rstoi[eqn_step, product_step]
-				rstoi[eqn_step, reactant_step] = 0 # remove stoichometry added above
-				reactant_step -= 1 # ignore this duplicate product
-			else:
-				rindx[eqn_step, reactant_step] = int(name_indx)
-
-			reactant_step += 1
-			
-		# number of reactants in this equation
-		nreac[eqn_step] = int(reactant_step)
-		
-		# right hand side of equations (gains)
-		for product in products:
-
-			if (re.findall(stoich_regex, product)[0] != ''):
-				stoich_num = float(re.findall(stoich_regex, product)[0])
-				name_only = re.sub(stoich_regex, '', product) # name with no stoich number
-
-			elif (re.findall(stoich_regex, product)[0] == ''):
-				stoich_num = 1.0
-				name_only = product
-			
-			# store stoichometry
-			pstoi[eqn_step, product_step] = stoich_num
-			
-			if name_only not in spec_namelist: # if new component encountered
-				spec_namelist.append(name_only)
-				
-				# convert MCM chemical names to SMILES
-				# index where xml file name matches reaction component name
-				if name_only in spec_name:
-					name_indx = spec_name.index(name_only)
-					name_SMILE = spec_smil[name_indx]
-				else:
-					sys.exit(str('Error: inside eqn_parser, chemical scheme name '+str(name_only)+' not found in xml file'))
-				
-				spec_list.append(name_SMILE) # list SMILE string of parsed species
-				name_indx = species_step # allocate index to this species
-				# Generate pybel
-				
-				Pybel_object = pybel.readstring('smi', name_SMILE)
-				# append to Pybel object list
-				Pybel_objects.append(Pybel_object)
-				
-				species_step += 1 # number of unique species
-				
-			
-
-			else: # if it's a species already encountered
-				# index of component already listed
-				name_indx = spec_namelist.index(name_only)
-				
-			# store product index
-			# check if index already present - i.e. component appears more than once
-			if sum(pindx[eqn_step, 0:product_step]==int(name_indx))>0:
-				exist_indx = np.where(pindx[eqn_step, 0:product_step]==(int(name_indx))) # get pre-existing index of this component
-				# add to pre-existing stoichometry
-				pstoi[eqn_step, exist_indx] += pstoi[eqn_step, product_step]
-				pstoi[eqn_step, product_step] = 0 # remove stoichometry added above
-				product_step -= 1 # ignore this duplicate product
-			else:
-				pindx[eqn_step, product_step] = int(name_indx)
-			product_step += 1
-		
-		# number of products in this equation
-		nprod[eqn_step] = int(product_step)
-		
 	if len(spec_list)!=len(spec_namelist):
 		sys.exit('Error: inside eqn_parser, length of spec_list is different to length of spec_namelist and the SMILES in the former should align with the chemical scheme names in the latter')	
 	
 	# number of columns in rindx and pindx
 	reacn = rindx.shape[1]
-	prodn = pindx.shape[1]  
+	prodn = pindx.shape[1]
+	reacn_aq = rindx_aq.shape[1]
+	prodn_aq = pindx_aq.shape[1]  
 	
 	# create a 2 column array, the first column with the RO2 list index of any RO2 species
-	# that appear in the species list, the second column for its index in the species list
+	# that appears in the species list, the second column for its index in the species 
+	# list
 	RO2_indices = write_RO2_indices(spec_namelist, RO2_names)
 	
 	# automatically generate the Rate_coeffs module that will allow rate coefficients to
-	# be calculated inside ode_gen module
-	# now create reaction rate file (reaction rates are set up to have units /s)
+	# be calculated inside ode_gen module (/s) for gas phase
+	
 	write_rate_file(reac_coef, rrc, rrc_name, testf)
+	# repeat for aqueous phase - creates a different file to gas phase one
+	write_rate_file(reac_coef_aq, rrc, rrc_name, 3)
 
 	# number of photolysis reactions, if this relevant
 	cwd = os.getcwd() # address of current working directory
@@ -393,26 +316,18 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 
 	# print the brief info for the simulation to the screen
 	print('Briefing:')
-	print('Total number of equations: %i' %(num_eqn))
-	print('Total number of species found in chemical scheme file: %i\n' %(species_step))
+	print('Total number of gas-phase equations: %i' %(num_eqn[0]))
+	print('Total number of aqueous-phase equations: %i' %(num_eqn[1]))
+	print('Total number of components found in chemical scheme file: %i\n' %(comp_num))
 	
-# 	print(rindx[940,:], 'whoop',pindx[940,:])
-# 	print(spec_namelist[312])
-# 	print(spec_namelist[1])
-# 	count = 0
-# 	for i in spec_namelist:
-# 		if i == "O3":
-# 			print(count, i)
-# 		count+=1
-# 	ipdb.set_trace()
-	# outputs: 
+	# outputs: ---------------------------------------------------------------------------
 	
 	# rindx  - matrix to record indices of reactants (cols) in each equation (rows)
 	# pindx - indices of equation products (cols) in each equation (rows)
 	# rstoi - matrix to record stoichometries of reactants (cols) in each equation (rows)
 	# pstoi - matrix to record stoichometries of products (cols) in each equation (rows)
 	# reac_coef - list for equation reaction rate coefficients
-	# spec_list - list for components' SMILE strings
+	# comp_num - list for components' SMILE strings
 	# Pybel_objects - list of Pybel objects
 	# species_step - number of species
 	# num_eqn - number of equations
@@ -422,24 +337,31 @@ def extract_mechanism(filename, xmlname, PInit, testf, RH,
 	# prodn - number of columns in pindx
 	# reacn - rindx number of columns
 	# spec_namelist - list of component names used in the chemical reaction file
-	
+	# ------------------------------------------------------------------------------------
 	return (rindx, pindx, rstoi, pstoi, reac_coef, spec_list, Pybel_objects, num_eqn, 
-			species_step, RO2_indices, nreac,
-			nprod, prodn, reacn, spec_namelist, Jlen)
+			comp_num, RO2_indices, nreac,
+			nprod, prodn, reacn, spec_namelist, Jlen, rindx_aq, pindx_aq, rstoi_aq, 
+			pstoi_aq, reac_coef_aq, nreac_aq, nprod_aq, prodn_aq, reacn_aq)
 
 
 
-# This function generates a python script that calculate rate coef. numerically
-# main part by Dave (/s)
+# This function generates a python script that will calculate rate coefficients (/s)
 def write_rate_file(reac_coef, rrc, rrc_name, testf):
-	if testf==0:
+
+	# inputs: ----------------------------------------------------------------------------
+	# testf - flag for testing: 0 in gas-phase equation mode, 2 for test mode, 3 for
+	#			aqueous-phase equation mode
+	if (testf == 0):
 		f = open('PyCHAM/Rate_coeffs.py', mode='w')
-	if testf==2:
+	if (testf == 3):
+		f = open('PyCHAM/Rate_coeffs_aq.py', mode='w')
+	if (testf == 2):
 		f = open('Rate_coeffs.py', mode='w')
-	f.write('\'\'\'module for calculating gas-phase reaction rate coefficients, automatically generated by eqn_parser\'\'\'\n')
+		
+	f.write('\'\'\'module for calculating reaction rate coefficients, automatically generated by eqn_parser\'\'\'\n')
 	f.write('\n')
 	f.write('##################################################################################################### \n') # python will convert \n to os.linesep
-	f.write('# Python function to hold expressions for calculating rate coefficients for a given equation number # \n') # python will convert \n to os.linesep
+	f.write('# Python function to hold expressions for calculating rate coefficients # \n') # python will convert \n to os.linesep
 	f.write('#    Copyright (C) 2017  David Topping : david.topping@manchester.ac.uk                             # \n')
 	f.write('#                                      : davetopp80@gmail.com                                       # \n')
 	f.write('#    Personal website: davetoppingsci.com                                                           # \n')
@@ -447,7 +369,6 @@ def write_rate_file(reac_coef, rrc, rrc_name, testf):
 	f.write('#                                                                                                   # \n')
 	f.write('#                                                                                                   # \n')
 	f.write('##################################################################################################### \n')    
-	f.write('# Minor modified by XSX\n')
 	f.write('# File Created at %s\n' %(datetime.datetime.now()))
 	f.write('\n')
 	f.write('import numpy\n')
@@ -455,7 +376,7 @@ def write_rate_file(reac_coef, rrc, rrc_name, testf):
 	f.write('\n')
 
 	# following part is the function (there should be an indent at the start of each line)
-	# suggest using 1 Tab
+	# suggest using one tab
 	f.write('def evaluate_rates(RO2, H2O, TEMP, lightm, time, lat, lon, act_flux_path, DayOfYear, M, N2, O2, photo_par_file, Jlen):\n')
 	f.write('\n')
 	f.write('	# ------------------------------------------------------------------------')
@@ -469,7 +390,7 @@ def write_rate_file(reac_coef, rrc, rrc_name, testf):
 	f.write('	# reaction rate coefficients and their names parsed in eqn_parser.py \n')
 	f.write('	# Jlen - number of photolysis reactions')
 	f.write('\n')
-	f.write('	# calculate reaction rates with given by chemical scheme\n')
+	f.write('	# calculate generic reaction rate coefficients given by chemical scheme\n')
 	# code to calculate rate coefficients given by chemical scheme file
 	for line in rrc:
 		f.write('	%s \n' %line)
@@ -480,7 +401,7 @@ def write_rate_file(reac_coef, rrc, rrc_name, testf):
 	f.write('	if lightm == 0:\n')
 	f.write('		J = [0]*len(J)\n')
 
-	# calculate the rate coef. numerically for each equation
+	# calculate the rate coefficient for each equation
 	f.write('	rate_values = numpy.zeros(%i)\n' %(len(reac_coef)))
 	# BE NOTIFIED!!!: before writing the script, 'reac_coef' must be converted to 
 	# python-compatible format

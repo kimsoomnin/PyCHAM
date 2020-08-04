@@ -38,13 +38,16 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			corei, const_compi, const_comp, const_infli, Cinfl, act_coeff, p_char, 
 			e_field, const_infl_t, int_tol, photo_par_file, Jlen, dil_fac, pconct,
 			lowersize, uppersize, mean_rad, std, update_step, Pybel_objects, tempt,
-			Cfactor, coag_on):
+			Cfactor, coag_on, rindx_aq, pindx_aq, rstoi_aq, 
+			pstoi_aq, nreac_aq, nprod_aq, prodn_aq, 
+			reacn_aq):
 
 	# inputs:---------------------------------------------------
 	
 	# y - initial concentrations of components (molecules/cc (air)) 
 	# num_speci - number of components
-	# num_eqn - number of equations
+	# num_eqn - number of equations related to gas-phase only [0] and related to 
+	# 			particulates [1]
 	# TEMP - temperature(s) (K) of chamber
 	# Psat - saturation vapour pressures (molecules/cm3 (air))
 	# y_dens - components' densities (kg/m3)
@@ -111,6 +114,15 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	# Cfactor - one billionth the number of molecules in a unit volume of chamber
 	#			at experiment start (molecules/cc)
 	# coag_on - flag to say whether coagulation to be modelled or not
+	# rindx_aq - reactant indices per aqueous reaction
+	# pindx_aq - product indices per aqueous reaction
+	# rstoi_aq - stoichiometries of reactants per aqueous reaction
+	# pstoi_aq - stoichiometries of products per aqueous reaction
+	# nreac_aq - total number of reactants per aqueous reaction
+	# nprod_aq - total number of products per aqueous reaction
+	# prodn_aq - maximum number of products per aqueous reaction
+	# reacn_aq - maximum number of reactants per aqueous reaction
+			
 	# ------------------------------------------------------------------------------------
 	
 	# testing mode
@@ -226,8 +238,9 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 	# needs to be a numpy array to be used in integrator
 	const_compi = np.array(const_compi)
 	
+	
 	if len(const_infli)>0:
-		const_infli = np.array(int(const_infli)).reshape(len(const_infli))
+		const_infli = const_infli.astype(int) # ensure int type for use in indexing
 	
 	print('starting ode solver')
 	
@@ -430,7 +443,7 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 			a = int(a[0])
 			
 		# update reaction rate coefficients
-		reac_coef = rate_valu_calc(RO2_indices, y[H2Oi], temp_now, lightm, y, 
+		[reac_coef, reac_coef_aq] = rate_valu_calc(RO2_indices, y[H2Oi], temp_now, lightm, y, 
 									daytime+sumt, 
 									lat, lon, act_flux_path, DayOfYear, Pnow, 
 									photo_par_file, Jlen)
@@ -464,15 +477,18 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 				# empty array to hold rate of change (molecules/cc(air).s)
 				dydt = np.zeros((len(y)))
 				# gas-phase rate of change ------------------------------------
-				for i in range(num_eqn): # equation loop
+				for i in range(num_eqn[0]): # equation loop
 					
 					# gas-phase rate of change (molecules/cc (air).s)
-					if (y[rindx[i, 0:nreac[i]]]==0.0).sum()>0:
-						continue
+					if (y[rindx[i, 0:nreac[i]]]==0.0).sum()>0: 
+						continue # if any reactants not present skip this reaction
 					else:
-						gprate = ((y[rindx[i, 0:nreac[i]]]**rstoi[i, 0:nreac[i]]).prod())*reac_coef[i] 
-						dydt[rindx[i, 0:nreac[i]]] -= gprate*rstoi[i, 0:nreac[i]] # loss of reactants
-						dydt[pindx[i, 0:nprod[i]]] += gprate*pstoi[i, 0:nprod[i]] # gain of products
+						gprate = ((y[rindx[i, 0:nreac[i]]]**
+									rstoi[i, 0:nreac[i]]).prod())*reac_coef[i]
+						# loss of reactants
+						dydt[rindx[i, 0:nreac[i]]] -= gprate*rstoi[i, 0:nreac[i]]
+						# gain of products
+						dydt[pindx[i, 0:nprod[i]]] += gprate*pstoi[i, 0:nprod[i]]
 				
 				# the constant gas-phase influx of components with this property
 				if const_infli_len>0:
@@ -507,6 +523,19 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 						dydt[0:num_speci] -= dydt_all
 						# particle-phase change
 						dydt[num_speci*(ibin+1):num_speci*(ibin+2)] += dydt_all
+						
+						# rate of change to particulate components due to
+						# reactions in particulates (molecules/cc (air).s)
+						for i in range(num_eqn[1]): # particulate equation loop
+							if (y[rindx_aq[i, 0:nreac_aq[i]]]==0.0).sum()>0: 
+								continue # if any reactants not present skip this reaction
+							else:
+								gprate = ((y[rindx_aq[i, 0:nreac_aq[i]]]**
+											rstoi_aq[i, 0:nreac_aq[i]]).prod())*reac_coef_aq[i]
+								# loss of reactants
+								dydt[rindx_aq[i, 0:nreac_aq[i]]+num_speci*(ibin+1)] -= gprate*rstoi_aq[i, 0:nreac_aq[i]]
+								# gain of products
+								dydt[pindx_aq[i, 0:nprod_aq[i]]+num_speci*(ibin+1)] += gprate*pstoi_aq[i, 0:nprod_aq[i]]
 				
 				if (kgwt*Cw)>1.0e-10:
 					# -----------------------------------------------------------
