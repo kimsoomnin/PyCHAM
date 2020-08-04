@@ -712,5 +712,31 @@ def ode_gen(y, num_speci, num_eqn, rindx, pindx, rstoi, pstoi, H2Oi,
 					reac_coef, Cfactor, Cfactor_vst)
 					
 				save_count += int(1) # track number of times saved at
+				
+			# ensure result at simulation end captured - won't be captured using the above
+			# condition if the total simulation time is not divisible by save_step
+			if (save_step*save_count-sumt)>1.0e-10 and np.abs(sumt-end_sim_time)<1.0e-10:
+			
+				# convert list to numpy array
+				t_array = np.array(t_array)
+				# select solution at closest time to recording interval
+				indx = np.where(np.abs(((sumt-t)+t_array)-save_step*save_count)==
+								np.min(np.abs(((sumt-t)+t_array)-save_step*save_count)))[0][0]
+				ythen = res[indx, :] # get concentrations (molecules/cm3) at this time
+				# time at this time
+				sumt_rec = (sumt-t)+t_array[indx]
+				
+				# record values
+				[t_out, y_mat, Nresult_dry, Nresult_wet, x2, 
+					dydt_vst, Cfactor_vst] = recording(ythen, 
+					N_perbin, x, save_count, 
+					sumt_rec, y_mat, Nresult_dry, Nresult_wet, x2, t_out, int(end_sim_time/save_step), 
+					num_speci, num_sb, y_mw[:, 0], y_dens[:, 0]*1.0e-3, yp, Vbou, rindx, 
+					rstoi, pindx, nprod, dydt_vst, RO2_indices, H2Oi, temp_now, lightm, nreac,
+					pconc, core_diss, Psat, kelv_fac, kimt, kgwt, Cw, daytime+sumt, lat, lon, 
+					act_flux_path, DayOfYear, act_coeff, Pnow, photo_par_file, Jlen, 
+					reac_coef, Cfactor, Cfactor_vst)
+					
+				save_count += int(1) # track number of times saved at
 		
 	return(t_out, y_mat, Nresult_dry, Nresult_wet, x2, dydt_vst, Cfactor_vst)
