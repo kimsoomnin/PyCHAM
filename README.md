@@ -149,58 +149,12 @@ Example run output is saved in the PyCHAM/output/Example_Run folder.  To reprodu
 An example chemical scheme .txt file is given in the inputs folder (of the Github repository), called 'Example_Run.txt', which has been obtained
 from the [Master Chemical Mechanism (MCM) website](http://mcm.leeds.ac.uk/MCM/) (FACSIMILE version) and modified.
 
-Identifiers are required to recognise different sections of the chemical scheme, and these
-are set in the model variables input folder under the chem_scheme_markers input.  The
-mandatory identifiers are for the chemical reactions, for which the following are required
-in this order, separated by commas:
+Identifiers are required to recognise different sections of the chemical scheme (to be stated in the model variables input file in the chem_scheme_markers input).
 
-header of chemical reactions, punctuation mark at the start of each reaction, footer of
-chemical reactions denoting termination.
+Reaction rate coefficients for chemical reactions and generic rate coefficients must adhere to the following rules:
+The expression for the rate coefficient can use Fortran type scientific notation or python type; acceptable math functions: EXP, exp, dsqrt, dlog, LOG, dabs, LOG10, numpy.exp, numpy.sqrt, numpy.log, numpy.abs, numpy.log10; rate coefficients may be functions of TEMP, RH, M, N2, O2 where TEMP is temperature (K), RH is relative humidity (0-1), M, N2 and O2 are the concentrations of third body, nitrogen and oxygen (# molecules/cc (air)).
 
-Therefore, for the simple working example taken using the MCM FACSIMILE format:
-
-* Reaction definitions. ;
-% 5.6D-34*N2*(TEMP/300)@-2.6*O2 : O = O3 ;
-* End of Subset.  No. of Species = 2, No. of Reactions = 1 ;
-
-then the chem_scheme_markers input inside the model variables file is (note the extra commas at the end are empty spaces for further inputs described below):
-chem_scheme_markers = * Reaction definitions. ;, %, (.*) End (.*),,,,
-
-
-Optionally, the header, end punctuation and footer of generic rate coefficients can be
-stated.  For the simple working example taken using the MCM FACSIMILE format:
-
-* Generic Rate Coefficients ;
-KRO2NO = 2.7D-12*EXP(360/TEMP) ;
-****************************************************** ;
-
-then the chem_scheme_markers input inside the model variables file is (in addition to 
-those required for chemical reactions):
-
-chem_scheme_markers = * Reaction definitions. ;, %, (.*) End (.*), * Generic Rate Coefficients ;, ;, \*\*\*\*,,
-
-The final option is if the chemical scheme contains a description of the components that
-contribute to the peroxy radical pool, for which the start and end identifiers are 
-required.  For the simple working example taken using the MCM FACSIMILE format:
-
-RO2 = H1C23C4CO3 + H1C23C4O2 ;
-*;
-
-then the chem_scheme_markers input inside the model variables file is (in addition to 
-those required for chemical reactions and generic rate coefficients):
-
-chem_scheme_markers = * Reaction definitions. ;, %, (.*) End (.*), * Generic Rate Coefficients ;, ;, \*\*\*\*, RO2, *; 
-
-If one of the options is not used, then their input should be left empty, for example
-if the RO2 pool is used but not the generic rate coefficients, the input is:
-
-chem_scheme_markers = * Reaction definitions. ;, %, (.*) End (.*), , , , RO2, *; 
-
-If chem_scheme_markers is left empty, the default is MCM FACSIMILE formatting.
-
-The reaction rate coefficients beside chemical reaction equations and inside generic rate coefficients must adhere to the following rules:
-The expression for the rate coefficient can use Fortran type scientific notation or python type; acceptable math functions: EXP, exp, dsqrt, dlog, LOG, dabs, LOG10, numpy.exp, numpy.sqrt, numpy.log, numpy.abs, numpy.log10; rate coefficients may be functions of TEMP, RH, M, N2, O2 where TEMP is temperature (K), RH is relative humidity (0-1), M, N2 and O2 are the concentrations of third body, nitrogen and oxygen (# molecules/cc (air)) - these concentrations are calculated automatically as a function of temperature and pressure inside eqn_parser.py.
-
+Inside the chemical scheme file, the expression for the reaction rate coefficient of a chemical reaction and the reaction itself must be contained on the same line of the file, with some identifier separating them.
 
 ## Chemical Scheme .xml file
 
@@ -227,10 +181,10 @@ note that if a variable is irrelevant for your simulation, it can be left empty
 | lower_part_size = | Radius of smallest size bin boundary (um) |
 | upper_part_size = | Radius of largest size bin boundary (um) |
 | space_mode = | lin for linear spacing of size bins in radius space, or log for logarithmic spacing of size bins in radius space, if empty defaults to linear spacing|
-| kgwt = | mass transfer coefficient of vapour-wall partitioning (/s), if left empty defaults to zero |
-| eff_abs_wall_massC = |effective absorbing wall mass concentration (g/m3 (air)), if left empty defaults to zero |
+| mass_trans_coeff = | Mass transfer coefficient of vapour-wall partitioning (/s), if left empty defaults to zero |
+| eff_abs_wall_massC = | Effective absorbing wall mass concentration (g/m3 (air)), if left empty defaults to zero |
 | temperature = | Air temperature inside the chamber (K).  At least one value must be given for the experiment start (times corresponding to temperatures given in tempt variable below).  If multiple values, representing changes in temperature at different times, then separate by a comma.  For example, if the temperature at experiment start is 290.0 K and this increases to 300.0 K after 3600.0 s of the experiment, inputs are: temperature = 290.0, 300.0, tempt = 0.0, 3600.0 |
-|tempt = | Times since start of experiment (s) at which the temperature(s) set by the temperature variable above, are reached.  Defaults to 0.0 if left empty as at least the temperature at experiment start needs to be known.  If multiple values, representing changes in temperature at different times, then separate by a comma.  For example, if the temperature at experiment start is 290.0 K and this increases to 300.0 K after 3600.0 s of the experiment, inputs are: temperature = 290.0, 300.0; tempt = 0.0, 3600.0 |
+| tempt = | Times since start of experiment (s) at which the temperature(s) set by the temperature variable above, are reached.  Defaults to 0.0 if left empty as at least the temperature at experiment start needs to be known.  If multiple values, representing changes in temperature at different times, then separate by a comma.  For example, if the temperature at experiment start is 290.0 K and this increases to 300.0 K after 3600.0 s of the experiment, inputs are: temperature = 290.0, 300.0; tempt = 0.0, 3600.0 |
 | p_init =  | Pressure of air inside the chamber (Pa) |
 | rh = | Relative Humidity (fraction, 0-1) |
 | lat = | latitude (degrees) for natural light intensity (if applicable, leave empty if not (if experiment is dark set light_status below to 0 for all times)) |
@@ -241,9 +195,9 @@ note that if a variable is irrelevant for your simulation, it can be left empty
 | photo_par_file = | Name of txt file stored in PyCHAM/photofiles containing the wavelength-dependent absorption cross-sections and quantum yields for photochemistry.  If left empty defaults to MCMv3.2, and is only used if act_flux_path variable above is stated.  File must be of .txt format with the formatting: <br> J_n_axs <br> wv_m, axs_m <br> J_n_qy <br> wv_M, qy_m <br> J_end <br> where n is the photochemical reaction number, axs represents the absorption cross-section (cm2/molecule), wv is wavelength (nm), _m is the wavelength number, and qy represents quantum yield (fraction).  J_end marks the end of the photolysis file.  An example is provided in PyCHAM/photofiles/example_inputs.txt.  Note, please include the .txt in the file name. |
 | ChamSA = | Chamber surface area (m2), used if the Rader and McMurry wall loss of particles option (Rader_flag) is set to 1 (on) below|
 | coag_on = | set to 1 (default if left empty) for coagulation to be modelled, or set to zero to omit coagulation|
-| nucv1 = | Nucleation parameterisation value 1 |
-| nucv2 = | Nucleation parameterisation value 2 |
-| nucv3 = | Nucleation parameterisation value 3 |
+| nucv1 = | Nucleation parameterisation value 1 to control the total number of newly formed particles|
+| nucv2 = | Nucleation parameterisation value 2 to control the start time of nucleation|
+| nucv3 = | Nucleation parameterisation value 3 to control the duration of nucleation|
 | nuc_comp = | Name of component contributing to nucleation (only one allowed), must correspond to a name in the chemical scheme file.  Deafults to empty.  If empty, the nucleation module (nuc.py) will not be called.|
 | new_partr = | Radius of newly nucleated particles (cm), if empty defaults to 2.0e-7 cm. |
 | inflectDp = | Particle diameter wall deposition rate at inflection point (m). |
@@ -277,10 +231,10 @@ note that if a variable is irrelevant for your simulation, it can be left empty
 | std = | Geometric mean standard deviation of seed particle number concentration (dimensionless) when scalar provided in pconc variable above, role explained online in scipy.stats.lognorm page, under pdf method: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.lognorm.html.  If left empty defaults to 1.1.  If seed particles introduced after the experiment start, then separate std for different times using a semicolon.  For example, if seed particle with a standard deviation of 1.2 introduced at start and with standard deviation of 1.3 introduced after 120 s, the std input is: std = 1.2; 1.3 and the pconct input is: pconct = 0; 120 |
 | core_diss = | Core dissociation constant (for seed component) (dimensionless) (1), if empty defaults to one|
 | light_time = | Times (s) for light status, corresponding to the elements of light_status (below), if empty defaults to lights off for whole experiment.  Use this setting regardless of whether light is natural or artificial (chamber lamps).  For example, for a 4 hour experiment, with lights on for first half and lights off for second, use: light_time = 0.0, 7200.0 light_status = 1, 0. If light_time doesn't include the experiment start (0.0 s), default is lights off at experiment start. |
-|light_status = | 1 for lights on and 0 for lights off, with times given in light_time (above), if empty defaults to lights off for whole experiment.  Setting to off (0) means that even if variables defining light intensity above, the simulation will be dark.  Use this setting regardless of whether light is natural or artificial (chamber lamps).  The setting for a particular time is recognised when the time step will surpass the time given in light_time.  For example, for a 4 hour experiment, with lights on for first half and lights off for second, use: light_time = 0.0, 7200.0 light_status = 1, 0.  If status not given for the experiment start (0.0 s), default is lights off at experiment start. |
-|tracked_comp = | Name of component(s) to track rate of concentration change (molecules/cc.s); must match name given in chemical scheme, and if multiple components given they must be separated by a comma.  Can be left empty and then defaults to tracking no components. |				 
+| light_status = | 1 for lights on and 0 for lights off, with times given in light_time (above), if empty defaults to lights off for whole experiment.  Setting to off (0) means that even if variables defining light intensity above, the simulation will be dark.  Use this setting regardless of whether light is natural or artificial (chamber lamps).  The setting for a particular time is recognised when the time step will surpass the time given in light_time.  For example, for a 4 hour experiment, with lights on for first half and lights off for second, use: light_time = 0.0, 7200.0 light_status = 1, 0.  If status not given for the experiment start (0.0 s), default is lights off at experiment start. |
+| tracked_comp = | Name of component(s) to track rate of concentration change (molecules/cc.s); must match name given in chemical scheme, and if multiple components given they must be separated by a comma.  Can be left empty and then defaults to tracking no components. |				 
 | umansysprop_update = | Flag to update the UManSysProp module via internet connection: set to 1 to update and 0 to not update.  If empty defaults to no update.  In the case of no update, the module PyCHAM checks whether an existing UManSysProp module is available and if not tries to update via the internet.  If update requested and either no internet or UManSysProp repository page is down, code stops with an error. |
-| chem_scheme_markers = | markers denoting various sections of the user's chemical scheme.  If left empty defaults to Kinetic Pre-Processor (KPP) formatting.  If filled, must have following elements separated with commas: marker for punctuation at start of reaction lines (just the first element), marker for peroxy radical list starting, punctuation between peroxy radical names, prefix to peroxy radical name, string after peroxy radical name, number of lines taken by peroxy radical list (including the line containing the marker for peroxy radical list starting, punctuation at the end of each line containing generic rate coefficients.  For example, for the MCM FACSIMILE format: chem_scheme_markers = %, RO2, +, , , 20, ; |
+| chem_scheme_markers = | markers denoting various sections of the user's chemical scheme.  If left empty defaults to Kinetic Pre-Processor (KPP) formatting.  If filled, must have following elements separated with commas (brackets at start of description give pythonic index): (0) marker for punctuation at start of gas-phase reaction lines (just the first element), (1) marker for peroxy radical list starting, (2) punctuation between peroxy radical names, (3) prefix to peroxy radical name, (4) string after peroxy radical name, (5) marker for end of peroxy radical list (if no marker, then use the marker for RO2 list continuation onto next line), (6) marker for RO2 list continuation onto next line, (7) marker at the end of each line containing generic rate coefficients, (8) first element of aqueous-phase reaction lines (just the first element), (9) marker for start of reaction rate coefficient section of an equation line, (10) marker for start of equation section of an equation line, (11) final element of an equation line (should be constant for all phases of reactions).  For example, for the MCM KPP format: chem_scheme_markers = {, RO2, +, C(ind_, ), , &, , , :, }, ; |
 | int_tol = | Integration tolerances, with absolute tolerance first followed by relative tolerance, if left empty defaults to the maximum required during testing for stable solution: 1.0e-3 for absolute and 1.0e-4 for relative. |
 | dil_fac = |Volume fraction per second chamber is diluted by, should be just a single number.  Defaults to zero if left empty.|
 		
