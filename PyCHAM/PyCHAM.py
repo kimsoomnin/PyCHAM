@@ -65,9 +65,7 @@ class PyCHAM(QWidget):
 	def on_click1(self):
 		
 		dirpath = os.getcwd() # get current path
-# 		fname = dirpath+ '/PyCHAM/output/GMD_paper/Results/AtChem2_apinene_scheme.txt'
-# 		fname = dirpath+'/PyCHAM/inputs/limonene_MCM_PRAM.txt' # hard-code chemical scheme input
-# 		fname = dirpath+'/PyCHAM/output/GMD_paper/Results/Nah_eval_scheme.txt' # hard-code chemical scheme input
+		# automatic opening when relevant button clicked
 # 		fname = dirpath+'/PyCHAM/inputs/Example_Run.txt'
 		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
 		with open(dirpath+'/fname.txt','w') as f:
@@ -78,7 +76,8 @@ class PyCHAM(QWidget):
 	def on_click2(self):
 		
 		dirpath = os.getcwd() # get current path
-# 		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml' # hard-code xml input
+		# automatic opening when relevant button clicked
+# 		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml'
 		xmlname = self.openFileNameDialog()
 		with open(dirpath+'/xmlname.txt','w') as f:
 			f.write(xmlname)
@@ -87,9 +86,7 @@ class PyCHAM(QWidget):
 	@pyqtSlot()
 	def on_click3(self):
 		dirpath = os.getcwd() # get current path
-# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/Photo_chem_inputs_hiNOx.txt' # hard-code model variables input
-# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/limonene_inputs.txt' # hard-code model variables input
-# 		inname = dirpath+'/PyCHAM/output/GMD_paper/Results/Nah_eval_inputs.txt' # hard-code model variables input
+		# automatic opening when relevant button clicked
 # 		inname = dirpath+'/PyCHAM/inputs/Example_Run_inputs.txt'
 		inname = self.openFileNameDialog() # name of model variables inputs file
 		
@@ -573,7 +570,7 @@ class PyCHAM(QWidget):
 			if key == 'chem_scheme_markers': # formatting for chemical scheme
 				if (value.strip()).split(',')==['']:
 					# default to Kinetic Preprocessor (KPP) inputs
-					chem_scheme_markers = ['{', 'RO2', '+', 'C(ind_', ')', 20, '']
+					chem_scheme_markers = ['{', 'RO2', '+', 'C(ind_, )', '', '&', '', '', ':', '}', ';']
 				else:
 					chem_scheme_markers = [str(i).strip() for i in (value.split(','))]
 			if key == 'int_tol': # tolerances for integration
@@ -616,8 +613,8 @@ class PyCHAM(QWidget):
 				print('Error: the number of times given for constant influx by the const_infl_t variable inside the model variables input file does not match the number of times with constant influx concentrations provided by the Cinfl variable of that file, please see the README for guidance.')
 				sys.exit()
 				
-		if len(chem_scheme_markers)!=7:
-			print('Error: length of chem_scheme_markers (specified in model variables input file) is not 7 and should be, please see README for guidance')
+		if (len(chem_scheme_markers) != 12):
+			print('Error: length of chem_scheme_markers (specified in model variables input file) is not 12 and should be (even if commas separate empty inputs), please see README for guidance')
 		# components with assigned vapour pressures
 		if len(vol_Comp)!=len(volP):
 			print('Error: the number of components with assigned vapour pressures does not equal the number of assigned vapour pressures (vol_Comp and volP variables, respectively, in the model variables input folder), please see the README for guidance')
@@ -693,9 +690,9 @@ class PyCHAM(QWidget):
 		import front as model
 		dirpath = os.getcwd() # get current path
 		if os.path.isfile(dirpath+'/testf.txt'):
-			testf=2	
+			testf = 2	
 		else:
-			testf=0
+			testf = 0
 		# call on model to run
 		t = threading.Thread(target=model.run(testf))
 		t.daemon = False
@@ -707,9 +704,9 @@ class PyCHAM(QWidget):
 		
 		dirpath = os.getcwd() # get current path
 		if os.path.isfile(dirpath+'/testf.txt'):
-			testf=1		
+			testf = 1		
 		else:
-			testf=0
+			testf = 0
 		
 		# pass the name of the folder where results are saved
 		t = threading.Thread(target=plotter.run(testf))
