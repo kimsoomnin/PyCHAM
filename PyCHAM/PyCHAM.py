@@ -66,8 +66,8 @@ class PyCHAM(QWidget):
 		
 		dirpath = os.getcwd() # get current path
 		# automatic opening when relevant button clicked
-# 		fname = dirpath+'/PyCHAM/inputs/Example_Run.txt'
-		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
+		fname = dirpath+'/PyCHAM/inputs/Example_Run.txt'
+# 		fname = self.openFileNameDialog() # ask for location of input chemical scheme file
 		with open(dirpath+'/fname.txt','w') as f:
 			f.write(fname)
 		f.close()
@@ -77,8 +77,8 @@ class PyCHAM(QWidget):
 		
 		dirpath = os.getcwd() # get current path
 		# automatic opening when relevant button clicked
-# 		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml'
-		xmlname = self.openFileNameDialog()
+		xmlname = dirpath+'/PyCHAM/inputs/Example_Run_xml.xml'
+# 		xmlname = self.openFileNameDialog()
 		with open(dirpath+'/xmlname.txt','w') as f:
 			f.write(xmlname)
 		f.close()
@@ -87,8 +87,8 @@ class PyCHAM(QWidget):
 	def on_click3(self):
 		dirpath = os.getcwd() # get current path
 		# automatic opening when relevant button clicked
-# 		inname = dirpath+'/PyCHAM/inputs/Example_Run_inputs.txt'
-		inname = self.openFileNameDialog() # name of model variables inputs file
+		inname = dirpath+'/PyCHAM/inputs/Example_Run_inputs.txt'
+# 		inname = self.openFileNameDialog() # name of model variables inputs file
 		
 		# open the file
 		inputs = open(inname, mode='r')

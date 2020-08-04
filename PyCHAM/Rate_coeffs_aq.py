@@ -9,7 +9,7 @@
 #                                                                                                   # 
 #                                                                                                   # 
 ##################################################################################################### 
-# File Created at 2020-08-04 11:39:22.256727
+# File Created at 2020-08-04 11:39:22.257175
 
 import numpy
 import PhotolysisRates
@@ -32,17 +32,7 @@ def evaluate_rates(RO2, H2O, TEMP, lightm, time, lat, lon, act_flux_path, DayOfY
 
 	if lightm == 0:
 		J = [0]*len(J)
-	rate_values = numpy.zeros(10)
+	rate_values = numpy.zeros(0)
 	# reac_coef has been formatted so that python can recognize it
-	rate_values[0] = J[1]
-	rate_values[1] = J[2]
-	rate_values[2] = 6.3e-16*numpy.exp(-580/TEMP)*0.59
-	rate_values[3] = 6.3e-16*numpy.exp(-580/TEMP)*0.38
-	rate_values[4] = 1.2e-12*numpy.exp(490/TEMP)*0.65
-	rate_values[5] = 1.2e-12*numpy.exp(490/TEMP)*0.35
-	rate_values[6] = 1.2e-11*numpy.exp(440/TEMP)*0.522
-	rate_values[7] = 1.2e-11*numpy.exp(440/TEMP)*0.333
-	rate_values[8] = 1.2e-11*numpy.exp(440/TEMP)*0.065
-	rate_values[9] = 6.3e-16*numpy.exp(-580/TEMP)*0.03
 	
 	return rate_values
