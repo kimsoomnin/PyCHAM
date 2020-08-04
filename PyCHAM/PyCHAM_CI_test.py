@@ -487,7 +487,7 @@ for i in range(len(in_list)):
 			else:
 				print('Note, no download of UManSysProp requested by user via model variables input file, but no existing UManSysProp module found, so will try to update via internet')
 				umansysprop_update = 1
-		print('whoop', umansysprop_update)
+		
 		if umansysprop_update == 1: # test whether UManSysProp can be updated
 			import urllib.request # module for checking internet connection
 			# function for testing internet connection
@@ -550,8 +550,8 @@ if len(Cinfl)>0:
 		print('Error: the number of times given for constant influx by the const_infl_t variable inside the model variables input file does not match the number of times with constant influx concentrations provided by the Cinfl variable of that file, please see the README for guidance.')
 		sys.exit()
 		
-if len(chem_scheme_markers)!=7:
-	print('Error: length of chem_scheme_markers (specified in model variables input file) is not 7 and should be, please see README for guidance')
+if len(chem_scheme_markers)!= 12:
+	print('Error: length of chem_scheme_markers (specified in model variables input file) is not 12 and should be, please see README for guidance')
 # components with assigned vapour pressures
 if len(vol_Comp)!=len(volP):
 	print('Error: the number of components with assigned vapour pressures does not equal the number of assigned vapour pressures (vol_Comp and volP variables, respectively, in the model variables input folder), please see the README for guidance')
